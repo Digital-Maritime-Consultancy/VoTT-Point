@@ -8,6 +8,7 @@ export enum ToolbarItemName {
     SelectCanvas = "selectCanvas",
     DrawRectangle = "drawRectangle",
     DrawPolygon = "drawPolygon",
+    DrawPoint = "drawPoint",
     CopyRectangle = "copyRectangle",
     CopyRegions = "copyRegions",
     CutRegions = "cutRegions",
@@ -56,6 +57,15 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["P", "p"],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.DrawPoint,
+        tooltip: strings.editorPage.toolbar.drawPoint,
+        icon: "fa-dot-circle",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["D", "d"],
     });
 
     ToolbarItemFactory.register({

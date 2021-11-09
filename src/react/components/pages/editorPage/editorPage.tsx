@@ -528,6 +528,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     editorMode: EditorMode.Polygon,
                 });
                 break;
+            case ToolbarItemName.DrawPoint:
+                this.setState({
+                    selectionMode: SelectionMode.POINT,
+                    editorMode: EditorMode.Point,
+                });
+                break;
             case ToolbarItemName.CopyRectangle:
                 this.setState({
                     selectionMode: SelectionMode.COPYRECT,

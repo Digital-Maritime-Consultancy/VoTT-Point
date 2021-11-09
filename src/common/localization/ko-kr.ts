@@ -274,6 +274,7 @@ export const korean: IAppStrings = {
             pan: "팬", // Pan,
             drawRectangle: "사각형 그리기", // Draw Rectangle,
             drawPolygon: "다각형 그리기", // Draw Polygon,
+            drawPoint: "Draw Point",
             copyRectangle: "사각형 복사", // Copy Rectangle,
             copy: "영역 복사", // Copy Regions,
             cut: "영역 잘라내기",  // Cut Regions,

@@ -269,6 +269,7 @@ export interface IAppStrings {
             pan: string;
             drawRectangle: string;
             drawPolygon: string;
+            drawPoint: string;
             copyRectangle: string;
             copy: string;
             cut: string;

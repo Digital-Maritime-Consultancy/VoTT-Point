@@ -276,6 +276,7 @@ export const chinesetw: IAppStrings = {
             pan: "全景", // Pan
             drawRectangle: "繪製矩形", // Draw Rectangle
             drawPolygon: "繪製多邊形", // Draw Polygon
+            drawPoint: "Draw Point",
             copyRectangle: "複製矩形", // Copy Rectangle
             copy: "複製區域", // Copy Regions
             cut: "剪下區域", // Cut Regions

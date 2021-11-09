@@ -268,6 +268,7 @@ export const spanish: IAppStrings = {
             pan: "Pan",
             drawRectangle: "Dibujar Rectángulo",
             drawPolygon: "Dibujar Polígono",
+            drawPoint: "Draw Point",
             copyRectangle: "Copia rectángulo",
             copy: "Copiar regiones",
             cut: "Cortar regiones",

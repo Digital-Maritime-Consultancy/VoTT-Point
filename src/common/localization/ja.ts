@@ -273,6 +273,7 @@ export const japanese: IAppStrings = {
             pan: "パン", // Pan,
             drawRectangle: "長方形を描く", // Draw Rectangle,
             drawPolygon: "ポリゴンを描く", // Draw Polygon,
+            drawPoint: "Draw Point",
             copyRectangle: "長方形をコピー", // Copy Rectangle,
             copy: "領域をコピー", // Copy Regions,
             cut: "領域をカット",  // Cut Regions,
