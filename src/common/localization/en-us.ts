@@ -277,6 +277,8 @@ export const english: IAppStrings = {
             saveProject: "Save Project",
             exportProject: "Export Project",
             activeLearning: "Active Learning",
+            submitPoints: "Submit Points",
+            submitAnnotation: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

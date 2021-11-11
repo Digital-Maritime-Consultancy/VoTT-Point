@@ -20,7 +20,7 @@ export default function MainContentRouter() {
                 <Route path="/settings" component={AppSettingsPage} />
                 <Route path="/connections/:connectionId" component={ConnectionPage} />
                 <Route path="/connections" exact component={ConnectionPage} />
-                <Route path="/projects/:projectId/edit" component={EditorPage} />
+                <Route path="/projects/:projectId/edit/:context" component={EditorPage} />
                 <Route path="/projects/create" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/settings" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/export" component={ExportPage} />

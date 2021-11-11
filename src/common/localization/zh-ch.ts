@@ -284,6 +284,8 @@ export const chinese: IAppStrings = {
             saveProject: "保存项目", // Save Project
             exportProject: "导出项目", // Export Project
             activeLearning: "主动学习", // Active Learning
+            submitPoints: "Submit Points",
+            submitAnnotation: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {
