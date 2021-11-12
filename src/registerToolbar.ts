@@ -12,7 +12,7 @@ export enum ToolbarItemName {
     SubmitPoints = "submitPoints",
     PreviousAsset = "previousAsset",
     NextAsset = "nextAsset",
-    SubmitAnnotation = "submitAnnotation",
+    CompleteRevision = "completeRevision",
     SaveProject = "saveProject",
 }
 
@@ -34,7 +34,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["V", "v"],
-        context: [EditingContext.ReviseGenerated],
+        context: [EditingContext.PlantSeed, EditingContext.ReviseGenerated],
     });
 
     ToolbarItemFactory.register({
@@ -88,8 +88,8 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.SubmitAnnotation,
-        tooltip: strings.editorPage.toolbar.submitAnnotation,
+        name: ToolbarItemName.CompleteRevision,
+        tooltip: strings.editorPage.toolbar.completeRevision,
         icon: "fas fa-check-square",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,

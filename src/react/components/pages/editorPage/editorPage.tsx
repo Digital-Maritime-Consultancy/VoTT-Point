@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -31,6 +31,7 @@ import Alert from "../../common/alert/alert";
 import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
+import { PointToRectService } from "../../../../services/pointToRectService";
 
 /**
  * Properties for Editor Page
@@ -124,6 +125,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     };
 
     private activeLearningService: ActiveLearningService = null;
+    private pointToRectService: PointToRectService = null;
     private loadingProjectAssets: boolean = false;
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvas: RefObject<Canvas> = React.createRef();
@@ -140,6 +142,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
+        this.pointToRectService = new PointToRectService("http://192.168.1.36:6978/process");
+        this.pointToRectService.ensureConnected();
     }
 
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
@@ -538,7 +542,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 });
                 break;
             case ToolbarItemName.SubmitPoints:
-                console.log("!!");
+                await this.sendPoints();
                 break;
             case ToolbarItemName.DrawPoint:
                 this.setState({
@@ -558,10 +562,32 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.NextAsset:
                 await this.goToRootAsset(1);
                 break;
-            case ToolbarItemName.SubmitAnnotation:
-                console.log("!!");
+            case ToolbarItemName.CompleteRevision:
+                await this.completeRevision();
                 break;
         }
+    }
+
+    private sendPoints = async () => {
+        // Predict and add regions to current asset
+        /*
+        if (!this.pointToRectService.isConnected()) {
+            alert("Server is not reachable");
+        }*/
+
+        try {
+            const updatedAssetMetadata = await this.pointToRectService
+                .process(this.state.selectedAsset);
+
+            await this.onAssetMetadataChanged(updatedAssetMetadata);
+            this.setState({ selectedAsset: updatedAssetMetadata });
+        } catch (e) {
+            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+        }
+    }
+
+    private completeRevision = async () => {
+
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {

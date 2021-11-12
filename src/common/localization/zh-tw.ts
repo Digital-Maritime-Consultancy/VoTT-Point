@@ -288,7 +288,7 @@ export const chinesetw: IAppStrings = {
             exportProject: "匯出專案", // Export Project
             activeLearning: "主動學習", // Active Learning
             submitPoints: "Submit Points",
-            submitAnnotation: "Complete",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

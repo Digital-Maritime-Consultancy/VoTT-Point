@@ -286,7 +286,7 @@ export const korean: IAppStrings = {
             exportProject: "프로젝트 내보내기",  // Export Project,
             activeLearning: "Active Learning",  // Active Learning"
             submitPoints: "Submit Points",
-            submitAnnotation: "Complete",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

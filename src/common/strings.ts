@@ -281,7 +281,7 @@ export interface IAppStrings {
             exportProject: string;
             activeLearning: string;
             submitPoints: string;
-            submitAnnotation: string;
+            completeRevision: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

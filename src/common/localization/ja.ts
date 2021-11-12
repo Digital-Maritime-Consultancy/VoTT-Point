@@ -285,7 +285,7 @@ export const japanese: IAppStrings = {
             exportProject: "プロジェクトをエクスポート",  // Export Project,
             activeLearning: "アクティブ ラーニング",  // Active Learning"
             submitPoints: "Submit Points",
-            submitAnnotation: "Complete",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {
