@@ -28,7 +28,7 @@ export class PointToRectService {
         const predictedRegions = await this.submit(assetMetadata);
 
         const updatedRegions = [...assetMetadata.regions];
-        predictedRegions.forEach((prediction) => {
+        predictedRegions.regions.forEach((prediction) => {
             const matchingRegion = updatedRegions.find((region) => {
                 return region.boundingBox
                     && region.boundingBox.left === prediction.boundingBox.left
@@ -60,7 +60,7 @@ export class PointToRectService {
 
         await this.connect()
         .then((response) => {
-            if(response.status === 200){
+            if (response.status === 200) {
                 this.connected = true;
             }
             else {
@@ -76,30 +76,7 @@ export class PointToRectService {
         return await axios.get(this.url);
     }
 
-    private async submit(body: any) {
-        /*
-        let modelPath = "";
-        if (this.settings.modelPathType === ModelPathType.Coco) {
-            if (isElectron()) {
-                const appPath = this.getAppPath();
-
-                if (Env.get() !== "production") {
-                    modelPath = appPath + "/cocoSSDModel";
-                } else {
-                    modelPath = appPath + "/../../cocoSSDModel";
-                }
-            } else {
-                modelPath = "https://vott.blob.core.windows.net/coco-ssd-model";
-            }
-        } else if (this.settings.modelPathType === ModelPathType.File) {
-            if (isElectron()) {
-                modelPath = this.settings.modelPath;
-            }
-        } else {
-            modelPath = this.settings.modelUrl;
-        }
-        */
-       
+    private async submit(body: IAssetMetadata): Promise<IAssetMetadata> {
         await axios({
             method: 'post',
             url: this.url + '/process',
@@ -116,7 +93,7 @@ export class PointToRectService {
           console.log(error);
           return [];
         });
-        return [];
+        return body;
     }
 
     private getAppPath = () => {

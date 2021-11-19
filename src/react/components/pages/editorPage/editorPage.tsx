@@ -142,7 +142,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        this.pointToRectService = new PointToRectService("http://192.168.1.36:6978/process");
+        this.pointToRectService = new PointToRectService("http://192.168.1.36:6978");
         this.pointToRectService.ensureConnected();
     }
 
@@ -154,9 +154,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         // Updating toolbar according to editing context
         const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.PlantSeed;
         if (this.state.context !== currentContext){
+            // refresh view
             this.setState({
                 context: currentContext,
                 filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentContext) >= 0),
+                editorMode: EditorMode.Select,
+                selectionMode: SelectionMode.NONE,
             });
         }
 
@@ -241,7 +244,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                         editorMode={this.state.editorMode}
                                         selectionMode={this.state.selectionMode}
                                         project={this.props.project}
-                                        lockedTags={this.state.lockedTags}>
+                                        lockedTags={this.state.lockedTags}
+                                        context={this.state.context}>
                                         <AssetPreview
                                             additionalSettings={this.state.additionalSettings}
                                             autoPlay={true}
@@ -580,7 +584,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 .process(this.state.selectedAsset);
 
             await this.onAssetMetadataChanged(updatedAssetMetadata);
-            this.setState({ selectedAsset: updatedAssetMetadata });
+            this.setState({ selectedAsset: updatedAssetMetadata});
         } catch (e) {
             throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
         }
@@ -721,4 +725,5 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         this.setState({ assets: updatedAssets });
     }
+
 }
