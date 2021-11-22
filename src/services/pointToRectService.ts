@@ -26,7 +26,7 @@ export class PointToRectService {
         }
         // should be calculated
         const predictedRegions = await this.submit(assetMetadata);
-
+        
         const updatedRegions = [...assetMetadata.regions];
         predictedRegions.regions.forEach((prediction) => {
             const matchingRegion = updatedRegions.find((region) => {
@@ -77,7 +77,7 @@ export class PointToRectService {
     }
 
     private async submit(body: IAssetMetadata): Promise<IAssetMetadata> {
-        await axios({
+        return await axios({
             method: 'post',
             url: this.url + '/process',
             data: body,
@@ -85,15 +85,13 @@ export class PointToRectService {
                 'Content-Type': 'application/json',
             },
         })
-        .then(function (response) {
-          console.log(response.data.regions);
-          return [];
-        })
-        .catch(function (error) {
-          console.log(error);
-          return [];
-        });
-        return body;
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+                return [];
+            });
     }
 
     private getAppPath = () => {

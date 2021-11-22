@@ -142,7 +142,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        this.pointToRectService = new PointToRectService("http://192.168.1.36:6978");
+        this.pointToRectService = new PointToRectService("http://192.168.1.70:6978");
         this.pointToRectService.ensureConnected();
     }
 
