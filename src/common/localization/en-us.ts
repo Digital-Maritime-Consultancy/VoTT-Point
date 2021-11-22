@@ -266,6 +266,7 @@ export const english: IAppStrings = {
             pan: "Pan",
             drawRectangle: "Draw Rectangle",
             drawPolygon: "Draw Polygon",
+            drawPoint: "Draw Point",
             copyRectangle: "Copy Rectangle",
             copy: "Copy Regions",
             cut: "Cut Regions",
@@ -276,6 +277,8 @@ export const english: IAppStrings = {
             saveProject: "Save Project",
             exportProject: "Export Project",
             activeLearning: "Active Learning",
+            submitPoints: "Submit Points",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

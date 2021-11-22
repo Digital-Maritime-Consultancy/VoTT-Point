@@ -3,6 +3,7 @@ import * as shortid from "shortid";
 import { CanvasTools } from "vott-ct";
 import { RegionData } from "vott-ct/lib/js/CanvasTools/Core/RegionData";
 import {
+    EditingContext,
     EditorMode, IAssetMetadata,
     IProject, IRegion, RegionType,
 } from "../../../../models/applicationState";
@@ -23,6 +24,7 @@ export interface ICanvasProps extends React.Props<Canvas> {
     project: IProject;
     lockedTags: string[];
     children?: ReactElement<AssetPreview>;
+    context?: EditingContext;
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
     onCanvasRendered?: (canvas: HTMLCanvasElement) => void;
@@ -41,6 +43,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         selectedAsset: null,
         project: null,
         lockedTags: [],
+        context: EditingContext.None,
     };
 
     public editor: Editor;
@@ -89,6 +92,11 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         // When the selected asset has changed but is still the same asset id
         if (!assetIdChanged && this.state.currentAsset !== prevState.currentAsset) {
+            this.refreshCanvasToolsRegions();
+        }
+
+        // When the context has changed but is still the same asset id
+        if (this.props.context !== prevProps.context) {
             this.refreshCanvasToolsRegions();
         }
 
@@ -526,15 +534,18 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         // Add regions to the canvas
         this.state.currentAsset.regions.forEach((region: IRegion) => {
-            const loadedRegionData = CanvasHelpers.getRegionData(region);
-            this.editor.RM.addRegion(
-                region.id,
-                this.editor.scaleRegionToFrameSize(
-                    loadedRegionData,
-                    this.state.currentAsset.asset.size.width,
-                    this.state.currentAsset.asset.size.height,
-                ),
-                CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+            if (this.props.context === EditingContext.PlantSeed && region.type === RegionType.Point ||
+                this.props.context === EditingContext.ReviseGenerated && region.type === RegionType.Rectangle) {
+                const loadedRegionData = CanvasHelpers.getRegionData(region);
+                this.editor.RM.addRegion(
+                    region.id,
+                    this.editor.scaleRegionToFrameSize(
+                        loadedRegionData,
+                        this.state.currentAsset.asset.size.width,
+                        this.state.currentAsset.asset.size.height,
+                    ),
+                    CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+            }
         });
     }
 

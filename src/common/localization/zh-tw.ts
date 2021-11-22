@@ -276,6 +276,7 @@ export const chinesetw: IAppStrings = {
             pan: "全景", // Pan
             drawRectangle: "繪製矩形", // Draw Rectangle
             drawPolygon: "繪製多邊形", // Draw Polygon
+            drawPoint: "Draw Point",
             copyRectangle: "複製矩形", // Copy Rectangle
             copy: "複製區域", // Copy Regions
             cut: "剪下區域", // Cut Regions
@@ -286,6 +287,8 @@ export const chinesetw: IAppStrings = {
             saveProject: "儲存專案", // Save Project
             exportProject: "匯出專案", // Export Project
             activeLearning: "主動學習", // Active Learning
+            submitPoints: "Submit Points",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

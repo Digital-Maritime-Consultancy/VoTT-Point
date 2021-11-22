@@ -383,6 +383,12 @@ export enum RegionType {
     Square = "SQUARE",
 }
 
+export enum EditingContext {
+    PlantSeed = "plant",
+    ReviseGenerated = "revise",
+    None = "none",
+}
+
 export enum EditorMode {
     Rectangle = "RECT",
     Polygon = "POLYGON",

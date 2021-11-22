@@ -499,8 +499,6 @@ describe("Editor Page Component", () => {
         });
 
         it("editor mode is changed correctly", async () => {
-            wrapper.find(`.${ToolbarItemName.DrawPolygon}`).simulate("click");
-            expect(getState(wrapper).editorMode).toEqual(EditorMode.Polygon);
 
             wrapper.find(`.${ToolbarItemName.DrawRectangle}`).simulate("click");
             expect(getState(wrapper).editorMode).toEqual(EditorMode.Rectangle);
@@ -530,30 +528,6 @@ describe("Editor Page Component", () => {
 
             const expectedAsset = editorPage.state().assets[1];
             expect(getState(wrapper).selectedAsset).toMatchObject({ asset: expectedAsset });
-        });
-
-        it("Calls copy regions with button click", async () => {
-            await MockFactory.flushUi(() => wrapper
-                .find(`.${ToolbarItemName.CopyRegions}`).simulate("click"));
-            expect(copyRegions).toBeCalled();
-        });
-
-        it("Calls cut regions with button click", async () => {
-            await MockFactory.flushUi(() => wrapper
-                .find(`.${ToolbarItemName.CutRegions}`).simulate("click"));
-            expect(cutRegions).toBeCalled();
-        });
-
-        it("Calls paste regions with button click", async () => {
-            await MockFactory.flushUi(() => wrapper
-                .find(`.${ToolbarItemName.PasteRegions}`).simulate("click"));
-            expect(pasteRegions).toBeCalled();
-        });
-
-        it("Calls remove all regions confirmation with button click", async () => {
-            await MockFactory.flushUi(() => wrapper
-                .find(`.${ToolbarItemName.RemoveAllRegions}`).simulate("click"));
-            expect(removeAllRegionsConfirm).toBeCalled();
         });
 
         it("Calls copy regions with hot key", () => {
@@ -845,26 +819,6 @@ describe("Editor Page Component", () => {
             expect(activeLearningMock.prototype.predictRegions).toBeCalled();
         });
 
-        it("predicts regions when toolbar item is selected", async () => {
-            await beforeActiveLearningTest();
-
-            const toolbarItem = {
-                props: {
-                    name: ToolbarItemName.ActiveLearning,
-                },
-            };
-
-            const selectedAsset = editorPage.state().selectedAsset;
-            wrapper.find(EditorToolbar).props().onToolbarItemSelected(toolbarItem as ToolbarItem);
-
-            await MockFactory.flushUi();
-
-            expect(activeLearningMock.prototype.predictRegions).toBeCalledWith(expect.anything(), selectedAsset);
-            expect(assetServiceMock.prototype.save).toBeCalledWith({
-                ...selectedAsset,
-                predicted: true,
-            });
-        });
     });
 });
 

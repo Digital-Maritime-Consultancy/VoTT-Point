@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -31,6 +31,7 @@ import Alert from "../../common/alert/alert";
 import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
+import { PointToRectService } from "../../../../services/pointToRectService";
 
 /**
  * Properties for Editor Page
@@ -51,6 +52,8 @@ export interface IEditorPageProps extends RouteComponentProps, React.Props<Edito
  * State for Editor Page
  */
 export interface IEditorPageState {
+    /** Context of editing */
+    context: EditingContext;
     /** Array of assets in project */
     assets: IAsset[];
     /** The editor mode to set for canvas tools */
@@ -78,6 +81,8 @@ export interface IEditorPageState {
     isValid: boolean;
     /** Whether the show invalid region warning alert should display */
     showInvalidRegionWarning: boolean;
+    /** Filtered toolbar items accordning to editing context */
+    filteredToolbarItems: IToolbarItemRegistration[];
 }
 
 function mapStateToProps(state: IApplicationState) {
@@ -102,6 +107,7 @@ function mapDispatchToProps(dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class EditorPage extends React.Component<IEditorPageProps, IEditorPageState> {
     public state: IEditorPageState = {
+        context: EditingContext.None,
         selectedTag: null,
         lockedTags: [],
         selectionMode: SelectionMode.RECT,
@@ -115,9 +121,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         thumbnailSize: this.props.appSettings.thumbnailSize || { width: 175, height: 155 },
         isValid: true,
         showInvalidRegionWarning: false,
+        filteredToolbarItems: [],
     };
 
     private activeLearningService: ActiveLearningService = null;
+    private pointToRectService: PointToRectService = null;
     private loadingProjectAssets: boolean = false;
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvas: RefObject<Canvas> = React.createRef();
@@ -134,11 +142,25 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
+        this.pointToRectService = new PointToRectService("http://192.168.1.70:6978");
+        this.pointToRectService.ensureConnected();
     }
 
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
         if (this.props.project && this.state.assets.length === 0) {
             await this.loadProjectAssets();
+        }
+
+        // Updating toolbar according to editing context
+        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.PlantSeed;
+        if (this.state.context !== currentContext){
+            // refresh view
+            this.setState({
+                context: currentContext,
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentContext) >= 0),
+                editorMode: EditorMode.Select,
+                selectionMode: SelectionMode.NONE,
+            });
         }
 
         // Navigating directly to the page via URL (ie, http://vott/projects/a1b2c3dEf/edit) sets the default state
@@ -207,7 +229,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         <div className="editor-page-content-main">
                             <div className="editor-page-content-main-header">
                                 <EditorToolbar project={this.props.project}
-                                    items={this.toolbarItems}
+                                    items={this.state.filteredToolbarItems}
                                     actions={this.props.actions}
                                     onToolbarItemSelected={this.onToolbarItemSelected} />
                             </div>
@@ -222,7 +244,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                         editorMode={this.state.editorMode}
                                         selectionMode={this.state.selectionMode}
                                         project={this.props.project}
-                                        lockedTags={this.state.lockedTags}>
+                                        lockedTags={this.state.lockedTags}
+                                        context={this.state.context}>
                                         <AssetPreview
                                             additionalSettings={this.state.additionalSettings}
                                             autoPlay={true}
@@ -522,16 +545,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     editorMode: EditorMode.Rectangle,
                 });
                 break;
-            case ToolbarItemName.DrawPolygon:
-                this.setState({
-                    selectionMode: SelectionMode.POLYGON,
-                    editorMode: EditorMode.Polygon,
-                });
+            case ToolbarItemName.SubmitPoints:
+                await this.sendPoints();
                 break;
-            case ToolbarItemName.CopyRectangle:
+            case ToolbarItemName.DrawPoint:
                 this.setState({
-                    selectionMode: SelectionMode.COPYRECT,
-                    editorMode: EditorMode.CopyRect,
+                    selectionMode: SelectionMode.POINT,
+                    editorMode: EditorMode.Point,
                 });
                 break;
             case ToolbarItemName.SelectCanvas:
@@ -546,22 +566,32 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.NextAsset:
                 await this.goToRootAsset(1);
                 break;
-            case ToolbarItemName.CopyRegions:
-                this.canvas.current.copyRegions();
-                break;
-            case ToolbarItemName.CutRegions:
-                this.canvas.current.cutRegions();
-                break;
-            case ToolbarItemName.PasteRegions:
-                this.canvas.current.pasteRegions();
-                break;
-            case ToolbarItemName.RemoveAllRegions:
-                this.canvas.current.confirmRemoveAllRegions();
-                break;
-            case ToolbarItemName.ActiveLearning:
-                await this.predictRegions();
+            case ToolbarItemName.CompleteRevision:
+                await this.completeRevision();
                 break;
         }
+    }
+
+    private sendPoints = async () => {
+        // Predict and add regions to current asset
+        /*
+        if (!this.pointToRectService.isConnected()) {
+            alert("Server is not reachable");
+        }*/
+
+        try {
+            const updatedAssetMetadata = await this.pointToRectService
+                .process(this.state.selectedAsset);
+
+            await this.onAssetMetadataChanged(updatedAssetMetadata);
+            this.setState({ selectedAsset: updatedAssetMetadata});
+        } catch (e) {
+            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+        }
+    }
+
+    private completeRevision = async () => {
+
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {
@@ -695,4 +725,5 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         this.setState({ assets: updatedAssets });
     }
+
 }
