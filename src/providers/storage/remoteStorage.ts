@@ -177,7 +177,7 @@ export class RemoteStorage implements IStorageProvider {
         });
 
         const items = response.data.value.map((item) => apiUrl + "/" + item.contentUrl);
-        console.log(items);
+        
         return items
             .map((filePath) => AssetService.createAssetFromFilePath(filePath))
             .filter((asset) => asset.type !== AssetType.Unknown);

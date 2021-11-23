@@ -574,11 +574,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private sendPoints = async () => {
-        if (!this.state.isValid) {
-            this.setState({ showInvalidRegionWarning: true });
+        if (!this.onBeforeAssetSelected()) {
             return;
         }
-
         try {
             // Predict and add regions to current asset
             if (this.pointToRectService && !this.pointToRectService.isConnected()) {
