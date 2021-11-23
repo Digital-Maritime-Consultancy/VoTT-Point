@@ -487,6 +487,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         // Only update asset metadata if state changes or is different
         if (initialState !== assetMetadata.asset.state || this.state.selectedAsset !== assetMetadata) {
+            console.log("onAssetMetadata");
+            console.log(assetMetadata);
             await this.props.actions.saveAssetMetadata(this.props.project, assetMetadata);
         }
 
@@ -505,7 +507,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 ...rootAsset,
             };
         }
-
         this.setState({ childAssets, assets, isValid: true });
     }
 
@@ -573,15 +574,26 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private sendPoints = async () => {
-        // Predict and add regions to current asset
-        /*
-        if (!this.pointToRectService.isConnected()) {
-            alert("Server is not reachable");
-        }*/
+        if (!this.state.isValid) {
+            this.setState({ showInvalidRegionWarning: true });
+            return;
+        }
 
         try {
+            // Predict and add regions to current asset
+            if (this.pointToRectService && !this.pointToRectService.isConnected()) {
+                console.log(this.pointToRectService.isConnected())
+                alert("Server is not reachable");
+                return;
+            }
+        } catch (e) {
+            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error reaching server");
+        }
+
+        try {
+            const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
             const updatedAssetMetadata = await this.pointToRectService
-                .process(this.state.selectedAsset);
+                .process(assetMetadata);
 
             await this.onAssetMetadataChanged(updatedAssetMetadata);
             this.setState({ selectedAsset: updatedAssetMetadata});

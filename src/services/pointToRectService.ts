@@ -13,7 +13,8 @@ export class PointToRectService {
         Guard.null(url);
     }
 
-    public isConnected() {
+    public async isConnected() {
+        await this.ensureConnected();
         return this.connected;
     }
 
