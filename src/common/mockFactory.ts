@@ -34,6 +34,7 @@ import { IKeyboardBindingProps } from "../react/components/common/keyboardBindin
 import { KeyEventType } from "../react/components/common/keyboardManager/keyboardManager";
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
 import { IActiveLearningPageProps } from "../react/components/pages/activeLearning/activeLearningPage";
+import { IRemoteStorageOptions } from "../providers/storage/remoteStorage";
 
 export default class MockFactory {
 
@@ -556,6 +557,19 @@ export default class MockFactory {
     }
 
     /**
+     * Create fake IBingImageSearchOptions
+     */
+    public static createRemoteStorageOptions(): IRemoteStorageOptions {
+    return {
+        url: "http://localhost",
+        accountName: "",
+        url4p2r: "http://localhost",
+        containerName: "",
+        createContainer: false,
+        };
+    }
+
+    /**
      * Get options for asset provider
      * @param providerType asset provider type
      */
@@ -567,6 +581,8 @@ export default class MockFactory {
                 return MockFactory.createAzureOptions();
             case "bingImageSearch":
                 return MockFactory.createBingOptions();
+            case "remoteStorage":
+                return MockFactory.createRemoteStorageOptions();
             default:
                 return {};
         }

@@ -199,6 +199,34 @@ export interface IAppStrings {
                     description: string,
                 }
             },
+            remote: {
+                title: string;
+                description: string,
+                url: {
+                    title: string,
+                    description: string,
+                },
+                url4p2r: {
+                    title: string,
+                    description: string,
+                },
+                accountName: {
+                    title: string,
+                    description: string,
+                },
+                containerName: {
+                    title: string,
+                    description: string,
+                },
+                sas: {
+                    title: string,
+                    description: string,
+                },
+                createContainer: {
+                    title: string,
+                    description: string,
+                }
+            },
             bing: {
                 title: string,
                 endpoint: {

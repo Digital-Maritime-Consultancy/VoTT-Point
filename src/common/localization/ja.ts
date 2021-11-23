@@ -203,6 +203,34 @@ export const japanese: IAppStrings = {
                     // Creates the blob container if it does not already exist"
                 },
             },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "",
+                },
+                url4p2r: {
+                    title: "Server URL for Point-to-Rect",
+                    description: "",
+                },
+                accountName: {
+                    title: "Account Name",
+                    description: "",
+                },
+                containerName: {
+                    title: "Container Name",
+                    description: "",
+                },
+                sas: {
+                    title: "SAS",
+                    description: "Shared access signature used to authenticate to the blob storage account",
+                },
+                createContainer: {
+                    title: "Create Container",
+                    description: "Creates the blob container if it does not already exist",
+                },
+            },
             bing: {
                 title: "Bing 画像検索",  // Bing Image Search,
                 options: {

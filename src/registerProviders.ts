@@ -1,3 +1,4 @@
+import { RemoteStorage } from './providers/storage/remoteStorage';
 import { ExportProviderFactory } from "./providers/export/exportProviderFactory";
 import { PascalVOCExportProvider } from "./providers/export/pascalVOC";
 import { TFRecordsExportProvider } from "./providers/export/tensorFlowRecords";
@@ -30,6 +31,11 @@ export default function registerProviders() {
         displayName: strings.connections.providers.azureBlob.title,
         factory: (options) => new AzureBlobStorage(options),
     });
+    StorageProviderFactory.register({
+        name: "remoteStorage",
+        displayName: strings.connections.providers.remote.title,
+        factory: (options) => new RemoteStorage(options),
+    });
 
     // Asset Providers
     AssetProviderFactory.register({
@@ -42,6 +48,11 @@ export default function registerProviders() {
         name: "azureBlobStorage",
         displayName: strings.connections.providers.azureBlob.title,
         factory: (options) => new AzureBlobStorage(options),
+    });
+    AssetProviderFactory.register({
+        name: "remoteStorage",
+        displayName: strings.connections.providers.remote.title,
+        factory: (options) => new RemoteStorage(options),
     });
     AssetProviderFactory.register({
         name: "bingImageSearch",
