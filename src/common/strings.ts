@@ -269,6 +269,7 @@ export interface IAppStrings {
             pan: string;
             drawRectangle: string;
             drawPolygon: string;
+            drawPoint: string;
             copyRectangle: string;
             copy: string;
             cut: string;
@@ -279,6 +280,8 @@ export interface IAppStrings {
             saveProject: string;
             exportProject: string;
             activeLearning: string;
+            submitPoints: string;
+            completeRevision: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

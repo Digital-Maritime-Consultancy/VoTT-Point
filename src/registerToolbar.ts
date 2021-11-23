@@ -1,3 +1,4 @@
+import { EditingContext } from './models/applicationState';
 import { ToolbarItemFactory } from "./providers/toolbar/toolbarItemFactory";
 import { ExportProject } from "./react/components/toolbar/exportProject";
 import { SaveProject } from "./react/components/toolbar/saveProject";
@@ -7,17 +8,12 @@ import { strings } from "./common/strings";
 export enum ToolbarItemName {
     SelectCanvas = "selectCanvas",
     DrawRectangle = "drawRectangle",
-    DrawPolygon = "drawPolygon",
-    CopyRectangle = "copyRectangle",
-    CopyRegions = "copyRegions",
-    CutRegions = "cutRegions",
-    PasteRegions = "pasteRegions",
-    RemoveAllRegions = "removeAllRegions",
-    PreviousAsset = "navigatePreviousAsset",
-    NextAsset = "navigateNextAsset",
+    DrawPoint = "drawPoint",
+    SubmitPoints = "submitPoints",
+    PreviousAsset = "previousAsset",
+    NextAsset = "nextAsset",
+    CompleteRevision = "completeRevision",
     SaveProject = "saveProject",
-    ExportProject = "exportProject",
-    ActiveLearning = "activeLearning",
 }
 
 export enum ToolbarItemGroup {
@@ -38,6 +34,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["V", "v"],
+        context: [EditingContext.PlantSeed, EditingContext.ReviseGenerated],
     });
 
     ToolbarItemFactory.register({
@@ -47,69 +44,17 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["R", "r"],
+        context: [EditingContext.ReviseGenerated],
     });
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.DrawPolygon,
-        tooltip: strings.editorPage.toolbar.drawPolygon,
-        icon: "fa-draw-polygon",
+        name: ToolbarItemName.DrawPoint,
+        tooltip: strings.editorPage.toolbar.drawPoint,
+        icon: "fa-dot-circle",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
-        accelerators: ["P", "p"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.CopyRectangle,
-        tooltip: strings.editorPage.toolbar.copyRectangle,
-        icon: "far fa-clone",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.State,
-        accelerators: ["CmdOrCtrl+W", "CmdOrCtrl+w"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.CopyRegions,
-        tooltip: strings.editorPage.toolbar.copy,
-        icon: "fa-copy",
-        group: ToolbarItemGroup.Regions,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+C", "CmdOrCtrl+c"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.CutRegions,
-        tooltip: strings.editorPage.toolbar.cut,
-        icon: "fa-cut",
-        group: ToolbarItemGroup.Regions,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+X", "CmdOrCtrl+x"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.PasteRegions,
-        tooltip: strings.editorPage.toolbar.paste,
-        icon: "fa-paste",
-        group: ToolbarItemGroup.Regions,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+V", "CmdOrCtrl+v"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.RemoveAllRegions,
-        tooltip: strings.editorPage.toolbar.removeAllRegions,
-        icon: "fa-ban",
-        group: ToolbarItemGroup.Regions,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+Delete", "CmdOrCtrl+Backspace"],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.ActiveLearning,
-        tooltip: strings.editorPage.toolbar.activeLearning,
-        icon: "fas fa-graduation-cap",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+D", "CmdOrCtrl+d"],
+        accelerators: ["D", "d"],
+        context: [EditingContext.PlantSeed],
     });
 
     ToolbarItemFactory.register({
@@ -119,6 +64,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowUp", "W", "w"],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
     });
 
     ToolbarItemFactory.register({
@@ -128,6 +74,27 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.SubmitPoints,
+        tooltip: strings.editorPage.toolbar.submitPoints,
+        icon: "fas fa-upload",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["P", "p"],
+        context: [EditingContext.PlantSeed],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.CompleteRevision,
+        tooltip: strings.editorPage.toolbar.completeRevision,
+        icon: "fas fa-check-square",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["A", "a"],
+        context: [EditingContext.ReviseGenerated],
     });
 
     ToolbarItemFactory.register({
@@ -137,14 +104,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
     }, SaveProject);
 
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.ExportProject,
-        tooltip: strings.editorPage.toolbar.exportProject,
-        icon: "fa-external-link-square-alt",
-        group: ToolbarItemGroup.Project,
-        type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+E", "CmdOrCtrl+e"],
-    }, ExportProject);
 }

@@ -268,6 +268,7 @@ export const spanish: IAppStrings = {
             pan: "Pan",
             drawRectangle: "Dibujar Rectángulo",
             drawPolygon: "Dibujar Polígono",
+            drawPoint: "Draw Point",
             copyRectangle: "Copia rectángulo",
             copy: "Copiar regiones",
             cut: "Cortar regiones",
@@ -278,6 +279,8 @@ export const spanish: IAppStrings = {
             saveProject: "Guardar Proyecto",
             exportProject: "Exprtar Proyecto",
             activeLearning: "Aprendizaje Activo",
+            submitPoints: "Submit Points",
+            completeRevision: "Complete",
         },
         videoPlayer: {
             previousTaggedFrame: {

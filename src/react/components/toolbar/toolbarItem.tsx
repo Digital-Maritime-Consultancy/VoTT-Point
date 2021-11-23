@@ -13,6 +13,7 @@ import { ToolbarItemName, ToolbarItemGroup } from "../../../registerToolbar";
  * @member group - Name of item group in which to include item
  * @member type - Type of toolbar item (Action or State)
  * @member accelerators - collection of accelerator that map to same action
+ * @member context - Context of editing 
  */
 export interface IToolbarItemMetadata {
     name: ToolbarItemName;
@@ -21,6 +22,7 @@ export interface IToolbarItemMetadata {
     group: ToolbarItemGroup;
     type: ToolbarItemType;
     accelerators?: string[];
+    context?: string[];
 }
 
 /**
