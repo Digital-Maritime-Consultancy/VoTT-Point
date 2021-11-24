@@ -289,6 +289,9 @@ export const english: IAppStrings = {
         height: "Height",
         tagged: "Tagged",
         visited: "Visited",
+        rectangled: "Rect received",
+        revised: "Revised",
+        approved: "Approved",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",

@@ -296,6 +296,9 @@ export const chinese: IAppStrings = {
         height: "高度", // Height
         tagged: "已标记", // Tagged
         visited: "已访问", // Visited
+        rectangled: "Rect received",
+        revised: "Revised",
+        approved: "Approved",
         toolbar: {
             select: "选择[V]", // Select (V)
             pan: "泛", // Pan

@@ -29,6 +29,7 @@ export class PointToRectService {
         const predicted = await this.submit(assetMetadata);
         
         if (predicted && predicted.regions) {
+            // update the one with the same ID blindly
             const updatedRegions = assetMetadata.regions.map(region => 
                 predicted.regions.find(r => r.id === region.id ) ?
                     predicted.regions.find(r => r.id === region.id ) : region);
@@ -51,15 +52,11 @@ export class PointToRectService {
                 regions: updatedRegions,
                 asset: {
                     ...assetMetadata.asset,
-                    state: updatedRegions.length > 0 ? AssetState.Tagged : AssetState.Visited,
-                    predicted: true,
+                    state: updatedRegions.length >= assetMetadata.regions.length ?
+                        AssetState.Rectangled : AssetState.Tagged,
                 },
             } as IAssetMetadata;
         }
-        else{
-            return ;
-        }
-        
     }
 
     public async ensureConnected(): Promise<void> {

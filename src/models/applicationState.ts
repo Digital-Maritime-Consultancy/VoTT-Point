@@ -366,6 +366,9 @@ export enum AssetState {
     NotVisited = 0,
     Visited = 1,
     Tagged = 2,
+    Rectangled = 3,
+    Revised = 4,
+    Approved = 5,
 }
 
 /**

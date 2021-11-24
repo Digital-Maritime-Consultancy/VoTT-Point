@@ -291,6 +291,9 @@ export const spanish: IAppStrings = {
         height: "Altura",
         tagged: "Etiquetado",
         visited: "Visitado",
+        rectangled: "Rect received",
+        revised: "Revised",
+        approved: "Approved",
         toolbar: {
             select: "Seleccionar",
             pan: "Pan",

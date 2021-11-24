@@ -124,6 +124,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         filteredToolbarItems: [],
     };
 
+    private p2rServerUrl = "http://172.20.10.2:6978/";
+
     private activeLearningService: ActiveLearningService = null;
     private pointToRectService: PointToRectService = null;
     private loadingProjectAssets: boolean = false;
@@ -142,7 +144,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        this.pointToRectService = new PointToRectService("http://192.168.1.70:6978");
+        this.pointToRectService = new PointToRectService(this.p2rServerUrl);
         this.pointToRectService.ensureConnected();
     }
 
@@ -457,13 +459,15 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const initialState = assetMetadata.asset.state;
-
+        
         // The root asset can either be the actual asset being edited (ex: VideoFrame) or the top level / root
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
         if (this.isTaggableAssetType(assetMetadata.asset)) {
-            assetMetadata.asset.state = assetMetadata.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
+            assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
+                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
+                    AssetState.Rectangled : AssetState.Tagged;
         } else if (assetMetadata.asset.state === AssetState.NotVisited) {
             assetMetadata.asset.state = AssetState.Visited;
         }
@@ -477,7 +481,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state !== AssetState.Tagged) {
+            if (rootAssetMetadata.asset.state < AssetState.Tagged) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -545,7 +549,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 });
                 break;
             case ToolbarItemName.SubmitPoints:
-                await this.sendPoints();
+                await this.processPoint2Rect();
                 break;
             case ToolbarItemName.DrawPoint:
                 this.setState({
@@ -571,14 +575,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
     }
 
-    private sendPoints = async () => {
+    private processPoint2Rect = async () => {
         if (!this.onBeforeAssetSelected()) {
             return;
         }
         try {
             // Predict and add regions to current asset
             if (this.pointToRectService && !this.pointToRectService.isConnected()) {
-                console.log(this.pointToRectService.isConnected())
                 alert("Server is not reachable");
                 return;
             }
@@ -588,9 +591,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         try {
             const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
+            if (assetMetadata.regions.length === 0){
+                alert("You need points to be converted to rectangles");
+                return;
+            }
             const updatedAssetMetadata = await this.pointToRectService
                 .process(assetMetadata);
-
             await this.onAssetMetadataChanged(updatedAssetMetadata);
             this.setState({ selectedAsset: updatedAssetMetadata});
         } catch (e) {
@@ -668,9 +674,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             this.setState({ showInvalidRegionWarning: true });
             return;
         }
-
         const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, asset);
-
         try {
             if (!assetMetadata.asset.size) {
                 const assetProps = await HtmlFileReader.readAssetAttributes(asset);

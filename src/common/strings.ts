@@ -292,6 +292,9 @@ export interface IAppStrings {
         height: string;
         tagged: string;
         visited: string;
+        rectangled: string;
+        revised: string;
+        approved: string;
         toolbar: {
             select: string;
             pan: string;
