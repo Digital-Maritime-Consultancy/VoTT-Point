@@ -1,0 +1,38 @@
+{
+    "title": "${strings.connections.providers.remote.title}",
+    "description": "${strings.connections.providers.remote.description}",
+    "required": [
+        "accountName",
+        "containerName",
+        "sas"
+    ],
+    "type": "object",
+    "properties": {
+        "url": {
+            "title": "${strings.connections.providers.remote.url.title}",
+            "type": "string"
+        },
+        "url4p2r": {
+            "title": "${strings.connections.providers.remote.url4p2r.title}",
+            "type": "string"
+        },
+        "accountName": {
+            "title": "${strings.connections.providers.remote.accountName.title}",
+            "type": "string"
+        },
+        "containerName": {
+            "title": "${strings.connections.providers.remote.containerName.title}",
+            "type": "string"
+        },
+        "sas": {
+            "title": "${strings.connections.providers.remote.sas.title}",
+            "description": "${strings.connections.providers.remote.sas.description}",
+            "type": "string"
+        },
+        "createContainer": {
+            "title": "${strings.connections.providers.remote.createContainer.title}",
+            "description": "${strings.connections.providers.remote.createContainer.description}",
+            "type": "boolean"
+        }
+    }
+}

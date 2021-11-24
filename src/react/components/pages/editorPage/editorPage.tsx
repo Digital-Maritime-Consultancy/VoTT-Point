@@ -487,8 +487,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         // Only update asset metadata if state changes or is different
         if (initialState !== assetMetadata.asset.state || this.state.selectedAsset !== assetMetadata) {
-            console.log("onAssetMetadata");
-            console.log(assetMetadata);
             await this.props.actions.saveAssetMetadata(this.props.project, assetMetadata);
         }
 
@@ -574,11 +572,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private sendPoints = async () => {
-        if (!this.state.isValid) {
-            this.setState({ showInvalidRegionWarning: true });
+        if (!this.onBeforeAssetSelected()) {
             return;
         }
-
         try {
             // Predict and add regions to current asset
             if (this.pointToRectService && !this.pointToRectService.isConnected()) {
