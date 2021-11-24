@@ -26,32 +26,40 @@ export class PointToRectService {
             return assetMetadata;
         }
         // should be calculated
-        const predictedRegions = await this.submit(assetMetadata);
+        const predicted = await this.submit(assetMetadata);
         
-        const updatedRegions = [...assetMetadata.regions];
-        predictedRegions.regions.forEach((prediction) => {
-            const matchingRegion = updatedRegions.find((region) => {
-                return region.boundingBox
-                    && region.boundingBox.left === prediction.boundingBox.left
-                    && region.boundingBox.top === prediction.boundingBox.top
-                    && region.boundingBox.width === prediction.boundingBox.width
-                    && region.boundingBox.height === prediction.boundingBox.height;
+        if (predicted && predicted.regions) {
+            const updatedRegions = assetMetadata.regions.map(region => 
+                predicted.regions.find(r => r.id === region.id ) ?
+                    predicted.regions.find(r => r.id === region.id ) : region);
+            
+            predicted.regions.forEach((prediction) => {
+                const matchingRegion = updatedRegions.find((region) => {
+                    return region.boundingBox
+                        && region.boundingBox.left === prediction.boundingBox.left
+                        && region.boundingBox.top === prediction.boundingBox.top
+                        && region.boundingBox.width === prediction.boundingBox.width
+                        && region.boundingBox.height === prediction.boundingBox.height;
+                });
+                if (updatedRegions.length === 0 || !matchingRegion) {
+                    updatedRegions.push(prediction);
+                }
             });
-
-            if (updatedRegions.length === 0 || !matchingRegion) {
-                updatedRegions.push(prediction);
-            }
-        });
-
-        return {
-            ...assetMetadata,
-            regions: updatedRegions,
-            asset: {
-                ...assetMetadata.asset,
-                state: updatedRegions.length > 0 ? AssetState.Tagged : AssetState.Visited,
-                predicted: true,
-            },
-        } as IAssetMetadata;
+    
+            return {
+                ...assetMetadata,
+                regions: updatedRegions,
+                asset: {
+                    ...assetMetadata.asset,
+                    state: updatedRegions.length > 0 ? AssetState.Tagged : AssetState.Visited,
+                    predicted: true,
+                },
+            } as IAssetMetadata;
+        }
+        else{
+            return ;
+        }
+        
     }
 
     public async ensureConnected(): Promise<void> {
