@@ -124,7 +124,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         filteredToolbarItems: [],
     };
 
-    private p2rServerUrl = "http://172.20.10.2:6978/";
+    private p2rServerUrl = "http://192.168.0.101:6978/";
 
     private activeLearningService: ActiveLearningService = null;
     private pointToRectService: PointToRectService = null;
@@ -144,8 +144,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        this.pointToRectService = new PointToRectService(this.p2rServerUrl);
-        this.pointToRectService.ensureConnected();
+        if (this.p2rServerUrl) {
+            this.pointToRectService = new PointToRectService(this.p2rServerUrl);
+            this.pointToRectService.ensureConnected();
+        }
     }
 
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
@@ -595,10 +597,15 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 alert("You need points to be converted to rectangles");
                 return;
             }
-            const updatedAssetMetadata = await this.pointToRectService
+            if (this.pointToRectService) {
+                const updatedAssetMetadata = await this.pointToRectService
                 .process(assetMetadata);
-            await this.onAssetMetadataChanged(updatedAssetMetadata);
-            this.setState({ selectedAsset: updatedAssetMetadata});
+                await this.onAssetMetadataChanged(updatedAssetMetadata);
+                this.setState({ selectedAsset: updatedAssetMetadata});
+            }
+            else {
+                alert("You need to set URL for a Point-to-Rect server");
+            }
         } catch (e) {
             throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
         }
