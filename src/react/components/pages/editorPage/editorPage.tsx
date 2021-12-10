@@ -31,7 +31,7 @@ import Alert from "../../common/alert/alert";
 import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
-import { PointToRectService } from "../../../../services/pointToRectService";
+import { DotToRectService } from "../../../../services/dotToRectService";
 
 /**
  * Properties for Editor Page
@@ -117,6 +117,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         additionalSettings: {
             videoSettings: (this.props.project) ? this.props.project.videoSettings : null,
             activeLearningSettings: (this.props.project) ? this.props.project.activeLearningSettings : null,
+            dotToRectService: (this.props.project) ? this.props.project.dotToRectSettings : null,
         },
         thumbnailSize: this.props.appSettings.thumbnailSize || { width: 175, height: 155 },
         isValid: true,
@@ -124,10 +125,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         filteredToolbarItems: [],
     };
 
-    private p2rServerUrl = "http://192.168.0.101:6978/";
-
     private activeLearningService: ActiveLearningService = null;
-    private pointToRectService: PointToRectService = null;
+    private dotToRectService: DotToRectService = null;
     private loadingProjectAssets: boolean = false;
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvas: RefObject<Canvas> = React.createRef();
@@ -144,9 +143,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        if (this.p2rServerUrl) {
-            this.pointToRectService = new PointToRectService(this.p2rServerUrl);
-            this.pointToRectService.ensureConnected();
+
+        // dot to rect service check
+        if (this.props.project && this.props.project.dotToRectSettings && this.props.project.dotToRectSettings.url) {
+            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url);
         }
     }
 
@@ -581,33 +581,37 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (!this.onBeforeAssetSelected()) {
             return;
         }
-        try {
-            // Predict and add regions to current asset
-            if (this.pointToRectService && !this.pointToRectService.isConnected()) {
-                alert("Server is not reachable");
+        else {
+            // server connection confirmation
+            let toastId: number = null;
+            await this.dotToRectService.ensureConnected()
+            .then(async res => {
+                try {
+                    const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
+                    if (assetMetadata.regions.length === 0){
+                        alert("You need dots to be converted to rectangles");
+                        return;
+                    }
+                    if (this.dotToRectService) {
+                        const updatedAssetMetadata = await this.dotToRectService
+                        .process(assetMetadata);
+                        await this.onAssetMetadataChanged(updatedAssetMetadata);
+                        this.setState({ selectedAsset: updatedAssetMetadata});
+                    }
+                    else {
+                        alert("You need to set URL for a Point-to-Rect server");
+                    }
+                } catch (e) {
+                    throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+                }
+            }).then(() => {
+                toast.dismiss(toastId);
+            })
+            .catch(e=> {
+                toast.error(strings.dot2Rect.messages.errorConnection);
                 return;
-            }
-        } catch (e) {
-            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error reaching server");
-        }
-
-        try {
-            const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
-            if (assetMetadata.regions.length === 0){
-                alert("You need points to be converted to rectangles");
-                return;
-            }
-            if (this.pointToRectService) {
-                const updatedAssetMetadata = await this.pointToRectService
-                .process(assetMetadata);
-                await this.onAssetMetadataChanged(updatedAssetMetadata);
-                this.setState({ selectedAsset: updatedAssetMetadata});
-            }
-            else {
-                alert("You need to set URL for a Point-to-Rect server");
-            }
-        } catch (e) {
-            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+            });
+            //toast.dismiss(toastId);
         }
     }
 

@@ -7,7 +7,6 @@ import { Aborter } from "@azure/storage-blob";
 /**
  * Options for Remote Storage
  * @member url - URL for the server
- * @member url4p2r - URL for point to rect service
  * @member accountName - Name of Storage Account
  * @member containerName - Name of targeted container
  * @member createContainer - Option for creating container in `initialize()`
@@ -19,7 +18,6 @@ export interface IRemoteStorageOptions {
     accountName: string;
     taskId: string;
     createContainer: boolean;
-    url4p2r: string;
     sas?: string;
     oauthToken?: string;
 }

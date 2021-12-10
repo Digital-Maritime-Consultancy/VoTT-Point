@@ -68,6 +68,7 @@ export default class ImportService implements IImportService {
                 frameExtractionRate: originalProject.framerate ? Number(originalProject.framerate) : 15,
             },
             activeLearningSettings: null,
+            dotToRectSettings: null,
             autoSave: true,
         };
     }

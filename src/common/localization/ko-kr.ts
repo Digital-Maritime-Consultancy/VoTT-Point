@@ -209,10 +209,6 @@ export const korean: IAppStrings = {
                     title: "Server URL",
                     description: "",
                 },
-                url4p2r: {
-                    title: "Server URL for Point-to-Rect",
-                    description: "",
-                },
                 accountName: {
                     title: "Account Name",
                     description: "",
@@ -316,6 +312,7 @@ export const korean: IAppStrings = {
             saveProject: "프로젝트 저장", // Save Project,
             exportProject: "프로젝트 내보내기",  // Export Project,
             activeLearning: "Active Learning",  // Active Learning"
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
         },
@@ -517,6 +514,21 @@ export const korean: IAppStrings = {
             loadingModel: "Active Learning 모델 불러오는 중 ...", // Loading active learning model...,
             errorLoadModel: "Active Learning 모델을 불러오는 중 오류가 발생했습니다", // Error loading active learning model,
             saveSuccess: "Active Learning 모델 설정을 성공적으로 저장했습니다",  // Successfully saved active learning settings"
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle 인식 자동화 서비스",
+        form: {
+            properties: {
+                url: {
+                    title: "서버 URL",
+                    description: "인식 자동화 서버 URL을 입력해주세요",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "인식 자동화 서버로의 접속 실패",
+            saveSuccess: "인식 자동화 서버 접속 성공",
         },
     },
     profile: {

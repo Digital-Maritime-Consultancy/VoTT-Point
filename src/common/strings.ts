@@ -206,10 +206,6 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                url4p2r: {
-                    title: string,
-                    description: string,
-                },
                 accountName: {
                     title: string,
                     description: string,
@@ -311,6 +307,7 @@ export interface IAppStrings {
             saveProject: string;
             exportProject: string;
             activeLearning: string;
+            dot2Rect: string;
             submitPoints: string;
             completeRevision: string;
         }
@@ -503,6 +500,21 @@ export interface IAppStrings {
         messages: {
             loadingModel: string;
             errorLoadModel: string;
+            saveSuccess: string;
+        }
+    };
+    dot2Rect: {
+        title: string;
+        form: {
+            properties: {
+                url: {
+                    title: string,
+                    description: string,
+                },
+            },
+        }
+        messages: {
+            errorConnection: string;
             saveSuccess: string;
         }
     };

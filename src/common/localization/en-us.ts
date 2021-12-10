@@ -203,10 +203,6 @@ export const english: IAppStrings = {
                     title: "Server URL",
                     description: "",
                 },
-                url4p2r: {
-                    title: "Server URL for Point-to-Rect",
-                    description: "",
-                },
                 accountName: {
                     title: "Account Name",
                     description: "",
@@ -308,6 +304,7 @@ export const english: IAppStrings = {
             saveProject: "Save Project",
             exportProject: "Export Project",
             activeLearning: "Active Learning",
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
         },
@@ -503,6 +500,21 @@ export const english: IAppStrings = {
             loadingModel: "Loading active learning model...",
             errorLoadModel: "Error loading active learning model",
             saveSuccess: "Successfully saved active learning settings",
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

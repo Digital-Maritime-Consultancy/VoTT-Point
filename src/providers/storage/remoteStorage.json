@@ -3,7 +3,6 @@
     "description": "${strings.connections.providers.remote.description}",
     "required": [
         "url",
-        "url4p2r",
         "accountName",
         "containerName",
         "sas"
@@ -12,10 +11,6 @@
     "properties": {
         "url": {
             "title": "${strings.connections.providers.remote.url.title}",
-            "type": "string"
-        },
-        "url4p2r": {
-            "title": "${strings.connections.providers.remote.url4p2r.title}",
             "type": "string"
         },
         "accountName": {

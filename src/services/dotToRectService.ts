@@ -5,8 +5,9 @@ import { isElectron } from "../common/hostProcess";
 import { Env } from "../common/environment";
 
 import axios from 'axios';
+import { reject } from "lodash";
 
-export class PointToRectService {
+export class DotToRectService {
     private connected: boolean = false;
 
     constructor(private url: string) {
@@ -14,7 +15,6 @@ export class PointToRectService {
     }
 
     public async isConnected() {
-        await this.ensureConnected();
         return this.connected;
     }
 
@@ -59,22 +59,23 @@ export class PointToRectService {
         }
     }
 
-    public async ensureConnected(): Promise<void> {
-        if (this.connected) {
-            return Promise.resolve();
-        }
-
-        await this.connect()
-        .then((response) => {
-            if (response.status === 200) {
-                this.connected = true;
-            }
-            else {
+    public async ensureConnected(): Promise<boolean> {
+        return await new Promise<boolean>((resolve, reject) => {
+            this.connect()
+            .then((response) => {
+                if (response.status === 200) {
+                    this.connected = true;
+                    resolve(true);
+                }
+                else {
+                    this.connected = false;
+                    reject("Problem with server connection - " + response.status);
+                }
+            })
+            .catch((error) => {
                 this.connected = false;
-            }
-        })
-        .catch((error) => {
-            this.connected = false;
+                reject("Server connection failed");
+            });
         });
     }
 
