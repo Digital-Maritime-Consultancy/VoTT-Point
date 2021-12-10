@@ -35,7 +35,7 @@ export class RemoteStorage implements IStorageProvider {
      */
     public storageType: StorageType = StorageType.Other;
     private assetType: string = 'images';
-    private resourceType: string = 'metadata';
+    private resourceType: string = 'json';
 
     constructor(private options?: IRemoteStorageOptions) { }
 
@@ -67,7 +67,7 @@ export class RemoteStorage implements IStorageProvider {
         try {
             const apiUrl = `${this.getUrl(this.resourceType)}/${blobName}`;
             const response = await axios.get(apiUrl);
-            if (response.status===200) {
+            if (response.status === 200) {
                 return JSON.stringify(response.data);
             }
         } catch (e) {
