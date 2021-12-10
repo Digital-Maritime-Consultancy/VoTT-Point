@@ -564,7 +564,7 @@ export default class MockFactory {
         url: "http://localhost",
         accountName: "",
         url4p2r: "http://localhost",
-        containerName: "",
+        taskId: "",
         createContainer: false,
         };
     }

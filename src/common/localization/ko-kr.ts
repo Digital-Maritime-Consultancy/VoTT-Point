@@ -190,18 +190,16 @@ export const korean: IAppStrings = {
                     description: "",
                 },
                 containerName: {
-                    title: "컨테이너 이름",  // Container Name,
+                    title: "Container Name",
                     description: "",
                 },
                 sas: {
-                    title: "SAS", // SAS,
-                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
-                    // Shared access signature used to authenticate to the blob storage account"
+                    title: "SAS",
+                    description: "Shared access signature used to authenticate to the blob storage account",
                 },
                 createContainer: {
-                    title: "컨테이너 만들기",  // Create Container,
-                    description: "Blob 컨테이너가 없으면 새로 생성합니다.",
-                    // Creates the blob container if it does not already exist"
+                    title: "Create Container",
+                    description: "Creates the blob container if it does not already exist",
                 },
             },
             remote: {
@@ -220,16 +218,18 @@ export const korean: IAppStrings = {
                     description: "",
                 },
                 containerName: {
-                    title: "Container Name",
+                    title: "작업 ID",  // Container Name,
                     description: "",
                 },
                 sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
+                    title: "SAS", // SAS,
+                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
+                    // Shared access signature used to authenticate to the blob storage account"
                 },
                 createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                    title: "작업 만들기",  // Create Container,
+                    description: "작업을 새로 생성합니다.",
+                    // Creates the blob container if it does not already exist"
                 },
             },
             bing: {

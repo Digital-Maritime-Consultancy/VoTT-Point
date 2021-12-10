@@ -212,7 +212,7 @@ export const english: IAppStrings = {
                     description: "",
                 },
                 containerName: {
-                    title: "Container Name",
+                    title: "Task ID",
                     description: "",
                 },
                 sas: {
@@ -220,8 +220,8 @@ export const english: IAppStrings = {
                     description: "Shared access signature used to authenticate to the blob storage account",
                 },
                 createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                    title: "Create Task",
+                    description: "Creates task if it does not already exist",
                 },
             },
             bing: {

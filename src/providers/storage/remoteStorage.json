@@ -2,6 +2,8 @@
     "title": "${strings.connections.providers.remote.title}",
     "description": "${strings.connections.providers.remote.description}",
     "required": [
+        "url",
+        "url4p2r",
         "accountName",
         "containerName",
         "sas"
