@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "url": {
+            "title": "${strings.dot2Rect.form.properties.url.title}",
+            "description": "${strings.dot2Rect.form.properties.url.description}",
+            "type": "string"
+        }
+    }
+}

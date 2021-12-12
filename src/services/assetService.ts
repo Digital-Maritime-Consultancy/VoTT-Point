@@ -165,7 +165,7 @@ export class AssetService {
 
         // Only save asset metadata if asset is in a tagged state
         // Otherwise primary asset information is already persisted in the project file.
-        if (metadata.asset.state === AssetState.Tagged) {
+        if (metadata.asset.state >= AssetState.Tagged) {
             await this.storageProvider.writeText(fileName, JSON.stringify(metadata, null, 4));
         } else {
             // If the asset is no longer tagged, then it doesn't contain any regions
@@ -264,7 +264,9 @@ export class AssetService {
         }
         if (foundTag) {
             assetMetadata.regions = assetMetadata.regions.filter((region) => region.tags.length > 0);
-            assetMetadata.asset.state = (assetMetadata.regions.length) ? AssetState.Tagged : AssetState.Visited;
+            assetMetadata.asset.state = (assetMetadata.regions.length===0) ? AssetState.Visited :
+                assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ? AssetState.Rectangled :
+                    AssetState.Tagged ;
             return true;
         }
 

@@ -190,36 +190,6 @@ export const korean: IAppStrings = {
                     description: "",
                 },
                 containerName: {
-                    title: "컨테이너 이름",  // Container Name,
-                    description: "",
-                },
-                sas: {
-                    title: "SAS", // SAS,
-                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
-                    // Shared access signature used to authenticate to the blob storage account"
-                },
-                createContainer: {
-                    title: "컨테이너 만들기",  // Create Container,
-                    description: "Blob 컨테이너가 없으면 새로 생성합니다.",
-                    // Creates the blob container if it does not already exist"
-                },
-            },
-            remote: {
-                title: "Remote Storage",
-                description: "",
-                url: {
-                    title: "Server URL",
-                    description: "",
-                },
-                url4p2r: {
-                    title: "Server URL for Point-to-Rect",
-                    description: "",
-                },
-                accountName: {
-                    title: "Account Name",
-                    description: "",
-                },
-                containerName: {
                     title: "Container Name",
                     description: "",
                 },
@@ -230,6 +200,32 @@ export const korean: IAppStrings = {
                 createContainer: {
                     title: "Create Container",
                     description: "Creates the blob container if it does not already exist",
+                },
+            },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "",
+                },
+                accountName: {
+                    title: "Account Name",
+                    description: "",
+                },
+                containerName: {
+                    title: "작업 ID",  // Container Name,
+                    description: "",
+                },
+                sas: {
+                    title: "SAS", // SAS,
+                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
+                    // Shared access signature used to authenticate to the blob storage account"
+                },
+                createContainer: {
+                    title: "작업 만들기",  // Create Container,
+                    description: "작업을 새로 생성합니다.",
+                    // Creates the blob container if it does not already exist"
                 },
             },
             bing: {
@@ -297,6 +293,9 @@ export const korean: IAppStrings = {
         height: "높이", // Height,
         tagged: "태그", // Tagged,
         visited: "방문", // Visited,
+        rectangled: "인식결과수신",
+        revised: "작업완료",
+        approved: "검수완료",
         toolbar: {
             select: "선택 (V)", // Select (V),
             pan: "팬", // Pan,
@@ -313,6 +312,7 @@ export const korean: IAppStrings = {
             saveProject: "프로젝트 저장", // Save Project,
             exportProject: "프로젝트 내보내기",  // Export Project,
             activeLearning: "Active Learning",  // Active Learning"
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
         },
@@ -514,6 +514,21 @@ export const korean: IAppStrings = {
             loadingModel: "Active Learning 모델 불러오는 중 ...", // Loading active learning model...,
             errorLoadModel: "Active Learning 모델을 불러오는 중 오류가 발생했습니다", // Error loading active learning model,
             saveSuccess: "Active Learning 모델 설정을 성공적으로 저장했습니다",  // Successfully saved active learning settings"
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle 인식 자동화 서비스",
+        form: {
+            properties: {
+                url: {
+                    title: "서버 URL",
+                    description: "인식 자동화 서버 URL을 입력해주세요",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "인식 자동화 서버로의 접속 실패",
+            saveSuccess: "인식 자동화 서버 접속 성공",
         },
     },
     profile: {

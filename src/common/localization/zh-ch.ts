@@ -210,10 +210,6 @@ export const chinese: IAppStrings = {
                     title: "Server URL",
                     description: "",
                 },
-                url4p2r: {
-                    title: "Server URL for Point-to-Rect",
-                    description: "",
-                },
                 accountName: {
                     title: "Account Name",
                     description: "",
@@ -296,6 +292,9 @@ export const chinese: IAppStrings = {
         height: "高度", // Height
         tagged: "已标记", // Tagged
         visited: "已访问", // Visited
+        rectangled: "Rect received",
+        revised: "Revised",
+        approved: "Approved",
         toolbar: {
             select: "选择[V]", // Select (V)
             pan: "泛", // Pan
@@ -312,6 +311,7 @@ export const chinese: IAppStrings = {
             saveProject: "保存项目", // Save Project
             exportProject: "导出项目", // Export Project
             activeLearning: "主动学习", // Active Learning
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
         },
@@ -512,6 +512,21 @@ export const chinese: IAppStrings = {
             loadingModel: "正在加载主动学习模型...", // Loading active learning model...
             errorLoadModel: "加载主动学习模型时出错", // Error loading active learning model
             saveSuccess: "成功保存了主动学习设置", // Successfully saved active learning settings
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

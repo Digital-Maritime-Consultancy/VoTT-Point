@@ -203,16 +203,12 @@ export const english: IAppStrings = {
                     title: "Server URL",
                     description: "",
                 },
-                url4p2r: {
-                    title: "Server URL for Point-to-Rect",
-                    description: "",
-                },
                 accountName: {
                     title: "Account Name",
                     description: "",
                 },
                 containerName: {
-                    title: "Container Name",
+                    title: "Task ID",
                     description: "",
                 },
                 sas: {
@@ -220,8 +216,8 @@ export const english: IAppStrings = {
                     description: "Shared access signature used to authenticate to the blob storage account",
                 },
                 createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                    title: "Create Task",
+                    description: "Creates task if it does not already exist",
                 },
             },
             bing: {
@@ -289,6 +285,9 @@ export const english: IAppStrings = {
         height: "Height",
         tagged: "Tagged",
         visited: "Visited",
+        rectangled: "Rect received",
+        revised: "Revised",
+        approved: "Approved",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",
@@ -305,6 +304,7 @@ export const english: IAppStrings = {
             saveProject: "Save Project",
             exportProject: "Export Project",
             activeLearning: "Active Learning",
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
         },
@@ -500,6 +500,21 @@ export const english: IAppStrings = {
             loadingModel: "Loading active learning model...",
             errorLoadModel: "Error loading active learning model",
             saveSuccess: "Successfully saved active learning settings",
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

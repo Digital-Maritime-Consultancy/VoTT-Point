@@ -7,7 +7,6 @@ import { Aborter } from "@azure/storage-blob";
 /**
  * Options for Remote Storage
  * @member url - URL for the server
- * @member url4p2r - URL for point to rect service
  * @member accountName - Name of Storage Account
  * @member containerName - Name of targeted container
  * @member createContainer - Option for creating container in `initialize()`
@@ -17,9 +16,8 @@ import { Aborter } from "@azure/storage-blob";
 export interface IRemoteStorageOptions {
     url: string;
     accountName: string;
-    containerName: string;
+    taskId: string;
     createContainer: boolean;
-    url4p2r: string;
     sas?: string;
     oauthToken?: string;
 }
@@ -34,7 +32,8 @@ export class RemoteStorage implements IStorageProvider {
      * @returns - StorageType.Cloud
      */
     public storageType: StorageType = StorageType.Other;
-    public assetType: string = 'images';
+    private assetType: string = 'images';
+    private resourceType: string = 'json';
 
     constructor(private options?: IRemoteStorageOptions) { }
 
@@ -47,7 +46,7 @@ export class RemoteStorage implements IStorageProvider {
      * connect to Azure Blob Storage
      */
     public async initialize(): Promise<void> {
-        const containerName = this.options.containerName;
+        const containerName = this.options.taskId;
         if (this.options.createContainer) {
             await this.createContainer(containerName);
         } else {
@@ -63,13 +62,18 @@ export class RemoteStorage implements IStorageProvider {
      * @param blobName - Name of blob in container
      */
     public async readText(blobName: string): Promise<string> {
-        /*
-        const blockBlobURL = this.getBlockBlobURL(blobName);
-        const downloadResponse = await blockBlobURL.download(Aborter.none, 0);
-
-        return await this.bodyToString(downloadResponse);
-        */
-       return "";
+        try {
+            const apiUrl = `${this.getUrl(this.resourceType)}/${blobName}`;
+            const response = await axios.get(apiUrl);
+            if (response.status === 200) {
+                return JSON.stringify(response.data);
+            }
+        } catch (e) {
+            if (e.statusCode === 409) {
+                alert("Error reaching to the server");
+                return;
+            }
+        }
     }
 
     /**
@@ -87,7 +91,18 @@ export class RemoteStorage implements IStorageProvider {
      * @param content - Content to write to blob (string or Buffer)
      */
     public async writeText(blobName: string, content: string | Buffer) {
+        try {
+            const config = { headers: {'Content-Type': 'application/json'} };
+            const apiUrl = `${this.getUrl(this.resourceType)}/${blobName}`;
+            await axios.put(apiUrl, content, config);
+        } catch (e) {
+            if (e.statusCode === 409) {
+                alert("Error reaching to the server");
+                return;
+            }
 
+            throw e;
+        }
     }
 
     /**
@@ -104,7 +119,17 @@ export class RemoteStorage implements IStorageProvider {
      * @param blobName - Name of blob in container
      */
     public async deleteFile(blobName: string): Promise<void> {
+        try {
+            const apiUrl = `${this.getUrl(this.resourceType)}/${blobName}`;
+            await axios.delete(apiUrl);
+        } catch (e) {
+            if (e.statusCode === 409) {
+                alert("Error reaching to the server");
+                return;
+            }
 
+            throw e;
+        }
     }
 
     /**
@@ -140,10 +165,8 @@ export class RemoteStorage implements IStorageProvider {
      */
     public async createContainer(containerName: string): Promise<void> {
         try {
-            await axios.get(this.getAccountUrl())
-            .then(res => {
-              console.log(res);
-            })
+            const apiUrl = `${this.getUrl(this.resourceType)}`;
+            await axios.get(apiUrl);
         } catch (e) {
             if (e.statusCode === 409) {
                 alert("Error reaching to the server");
@@ -168,7 +191,7 @@ export class RemoteStorage implements IStorageProvider {
      * Retrieves assets from Bing Image Search based on options provided
      */
      public async getAssets(): Promise<IAsset[]> {
-        const apiUrl = `${this.getAccountUrl()}/${this.options.containerName}`;
+        const apiUrl = `${this.getUrl(this.assetType)}/${this.options.taskId}`;
 
         const response = await axios.get(apiUrl, {
             headers: {
@@ -195,14 +218,10 @@ export class RemoteStorage implements IStorageProvider {
     /**
      * @returns - URL for Azure Blob Storage account with SAS token appended if specified
      */
-    public getAccountUrl(): string {
+    public getUrl(prefix: string): string {
         return this.options.url.endsWith("/")
-        ? `${this.options.url}${this.assetType}`
-        : `${this.options.url}/${this.assetType}`;
-    }
-
-    private getUrl(blobName: string): string {
-        return this.getAccountUrl();
+        ? `${this.options.url}${prefix}`
+        : `${this.options.url}/${prefix}`;
     }
 
     private async bodyToString(

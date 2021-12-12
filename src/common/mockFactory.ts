@@ -293,6 +293,9 @@ export default class MockFactory {
                 autoDetect: false,
                 predictTag: false,
             },
+            dotToRectSettings: {
+                url: "",
+            },
             autoSave: true,
         };
     }
@@ -563,8 +566,7 @@ export default class MockFactory {
     return {
         url: "http://localhost",
         accountName: "",
-        url4p2r: "http://localhost",
-        containerName: "",
+        taskId: "",
         createContainer: false,
         };
     }

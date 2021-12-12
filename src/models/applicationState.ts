@@ -116,6 +116,7 @@ export interface IProject {
     exportFormat: IExportFormat;
     videoSettings: IProjectVideoSettings;
     activeLearningSettings: IActiveLearningSettings;
+    dotToRectSettings: IDot2RectSettings;
     autoSave: boolean;
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
@@ -221,6 +222,7 @@ export enum ModelPathType {
  */
 export interface IAdditionalPageSettings extends IAssetPreviewSettings {
     activeLearningSettings: IActiveLearningSettings;
+    dotToRectService?: IDot2RectSettings;
 }
 
 /**
@@ -238,6 +240,15 @@ export interface IActiveLearningSettings {
     modelUrl?: string;
     autoDetect: boolean;
     predictTag: boolean;
+}
+
+/**
+ * @name - Dot to Rect Settings for the project
+ * @description - Defines the dot to rect settings within a VoTT project
+ * @member url - Web url to get the service
+ */
+export interface IDot2RectSettings {
+    url: string;
 }
 
 /**
@@ -363,9 +374,12 @@ export enum AssetType {
  * @member Tagged - Specifies an asset has been visited and tagged
  */
 export enum AssetState {
-    NotVisited = 0,
-    Visited = 1,
-    Tagged = 2,
+    NotVisited = 0, // 아무 작업도 수행되지 않은 상태
+    Visited = 1, // 이미지를 본 상태
+    Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
+    Rectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
+    Revised = 4, // 작업자 검수가 완료된 상태
+    Approved = 5, // 검수자의 검수가 완료된 상태
 }
 
 /**
