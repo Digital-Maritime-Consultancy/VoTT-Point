@@ -142,7 +142,7 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                         <i className="fas fa-eye"></i>
                     </span>
                 );
-            case AssetState.Rectangled:
+            case AssetState.TaggedRectangled:
                 return (
                     <span title={strings.editorPage.rectangled}
                         className="badge badge-rectangled">
@@ -156,9 +156,9 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                         <i className="fas fa-check"></i>
                     </span>
                 );
-            case AssetState.Approved:
+            case AssetState.Completed:
                 return (
-                    <span title={strings.editorPage.approved}
+                    <span title={strings.editorPage.completed}
                         className="badge badge-approved">
                         <i className="fas fa-tag"></i>
                     </span>

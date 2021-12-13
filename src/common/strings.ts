@@ -214,14 +214,18 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                sas: {
+                taskType: {
                     title: string,
                     description: string,
+                    options: {
+                        purification: string,
+                        revisePurification: string,
+                        annotation: string,
+                        reviseAnnotation: string,
+                        audit: string,
+                        admin: string,
+                    },
                 },
-                createContainer: {
-                    title: string,
-                    description: string,
-                }
             },
             bing: {
                 title: string,
@@ -290,7 +294,7 @@ export interface IAppStrings {
         visited: string;
         rectangled: string;
         revised: string;
-        approved: string;
+        completed: string;
         toolbar: {
             select: string;
             pan: string;

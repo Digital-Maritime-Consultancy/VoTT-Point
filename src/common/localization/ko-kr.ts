@@ -206,26 +206,28 @@ export const korean: IAppStrings = {
                 title: "Remote Storage",
                 description: "",
                 url: {
-                    title: "Server URL",
+                    title: "서버 주소 (URL)",
                     description: "",
                 },
                 accountName: {
-                    title: "Account Name",
+                    title: "사용자 ID",
                     description: "",
                 },
                 containerName: {
                     title: "작업 ID",  // Container Name,
                     description: "",
                 },
-                sas: {
-                    title: "SAS", // SAS,
-                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
-                    // Shared access signature used to authenticate to the blob storage account"
-                },
-                createContainer: {
-                    title: "작업 만들기",  // Create Container,
-                    description: "작업을 새로 생성합니다.",
-                    // Creates the blob container if it does not already exist"
+                taskType: {
+                    title: "작업 유형",
+                    description: "Type of task",
+                    options: {
+                        purification: "정제 작업",
+                        revisePurification: "정제 검수 작업",
+                        annotation: "가공 작업",
+                        reviseAnnotation: "가공 검수 작업",
+                        audit: "검증 작업",
+                        admin: "관리자",
+                    },
                 },
             },
             bing: {
@@ -295,7 +297,7 @@ export const korean: IAppStrings = {
         visited: "방문", // Visited,
         rectangled: "인식결과수신",
         revised: "작업완료",
-        approved: "검수완료",
+        completed: "검수완료",
         toolbar: {
             select: "선택 (V)", // Select (V),
             pan: "팬", // Pan,

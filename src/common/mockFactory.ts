@@ -1,3 +1,4 @@
+import { TaskType } from './../models/applicationState';
 import shortid from "shortid";
 import {
     AssetState, AssetType, IApplicationState, IAppSettings, IAsset, IAssetMetadata,
@@ -566,8 +567,8 @@ export default class MockFactory {
     return {
         url: "http://localhost",
         accountName: "",
-        taskId: "",
-        createContainer: false,
+        containerName: "",
+        taskType: TaskType.Purification,
         };
     }
 

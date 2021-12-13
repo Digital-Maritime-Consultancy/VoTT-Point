@@ -201,23 +201,27 @@ export const english: IAppStrings = {
                 description: "",
                 url: {
                     title: "Server URL",
-                    description: "",
+                    description: "URL of remote work server",
                 },
                 accountName: {
-                    title: "Account Name",
-                    description: "",
+                    title: "Owner ID",
+                    description: "User's ID",
                 },
                 containerName: {
-                    title: "Task ID",
-                    description: "",
+                    title: "Token (Task ID)",
+                    description: "Task ID",
                 },
-                sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
-                },
-                createContainer: {
-                    title: "Create Task",
-                    description: "Creates task if it does not already exist",
+                taskType: {
+                    title: "Task type",
+                    description: "Type of task",
+                    options: {
+                        purification: "Purification",
+                        revisePurification: "Revise purification",
+                        annotation: "Annotation",
+                        reviseAnnotation: "Revise annotation",
+                        audit: "Audit",
+                        admin: "Admin",
+                    },
                 },
             },
             bing: {
@@ -287,7 +291,7 @@ export const english: IAppStrings = {
         visited: "Visited",
         rectangled: "Rect received",
         revised: "Revised",
-        approved: "Approved",
+        completed: "Approved",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",

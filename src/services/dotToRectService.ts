@@ -53,7 +53,7 @@ export class DotToRectService {
                 asset: {
                     ...assetMetadata.asset,
                     state: updatedRegions.length >= assetMetadata.regions.length ?
-                        AssetState.Rectangled : AssetState.Tagged,
+                        AssetState.TaggedRectangled : AssetState.Tagged,
                 },
             } as IAssetMetadata;
         }

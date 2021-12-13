@@ -203,23 +203,27 @@ export const spanish: IAppStrings = {
                 description: "",
                 url: {
                     title: "Server URL",
-                    description: "",
+                    description: "URL of remote work server",
                 },
                 accountName: {
-                    title: "Account Name",
-                    description: "",
+                    title: "Owner ID",
+                    description: "User's ID",
                 },
                 containerName: {
-                    title: "Container Name",
-                    description: "",
+                    title: "Token (Task ID)",
+                    description: "Task ID",
                 },
-                sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
-                },
-                createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                taskType: {
+                    title: "Task type",
+                    description: "Type of task",
+                    options: {
+                        purification: "Purification",
+                        revisePurification: "Revise purification",
+                        annotation: "Annotation",
+                        reviseAnnotation: "Revise annotation",
+                        audit: "Audit",
+                        admin: "Admin",
+                    },
                 },
             },
             bing: {
@@ -289,7 +293,7 @@ export const spanish: IAppStrings = {
         visited: "Visitado",
         rectangled: "Rect received",
         revised: "Revised",
-        approved: "Approved",
+        completed: "Approved",
         toolbar: {
             select: "Seleccionar",
             pan: "Pan",

@@ -374,12 +374,23 @@ export enum AssetType {
  * @member Tagged - Specifies an asset has been visited and tagged
  */
 export enum AssetState {
+    NotApplicable = -1, // 접근 불가
     NotVisited = 0, // 아무 작업도 수행되지 않은 상태
     Visited = 1, // 이미지를 본 상태
     Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
-    Rectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
-    Revised = 4, // 작업자 검수가 완료된 상태
-    Approved = 5, // 검수자의 검수가 완료된 상태
+    TaggedRectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
+    Commented = 4, // 검수에 따른 커멘트가 남겨진 상태
+    Revised = 5, // 작업자 검수가 완료된 상태
+    Completed = 6, // 작업 완료
+}
+
+export enum TaskType {
+    Purification = "purification", // 정제 작업
+    RevisePurification = "revise-purification", // 정제 검수 작업
+    Annotation = "annotation", // 가공 작업
+    ReviseAnnotation = "revise-annotation", // 가공 검수 작업
+    Audit = "audit", // 검증 작업
+    Admin = "admin",
 }
 
 /**

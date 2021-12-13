@@ -469,7 +469,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (this.isTaggableAssetType(assetMetadata.asset)) {
             assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
-                    AssetState.Rectangled : AssetState.Tagged;
+                    AssetState.TaggedRectangled : AssetState.Tagged;
         } else if (assetMetadata.asset.state === AssetState.NotVisited) {
             assetMetadata.asset.state = AssetState.Visited;
         }
@@ -582,6 +582,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             return;
         }
         else {
+            if (!this.dotToRectService) {
+                toast.error("You need to set an URL for Dot-to-Rect service");
+                return ;
+            }
             // server connection confirmation
             let toastId: number = null;
             await this.dotToRectService.ensureConnected()
@@ -599,7 +603,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         this.setState({ selectedAsset: updatedAssetMetadata});
                     }
                     else {
-                        alert("You need to set URL for a Point-to-Rect server");
+                        alert("You need to set an URL for Dot-to-Rect service");
                     }
                 } catch (e) {
                     throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");

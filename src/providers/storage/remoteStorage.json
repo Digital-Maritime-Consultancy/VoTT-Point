@@ -5,31 +5,46 @@
         "url",
         "accountName",
         "containerName",
-        "sas"
+        "taskType"
     ],
     "type": "object",
     "properties": {
         "url": {
             "title": "${strings.connections.providers.remote.url.title}",
+            "description": "${strings.connections.providers.remote.url.description}",
             "type": "string"
         },
         "accountName": {
             "title": "${strings.connections.providers.remote.accountName.title}",
+            "description": "${strings.connections.providers.remote.accountName.description}",
             "type": "string"
         },
         "containerName": {
             "title": "${strings.connections.providers.remote.containerName.title}",
+            "description": "${strings.connections.providers.remote.containerName.description}",
             "type": "string"
         },
-        "sas": {
-            "title": "${strings.connections.providers.remote.sas.title}",
-            "description": "${strings.connections.providers.remote.sas.description}",
-            "type": "string"
-        },
-        "createContainer": {
-            "title": "${strings.connections.providers.remote.createContainer.title}",
-            "description": "${strings.connections.providers.remote.createContainer.description}",
-            "type": "boolean"
+        "taskType": {
+            "title": "${strings.connections.providers.remote.taskType.title}",
+            "description": "${strings.connections.providers.remote.taskType.description}",
+            "type": "string",
+            "enum": [
+                "purification",
+                "revise-purification",
+                "annotation",
+                "revise-annotation",
+                "audit",
+                "admin"
+            ],
+            "default": "purification",
+            "enumNames": [
+                "${strings.connections.providers.remote.taskType.options.purification}",
+                "${strings.connections.providers.remote.taskType.options.revisePurification}",
+                "${strings.connections.providers.remote.taskType.options.annotation}",
+                "${strings.connections.providers.remote.taskType.options.reviseAnnotation}",
+                "${strings.connections.providers.remote.taskType.options.audit}",
+                "${strings.connections.providers.remote.taskType.options.admin}"
+            ]
         }
     }
 }
