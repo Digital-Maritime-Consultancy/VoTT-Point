@@ -284,7 +284,9 @@ canvas {
 .badge-tagged,
 .badge-rectangled,
 .badge-revised,
-.badge-approved
+.badge-completed,
+.badge-commented,
+.badge-notapplicable,
  {
   color: #fff;
   position: absolute;
@@ -305,7 +307,7 @@ canvas {
 }
 
 .badge-rectangled {
-  background-color: rgba(darkorange, 0.9);
+  background-color: rgba(darkgreen, 0.9);
   border: 1px solid $lighter-2;
 }
 
@@ -314,8 +316,18 @@ canvas {
   border: 1px solid $lighter-3;
 }
 
-.badge-approved {
+.badge-completed {
   background-color: rgba(rgb(194, 16, 134), 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-commented {
+  background-color: rgba(darkorange, 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-notapplicable {
+  background-color: rgba(red, 0.9);
   border: 1px solid $lighter-3;
 }
 

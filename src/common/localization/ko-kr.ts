@@ -296,8 +296,10 @@ export const korean: IAppStrings = {
         tagged: "태그", // Tagged,
         visited: "방문", // Visited,
         rectangled: "인식결과수신",
-        revised: "작업완료",
-        completed: "검수완료",
+        revised: "검수완료",
+        completed: "작업완료",
+        notapplicable: "기각",
+        commented: "의견게재",
         toolbar: {
             select: "선택 (V)", // Select (V),
             pan: "팬", // Pan,
@@ -317,6 +319,8 @@ export const korean: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            reject: "기각",
+            approve: "승인",
         },
         videoPlayer: {
             previousTaggedFrame: {

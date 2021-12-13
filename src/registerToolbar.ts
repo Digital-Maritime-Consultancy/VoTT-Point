@@ -14,6 +14,8 @@ export enum ToolbarItemName {
     NextAsset = "nextAsset",
     CompleteRevision = "completeRevision",
     SaveProject = "saveProject",
+    Reject = "reject",
+    Approve = "approve",
 }
 
 export enum ToolbarItemGroup {
@@ -48,6 +50,26 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
+        name: ToolbarItemName.Reject,
+        tooltip: strings.editorPage.toolbar.reject,
+        icon: "fas fa-times",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["R", "r"],
+        context: [EditingContext.Purify],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.Approve,
+        tooltip: strings.editorPage.toolbar.approve,
+        icon: "fas fa-check",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["A", "a"],
+        context: [EditingContext.Purify],
+    });
+
+    ToolbarItemFactory.register({
         name: ToolbarItemName.DrawPoint,
         tooltip: strings.editorPage.toolbar.drawPoint,
         icon: "fa-dot-circle",
@@ -64,7 +86,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowUp", "W", "w"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -74,7 +96,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -104,7 +126,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed],
+        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
     }, SaveProject);
 
 }

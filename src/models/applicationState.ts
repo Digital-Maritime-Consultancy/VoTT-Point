@@ -411,6 +411,7 @@ export enum RegionType {
 export enum EditingContext {
     PlantSeed = "plant",
     ReviseGenerated = "revise",
+    Purify = "purify",
     None = "none",
 }
 

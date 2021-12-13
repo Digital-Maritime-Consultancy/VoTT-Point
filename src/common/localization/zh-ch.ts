@@ -298,7 +298,9 @@ export const chinese: IAppStrings = {
         visited: "已访问", // Visited
         rectangled: "Rect received",
         revised: "Revised",
-        completed: "Approved",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "选择[V]", // Select (V)
             pan: "泛", // Pan
@@ -318,6 +320,8 @@ export const chinese: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            reject: "Reject",
+            approve: "Approve",
         },
         videoPlayer: {
             previousTaggedFrame: {

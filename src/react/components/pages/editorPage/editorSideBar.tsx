@@ -163,6 +163,20 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                         <i className="fas fa-tag"></i>
                     </span>
                 );
+            case AssetState.NotApplicable:
+                return (
+                    <span title={strings.editorPage.notapplicable}
+                        className="badge badge-notapplicable">
+                        <i className="fas fa-times-circle"></i>
+                    </span>
+                );
+            case AssetState.Commented:
+                return (
+                    <span title={strings.editorPage.commented}
+                        className="badge badge-commented">
+                        <i className="fas fa-exclamation-circle"></i>
+                    </span>
+                );
             default:
                 return null;
         }

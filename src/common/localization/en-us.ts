@@ -289,9 +289,11 @@ export const english: IAppStrings = {
         height: "Height",
         tagged: "Tagged",
         visited: "Visited",
-        rectangled: "Rect received",
+        rectangled: "Rectangle received",
         revised: "Revised",
-        completed: "Approved",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",
@@ -311,6 +313,8 @@ export const english: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            reject: "Reject",
+            approve: "Approve",
         },
         videoPlayer: {
             previousTaggedFrame: {

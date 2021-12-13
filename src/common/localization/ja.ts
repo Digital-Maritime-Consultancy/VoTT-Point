@@ -298,7 +298,9 @@ export const japanese: IAppStrings = {
         visited: "訪問済み", // Visited,
         rectangled: "Rect received",
         revised: "Revised",
-        completed: "Approved",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "選択（V）", // Select (V),
             pan: "パン", // Pan,
@@ -318,6 +320,8 @@ export const japanese: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            reject: "Reject",
+            approve: "Approve",
         },
         videoPlayer: {
             previousTaggedFrame: {

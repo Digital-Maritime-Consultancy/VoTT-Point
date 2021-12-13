@@ -293,7 +293,9 @@ export const spanish: IAppStrings = {
         visited: "Visitado",
         rectangled: "Rect received",
         revised: "Revised",
-        completed: "Approved",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Seleccionar",
             pan: "Pan",
@@ -313,6 +315,8 @@ export const spanish: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            reject: "Reject",
+            approve: "Approve",
         },
         videoPlayer: {
             previousTaggedFrame: {

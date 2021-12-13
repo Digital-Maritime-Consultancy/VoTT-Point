@@ -295,6 +295,8 @@ export interface IAppStrings {
         rectangled: string;
         revised: string;
         completed: string;
+        notapplicable: string;
+        commented: string;
         toolbar: {
             select: string;
             pan: string;
@@ -314,6 +316,8 @@ export interface IAppStrings {
             dot2Rect: string;
             submitPoints: string;
             completeRevision: string;
+            reject: string;
+            approve: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

@@ -32,7 +32,14 @@ export default function Sidebar({ project }) {
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.tags.editor}
                         to={`/projects/${projectId}/edit/revise`}>
-                        <i className="fas fa-user-check"></i>
+                        <i className="fas fa-vector-square"></i>
+                    </ConditionalNavLink>
+                </li>
+                <li>
+                    <ConditionalNavLink disabled={!projectId}
+                        title={strings.tags.editor}
+                        to={`/projects/${projectId}/edit/purify`}>
+                        <i className="fas fa-check"></i>
                     </ConditionalNavLink>
                 </li>
                 <li>

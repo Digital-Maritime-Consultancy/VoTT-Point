@@ -178,7 +178,6 @@ export class AssetService {
                 // The file may not exist - that's OK
             }
         }
-        
         return metadata;
     }
 
