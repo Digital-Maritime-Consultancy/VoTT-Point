@@ -16,6 +16,7 @@ export enum ToolbarItemName {
     SaveProject = "saveProject",
     Reject = "reject",
     Approve = "approve",
+    Comment = "comment",
 }
 
 export enum ToolbarItemGroup {
@@ -36,7 +37,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["V", "v"],
-        context: [EditingContext.PlantSeed, EditingContext.ReviseGenerated],
+        context: [EditingContext.PlantSeed, EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
@@ -46,7 +47,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["R", "r"],
-        context: [EditingContext.ReviseGenerated],
+        context: [EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
@@ -86,7 +87,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowUp", "W", "w"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -96,7 +97,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -112,11 +113,21 @@ export default function registerToolbar() {
     ToolbarItemFactory.register({
         name: ToolbarItemName.CompleteRevision,
         tooltip: strings.editorPage.toolbar.completeRevision,
-        icon: "fas fa-check-square",
+        icon: "fas fa-check",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,
         accelerators: ["A", "a"],
-        context: [EditingContext.ReviseGenerated],
+        context: [EditingContext.Revise],
+    });
+    
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.Comment,
+        tooltip: strings.editorPage.toolbar.comment,
+        icon: "fas fa-comment-dots",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["C", "c"],
+        context: [EditingContext.Revise, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -126,7 +137,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
-        context: [EditingContext.ReviseGenerated, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
     }, SaveProject);
 
 }

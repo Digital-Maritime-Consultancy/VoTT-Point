@@ -317,6 +317,7 @@ export const spanish: IAppStrings = {
             completeRevision: "Complete",
             reject: "Reject",
             approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {

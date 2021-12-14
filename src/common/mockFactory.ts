@@ -185,6 +185,7 @@ export default class MockFactory {
                 width: 800,
                 height: 600,
             },
+            rejected: false,
         };
     }
 

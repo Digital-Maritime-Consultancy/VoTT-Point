@@ -318,6 +318,7 @@ export interface IAppStrings {
             completeRevision: string;
             reject: string;
             approve: string;
+            comment: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

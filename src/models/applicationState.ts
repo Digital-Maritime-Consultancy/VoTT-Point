@@ -269,9 +269,11 @@ export interface IAssetVideoSettings {
  * @description - Defines an asset within a VoTT project
  * @member id - Unique identifier for asset
  * @member type - Type of asset (Image, Video, etc)
+ * @member state - State of Asset
  * @member name - Generated name for asset
  * @member path - Relative path to asset within the underlying data source
  * @member size - Size / dimensions of asset
+ * @member rejected - State of rejection
  * @member format - The asset format (jpg, png, mp4, etc)
  */
 export interface IAsset {
@@ -281,6 +283,7 @@ export interface IAsset {
     name: string;
     path: string;
     size: ISize;
+    rejected: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;
@@ -410,7 +413,7 @@ export enum RegionType {
 
 export enum EditingContext {
     PlantSeed = "plant",
-    ReviseGenerated = "revise",
+    Revise = "revise",
     Purify = "purify",
     None = "none",
 }

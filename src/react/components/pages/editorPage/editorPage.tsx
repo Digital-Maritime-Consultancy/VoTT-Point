@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -461,17 +461,20 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const initialState = assetMetadata.asset.state;
-        
         // The root asset can either be the actual asset being edited (ex: VideoFrame) or the top level / root
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
-        if (this.isTaggableAssetType(assetMetadata.asset)) {
-            assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
-                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
-                    AssetState.TaggedRectangled : AssetState.Tagged;
-        } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-            assetMetadata.asset.state = AssetState.Visited;
+        if (assetMetadata.asset.state !== AssetState.NotApplicable && assetMetadata.asset.state < AssetState.Commented) {
+            if (this.isTaggableAssetType(assetMetadata.asset)) {
+                assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
+                    AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
+                        AssetState.TaggedRectangled : AssetState.Tagged;
+            } else if (assetMetadata.asset.rejected) {
+                assetMetadata.asset.state = AssetState.NotApplicable;
+            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
+                assetMetadata.asset.state = AssetState.Visited;
+            }
         }
 
         // Update root asset if not already in the "Tagged" state
@@ -572,7 +575,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.goToRootAsset(1);
                 break;
             case ToolbarItemName.CompleteRevision:
-                await this.completeRevision();
+                await this.updateEditorState(AssetState.Completed);
+                break;
+            case ToolbarItemName.Reject:
+                await this.updateEditorState(AssetState.NotApplicable);
+                break;
+            case ToolbarItemName.Approve:
+                await this.updateEditorState(AssetState.Revised);
                 break;
         }
     }
@@ -619,8 +628,16 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
     }
 
-    private completeRevision = async () => {
-
+    private updateEditorState = async (state: AssetState) => {
+        this.onAssetMetadataChanged(
+            {
+            ...this.state.selectedAsset,
+            asset: {
+                ...this.state.selectedAsset.asset,
+                state,
+                rejected: state === AssetState.NotApplicable,
+            },
+        } as IAssetMetadata);
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {

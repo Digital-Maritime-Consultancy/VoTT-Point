@@ -322,6 +322,7 @@ export const japanese: IAppStrings = {
             completeRevision: "Complete",
             reject: "Reject",
             approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {

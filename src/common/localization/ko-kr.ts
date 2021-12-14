@@ -321,6 +321,7 @@ export const korean: IAppStrings = {
             completeRevision: "Complete",
             reject: "기각",
             approve: "승인",
+            comment: "의견개제",
         },
         videoPlayer: {
             previousTaggedFrame: {

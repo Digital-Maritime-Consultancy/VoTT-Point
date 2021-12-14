@@ -83,6 +83,7 @@ describe("Bing Image Search", () => {
             type: AssetType.Image,
             state: AssetState.NotVisited,
             size: null,
+            rejected: false,
         };
 
         const provider = new BingImageSearch(defaultOptions);

@@ -315,6 +315,7 @@ export const english: IAppStrings = {
             completeRevision: "Complete",
             reject: "Reject",
             approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {
