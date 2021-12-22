@@ -465,13 +465,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
-        if (assetMetadata.asset.state !== AssetState.NotApplicable && assetMetadata.asset.state < AssetState.Commented) {
+        if (assetMetadata.asset.state !== AssetState.Disabled && assetMetadata.asset.state < AssetState.Commented) {
             if (this.isTaggableAssetType(assetMetadata.asset)) {
                 assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
                     AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
                         AssetState.TaggedRectangled : AssetState.Tagged;
-            } else if (assetMetadata.asset.rejected) {
-                assetMetadata.asset.state = AssetState.NotApplicable;
+            } else if (assetMetadata.asset.disabled) {
+                assetMetadata.asset.state = AssetState.Disabled;
             } else if (assetMetadata.asset.state === AssetState.NotVisited) {
                 assetMetadata.asset.state = AssetState.Visited;
             }
@@ -575,13 +575,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.goToRootAsset(1);
                 break;
             case ToolbarItemName.CompleteRevision:
-                await this.updateEditorState(AssetState.Completed);
+                await this.updateEditorState(AssetState.Approved);
                 break;
             case ToolbarItemName.Reject:
-                await this.updateEditorState(AssetState.NotApplicable);
+                await this.updateEditorState(AssetState.Disabled);
                 break;
             case ToolbarItemName.Approve:
-                await this.updateEditorState(AssetState.Revised);
+                await this.updateEditorState(AssetState.Approved);
                 break;
         }
     }
@@ -635,7 +635,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             asset: {
                 ...this.state.selectedAsset.asset,
                 state,
-                rejected: state === AssetState.NotApplicable,
+                disabled: state === AssetState.Disabled,
             },
         } as IAssetMetadata);
     }

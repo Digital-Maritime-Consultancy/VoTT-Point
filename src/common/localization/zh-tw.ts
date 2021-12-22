@@ -213,13 +213,13 @@ export const chinesetw: IAppStrings = {
                     title: "Server URL",
                     description: "URL of remote work server",
                 },
-                accountName: {
-                    title: "Owner ID",
-                    description: "User's ID",
+                taskServerUrl: {
+                    title: "Stella server URL",
+                    description: "URL of Stella server",
                 },
-                containerName: {
-                    title: "Token (Task ID)",
-                    description: "Task ID",
+                taskId: {
+                    title: "Task ID",
+                    description: "Token of Task ID",
                 },
                 taskType: {
                     title: "Task type",
@@ -300,7 +300,7 @@ export const chinesetw: IAppStrings = {
         tagged: "已標記", // Tagged
         visited: "已檢視", // Visited
         rectangled: "Rect received",
-        revised: "Revised",
+        approved: "Revised",
         completed: "Completed",
         notapplicable: "Not applicable",
         commented: "Commented",

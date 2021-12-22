@@ -287,6 +287,7 @@ canvas {
 .badge-completed,
 .badge-commented,
 .badge-notapplicable,
+.badge-approved,
  {
   color: #fff;
   position: absolute;
@@ -311,7 +312,7 @@ canvas {
   border: 1px solid $lighter-2;
 }
 
-.badge-revised {
+.badge-approved {
   background-color: rgba(rgb(38, 145, 11), 0.9);
   border: 1px solid $lighter-3;
 }
@@ -323,6 +324,11 @@ canvas {
 
 .badge-commented {
   background-color: rgba(darkorange, 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-completed {
+  background-color: rgba(rgb(0, 15, 100), 0.9);
   border: 1px solid $lighter-3;
 }
 

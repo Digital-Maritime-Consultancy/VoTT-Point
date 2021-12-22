@@ -185,7 +185,7 @@ export default class MockFactory {
                 width: 800,
                 height: 600,
             },
-            rejected: false,
+            disabled: false,
         };
     }
 
@@ -567,8 +567,8 @@ export default class MockFactory {
     public static createRemoteStorageOptions(): IRemoteStorageOptions {
     return {
         url: "http://localhost",
-        accountName: "",
-        containerName: "",
+        taskServerUrl: "",
+        taskId: "",
         taskType: TaskType.Purification,
         };
     }

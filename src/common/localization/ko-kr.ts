@@ -209,12 +209,12 @@ export const korean: IAppStrings = {
                     title: "서버 주소 (URL)",
                     description: "",
                 },
-                accountName: {
-                    title: "사용자 ID",
+                taskServerUrl: {
+                    title: "Stella 서버 주소",
                     description: "",
                 },
-                containerName: {
-                    title: "작업 ID",  // Container Name,
+                taskId: {
+                    title: "작업 ID 토큰",  // Container Name,
                     description: "",
                 },
                 taskType: {
@@ -296,7 +296,7 @@ export const korean: IAppStrings = {
         tagged: "태그", // Tagged,
         visited: "방문", // Visited,
         rectangled: "인식결과수신",
-        revised: "검수완료",
+        approved: "검수완료",
         completed: "작업완료",
         notapplicable: "기각",
         commented: "의견게재",

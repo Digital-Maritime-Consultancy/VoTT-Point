@@ -206,11 +206,11 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                accountName: {
+                taskServerUrl: {
                     title: string,
                     description: string,
                 },
-                containerName: {
+                taskId: {
                     title: string,
                     description: string,
                 },
@@ -293,7 +293,7 @@ export interface IAppStrings {
         tagged: string;
         visited: string;
         rectangled: string;
-        revised: string;
+        approved: string;
         completed: string;
         notapplicable: string;
         commented: string;

@@ -1,4 +1,4 @@
-import { RemoteStorage } from './providers/storage/remoteStorage';
+import { RemoteStorage } from "./providers/storage/remoteStorage";
 import { ExportProviderFactory } from "./providers/export/exportProviderFactory";
 import { PascalVOCExportProvider } from "./providers/export/pascalVOC";
 import { TFRecordsExportProvider } from "./providers/export/tensorFlowRecords";

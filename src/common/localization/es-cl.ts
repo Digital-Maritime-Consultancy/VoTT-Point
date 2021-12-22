@@ -205,13 +205,13 @@ export const spanish: IAppStrings = {
                     title: "Server URL",
                     description: "URL of remote work server",
                 },
-                accountName: {
-                    title: "Owner ID",
-                    description: "User's ID",
+                taskServerUrl: {
+                    title: "Stella server URL",
+                    description: "URL of Stella server",
                 },
-                containerName: {
-                    title: "Token (Task ID)",
-                    description: "Task ID",
+                taskId: {
+                    title: "Task ID",
+                    description: "Token of Task ID",
                 },
                 taskType: {
                     title: "Task type",
@@ -292,7 +292,7 @@ export const spanish: IAppStrings = {
         tagged: "Etiquetado",
         visited: "Visitado",
         rectangled: "Rect received",
-        revised: "Revised",
+        approved: "Revised",
         completed: "Completed",
         notapplicable: "Not applicable",
         commented: "Commented",

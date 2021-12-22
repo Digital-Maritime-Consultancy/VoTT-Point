@@ -3,8 +3,8 @@
     "description": "${strings.connections.providers.remote.description}",
     "required": [
         "url",
-        "accountName",
-        "containerName",
+        "taskServerUrl",
+        "taskId",
         "taskType"
     ],
     "type": "object",
@@ -14,14 +14,14 @@
             "description": "${strings.connections.providers.remote.url.description}",
             "type": "string"
         },
-        "accountName": {
-            "title": "${strings.connections.providers.remote.accountName.title}",
-            "description": "${strings.connections.providers.remote.accountName.description}",
+        "taskServerUrl": {
+            "title": "${strings.connections.providers.remote.taskServerUrl.title}",
+            "description": "${strings.connections.providers.remote.taskServerUrl.description}",
             "type": "string"
         },
-        "containerName": {
-            "title": "${strings.connections.providers.remote.containerName.title}",
-            "description": "${strings.connections.providers.remote.containerName.description}",
+        "taskId": {
+            "title": "${strings.connections.providers.remote.taskId.title}",
+            "description": "${strings.connections.providers.remote.taskId.description}",
             "type": "string"
         },
         "taskType": {

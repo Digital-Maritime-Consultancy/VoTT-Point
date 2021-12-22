@@ -149,21 +149,21 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                         <i className="fas fa-square"></i>
                     </span>
                 );
-            case AssetState.Revised:
+            case AssetState.Approved:
                 return (
-                    <span title={strings.editorPage.revised}
-                        className="badge badge-revised">
+                    <span title={strings.editorPage.approved}
+                        className="badge badge-approved">
                         <i className="fas fa-check"></i>
                     </span>
                 );
             case AssetState.Completed:
                 return (
                     <span title={strings.editorPage.completed}
-                        className="badge badge-approved">
+                        className="badge badge-completed">
                         <i className="fas fa-tag"></i>
                     </span>
                 );
-            case AssetState.NotApplicable:
+            case AssetState.Disabled:
                 return (
                     <span title={strings.editorPage.notapplicable}
                         className="badge badge-notapplicable">

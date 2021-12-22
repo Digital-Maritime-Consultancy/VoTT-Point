@@ -273,7 +273,7 @@ export interface IAssetVideoSettings {
  * @member name - Generated name for asset
  * @member path - Relative path to asset within the underlying data source
  * @member size - Size / dimensions of asset
- * @member rejected - State of rejection
+ * @member disabled - State of rejection
  * @member format - The asset format (jpg, png, mp4, etc)
  */
 export interface IAsset {
@@ -283,7 +283,7 @@ export interface IAsset {
     name: string;
     path: string;
     size: ISize;
-    rejected: boolean;
+    disabled: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;
@@ -377,13 +377,13 @@ export enum AssetType {
  * @member Tagged - Specifies an asset has been visited and tagged
  */
 export enum AssetState {
-    NotApplicable = -1, // 접근 불가
+    Disabled = -1, // 접근 불가
     NotVisited = 0, // 아무 작업도 수행되지 않은 상태
     Visited = 1, // 이미지를 본 상태
     Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
     TaggedRectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
     Commented = 4, // 검수에 따른 커멘트가 남겨진 상태
-    Revised = 5, // 작업자 검수가 완료된 상태
+    Approved = 5, // 작업자 검수가 완료된 상태
     Completed = 6, // 작업 완료
 }
 
