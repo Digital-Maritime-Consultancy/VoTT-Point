@@ -84,6 +84,8 @@ describe("Bing Image Search", () => {
             state: AssetState.NotVisited,
             size: null,
             disabled: false,
+            approved: false,
+            completed: false,
         };
 
         const provider = new BingImageSearch(defaultOptions);

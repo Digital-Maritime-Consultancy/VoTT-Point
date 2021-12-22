@@ -14,7 +14,7 @@ import RecentProjectItem from "./recentProjectItem";
 import { constants } from "../../../../common/constants";
 import {
     IApplicationState, IConnection, IProject, IFileInfo,
-    ErrorCode, AppError, IAppError, IAppSettings, IAsset,
+    ErrorCode, AppError, IAppError, IAppSettings, IAsset, EditingContext,
 } from "../../../../models/applicationState";
 import ImportService from "../../../../services/importService";
 import { IAssetMetadata } from "../../../../models/applicationState";
@@ -166,7 +166,7 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
 
     private loadSelectedProject = async (project: IProject) => {
         await this.props.actions.loadProject(project);
-        this.props.history.push(`/projects/${project.id}/edit/plant`);
+        this.props.history.push(`/projects/${project.id}/edit/${EditingContext.Revise}`);
     }
 
     private deleteProject = async (project: IProject) => {

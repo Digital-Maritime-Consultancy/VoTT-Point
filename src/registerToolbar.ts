@@ -14,6 +14,7 @@ export enum ToolbarItemName {
     NextAsset = "nextAsset",
     Complete = "completeRevision",
     SaveProject = "saveProject",
+    Disable = "disable",
     Reject = "reject",
     Approve = "approve",
     Comment = "comment",
@@ -37,7 +38,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["V", "v"],
-        context: [EditingContext.PlantSeed, EditingContext.Revise],
+        context: [EditingContext.EditDot, EditingContext.EditRect],
     });
 
     ToolbarItemFactory.register({
@@ -47,16 +48,16 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["R", "r"],
-        context: [EditingContext.Revise],
+        context: [EditingContext.EditRect],
     });
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.Reject,
-        tooltip: strings.editorPage.toolbar.reject,
+        name: ToolbarItemName.Disable,
+        tooltip: strings.editorPage.toolbar.disable,
         icon: "fas fa-times",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
-        accelerators: ["R", "r"],
+        accelerators: ["D", "d"],
         context: [EditingContext.Purify],
     });
 
@@ -76,8 +77,8 @@ export default function registerToolbar() {
         icon: "fa-dot-circle",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
-        accelerators: ["D", "d"],
-        context: [EditingContext.PlantSeed],
+        accelerators: ["O", "o"],
+        context: [EditingContext.EditDot],
     });
 
     ToolbarItemFactory.register({
@@ -87,7 +88,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowUp", "W", "w"],
-        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -97,7 +98,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
-        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
     });
 
     ToolbarItemFactory.register({
@@ -107,7 +108,27 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,
         accelerators: ["P", "p"],
-        context: [EditingContext.PlantSeed],
+        context: [EditingContext.EditDot],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.Reject,
+        tooltip: strings.editorPage.toolbar.reject,
+        icon: "fas fa-user-times",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["R", "r"],
+        context: [EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.Complete,
+        tooltip: strings.editorPage.toolbar.completeRevision,
+        icon: "fas fa-user-check",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["C", "c"],
+        context: [EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
@@ -117,20 +138,8 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["X", "x"],
-        context: [EditingContext.Revise, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.Revise],
     });
-
-    /*
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.Complete,
-        tooltip: strings.editorPage.toolbar.completeRevision,
-        icon: "fas fa-user-check",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.Action,
-        accelerators: ["C", "c"],
-        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
-    });
-    */
 
     ToolbarItemFactory.register({
         name: ToolbarItemName.SaveProject,
@@ -139,7 +148,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
-        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
     }, SaveProject);
 
 }

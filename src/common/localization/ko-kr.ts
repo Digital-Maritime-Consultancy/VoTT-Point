@@ -319,8 +319,9 @@ export const korean: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
-            reject: "기각",
-            approve: "승인",
+            disable: "기각",
+            reject: "검수결과-기각",
+            approve: "검수결과-승인",
             comment: "의견개제",
         },
         videoPlayer: {

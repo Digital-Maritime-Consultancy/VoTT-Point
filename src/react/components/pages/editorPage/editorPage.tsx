@@ -156,7 +156,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.PlantSeed;
+        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.EditDot;
         if (this.state.context !== currentContext){
             // refresh view
             this.setState({
@@ -569,6 +569,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.updateAssetMetadataState(AssetState.Completed, true);
                 break;
             case ToolbarItemName.Reject:
+                await this.updateAssetMetadataState(AssetState.Rejected, true);
+                break;
+            case ToolbarItemName.Disable:
                 await this.updateAssetMetadataState(AssetState.Disabled);
                 break;
             case ToolbarItemName.Approve:
@@ -756,11 +759,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (this.isTaggableAssetType(assetMetadata.asset)) {
             if (assetMetadata.asset.disabled) {
                 return AssetState.Disabled;
-            } else if (!assetMetadata.asset.disabled && assetMetadata.asset.completed) {
+            } else if (!assetMetadata.asset.disabled && assetMetadata.asset.approved) {
                 return AssetState.Approved;
             } else if (assetMetadata.asset.state === AssetState.NotVisited) {
                 return AssetState.Visited;
-            } else if (assetMetadata.asset.completed) {
+            } else if (assetMetadata.asset.approved) {
                 return AssetState.Completed;
             } else {
                 return assetMetadata.regions.length === 0 ?
@@ -779,7 +782,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 ...this.state.selectedAsset.asset,
                 state,
                 disabled: state === AssetState.Disabled,
-                completed,
+                approved: completed,
             },
         } as IAssetMetadata);
     }

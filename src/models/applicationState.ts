@@ -273,8 +273,10 @@ export interface IAssetVideoSettings {
  * @member name - Generated name for asset
  * @member path - Relative path to asset within the underlying data source
  * @member size - Size / dimensions of asset
- * @member disabled - State of rejection
+ * @member disabled - State of purification
+ * @member approved - State of rejection
  * @member format - The asset format (jpg, png, mp4, etc)
+ * @member comment - Comment for asset
  */
 export interface IAsset {
     id: string;
@@ -284,11 +286,13 @@ export interface IAsset {
     path: string;
     size: ISize;
     disabled: boolean;
+    approved: boolean;
     completed: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;
     predicted?: boolean;
+    comment?: string;
 }
 
 /**
@@ -384,8 +388,9 @@ export enum AssetState {
     Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
     TaggedRectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
     Commented = 4, // 검수에 따른 커멘트가 남겨진 상태
-    Approved = 5, // 작업자 검수가 완료된 상태
-    Completed = 6, // 작업 완료
+    Rejected = 5, // 검수 결과 기각된 상태
+    Approved = 6, // 검수 결과 승인된 상태
+    Completed = 7, // 작업 완료
 }
 
 export enum TaskType {
@@ -413,10 +418,11 @@ export enum RegionType {
 }
 
 export enum EditingContext {
-    PlantSeed = "plant",
-    Revise = "revise",
+    EditDot = "editdot",
+    EditRect = "editrect",
     Purify = "purify",
-    None = "none",
+    Revise = "revise",
+    None = "",
 }
 
 export enum EditorMode {

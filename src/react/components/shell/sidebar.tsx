@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import ConditionalNavLink from "../common/conditionalNavLink/conditionalNavLink";
 import { strings } from "../../../common/strings";
+import { EditingContext } from "../../../models/applicationState";
 
 /**
  * Side bar that remains visible throughout app experience
@@ -24,21 +25,28 @@ export default function Sidebar({ project }) {
                 <li>
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/plant`}>
+                        to={`/projects/${projectId}/edit/${EditingContext.EditDot}`}>
                         <i className="fas fa-dot-circle"></i>
                     </ConditionalNavLink>
                 </li>
                 <li>
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/revise`}>
+                        to={`/projects/${projectId}/edit/${EditingContext.EditRect}`}>
                         <i className="fas fa-vector-square"></i>
                     </ConditionalNavLink>
                 </li>
                 <li>
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/purify`}>
+                        to={`/projects/${projectId}/edit/${EditingContext.Purify}`}>
+                        <i className="fas fa-eye"></i>
+                    </ConditionalNavLink>
+                </li>
+                <li>
+                    <ConditionalNavLink disabled={!projectId}
+                        title={strings.tags.editor}
+                        to={`/projects/${projectId}/edit/${EditingContext.Revise}`}>
                         <i className="fas fa-check"></i>
                     </ConditionalNavLink>
                 </li>

@@ -316,6 +316,7 @@ export interface IAppStrings {
             dot2Rect: string;
             submitPoints: string;
             completeRevision: string;
+            disable: string;
             reject: string;
             approve: string;
             comment: string;

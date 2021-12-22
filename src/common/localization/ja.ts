@@ -320,6 +320,7 @@ export const japanese: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
