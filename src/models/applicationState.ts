@@ -284,6 +284,7 @@ export interface IAsset {
     path: string;
     size: ISize;
     disabled: boolean;
+    completed: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;

@@ -186,6 +186,7 @@ export default class MockFactory {
                 height: 600,
             },
             disabled: false,
+            completed: false,
         };
     }
 

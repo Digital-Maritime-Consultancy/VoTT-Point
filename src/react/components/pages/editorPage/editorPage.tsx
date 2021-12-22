@@ -465,17 +465,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
-        if (assetMetadata.asset.state !== AssetState.Disabled && assetMetadata.asset.state < AssetState.Commented) {
-            if (this.isTaggableAssetType(assetMetadata.asset)) {
-                assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
-                    AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
-                        AssetState.TaggedRectangled : AssetState.Tagged;
-            } else if (assetMetadata.asset.disabled) {
-                assetMetadata.asset.state = AssetState.Disabled;
-            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-                assetMetadata.asset.state = AssetState.Visited;
-            }
-        }
+        assetMetadata.asset.state = this.getAssetMetadataState(assetMetadata);
+        console.log(assetMetadata.asset.state);
 
         // Update root asset if not already in the "Tagged" state
         // This is primarily used in the case where a Video Frame is being edited.
@@ -574,14 +565,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.NextAsset:
                 await this.goToRootAsset(1);
                 break;
-            case ToolbarItemName.CompleteRevision:
-                await this.updateEditorState(AssetState.Approved);
+            case ToolbarItemName.Complete:
+                await this.updateAssetMetadataState(AssetState.Completed, true);
                 break;
             case ToolbarItemName.Reject:
-                await this.updateEditorState(AssetState.Disabled);
+                await this.updateAssetMetadataState(AssetState.Disabled);
                 break;
             case ToolbarItemName.Approve:
-                await this.updateEditorState(AssetState.Approved);
+                await this.updateAssetMetadataState(AssetState.Approved, true);
                 break;
         }
     }
@@ -626,18 +617,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             });
             //toast.dismiss(toastId);
         }
-    }
-
-    private updateEditorState = async (state: AssetState) => {
-        this.onAssetMetadataChanged(
-            {
-            ...this.state.selectedAsset,
-            asset: {
-                ...this.state.selectedAsset.asset,
-                state,
-                disabled: state === AssetState.Disabled,
-            },
-        } as IAssetMetadata);
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {
@@ -768,6 +747,41 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         });
 
         this.setState({ assets: updatedAssets });
+    }
+
+    /**
+     * Get current state of Asset metadata
+     */
+    private getAssetMetadataState(assetMetadata: IAssetMetadata): AssetState {
+        if (this.isTaggableAssetType(assetMetadata.asset)) {
+            if (assetMetadata.asset.disabled) {
+                return AssetState.Disabled;
+            } else if (!assetMetadata.asset.disabled && assetMetadata.asset.completed) {
+                return AssetState.Approved;
+            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
+                return AssetState.Visited;
+            } else if (assetMetadata.asset.completed) {
+                return AssetState.Completed;
+            } else {
+                return assetMetadata.regions.length === 0 ?
+                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
+                    AssetState.TaggedRectangled : AssetState.Tagged;
+            }
+        }
+        return assetMetadata.asset.state;
+    }
+
+    private updateAssetMetadataState = async (state: AssetState, completed: boolean = false) => {
+        this.onAssetMetadataChanged(
+            {
+            ...this.state.selectedAsset,
+            asset: {
+                ...this.state.selectedAsset.asset,
+                state,
+                disabled: state === AssetState.Disabled,
+                completed,
+            },
+        } as IAssetMetadata);
     }
 
 }

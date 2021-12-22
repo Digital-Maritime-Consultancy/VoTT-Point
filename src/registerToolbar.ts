@@ -12,7 +12,7 @@ export enum ToolbarItemName {
     SubmitPoints = "submitPoints",
     PreviousAsset = "previousAsset",
     NextAsset = "nextAsset",
-    CompleteRevision = "completeRevision",
+    Complete = "completeRevision",
     SaveProject = "saveProject",
     Reject = "reject",
     Approve = "approve",
@@ -111,24 +111,26 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.CompleteRevision,
-        tooltip: strings.editorPage.toolbar.completeRevision,
-        icon: "fas fa-check",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.Action,
-        accelerators: ["A", "a"],
-        context: [EditingContext.Revise],
-    });
-    
-    ToolbarItemFactory.register({
         name: ToolbarItemName.Comment,
         tooltip: strings.editorPage.toolbar.comment,
         icon: "fas fa-comment-dots",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
-        accelerators: ["C", "c"],
+        accelerators: ["X", "x"],
         context: [EditingContext.Revise, EditingContext.Purify],
     });
+
+    /*
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.Complete,
+        tooltip: strings.editorPage.toolbar.completeRevision,
+        icon: "fas fa-user-check",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["C", "c"],
+        context: [EditingContext.Revise, EditingContext.PlantSeed, EditingContext.Purify],
+    });
+    */
 
     ToolbarItemFactory.register({
         name: ToolbarItemName.SaveProject,
