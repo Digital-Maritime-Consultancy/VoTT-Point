@@ -45,7 +45,7 @@ describe("CNTK Export Provider", () => {
         jest.resetAllMocks();
 
         testAssets.forEach((asset) => {
-            asset.state = AssetState.Tagged;
+            asset.state = AssetState.TaggedDot;
         });
 
         testProject = {

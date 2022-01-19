@@ -57,7 +57,7 @@ export class ActiveLearningService {
             regions: updatedRegions,
             asset: {
                 ...assetMetadata.asset,
-                state: updatedRegions.length > 0 ? AssetState.Tagged : AssetState.Visited,
+                state: updatedRegions.length > 0 ? AssetState.TaggedDot : AssetState.Visited,
                 predicted: true,
             },
         } as IAssetMetadata;

@@ -261,7 +261,7 @@ export default class ProjectMetrics extends React.Component<IProjectMetricsProps
         const taggedAssets = _.filter(metadata,
             (m) => {
                 // ignore video asset root container
-                return m.asset.state === AssetState.Tagged && m.regions.length > 0;
+                return m.asset.state === AssetState.TaggedDot && m.regions.length > 0;
             });
 
         return taggedAssets.length;
@@ -287,7 +287,7 @@ export default class ProjectMetrics extends React.Component<IProjectMetricsProps
     private getVisitedAssetsCount = () => {
         const metadata = this.state.projectAssetsMetadata;
         const visitedAssets = _.filter(metadata, (m) => {
-            return m.asset.state === AssetState.Visited || m.asset.state === AssetState.Tagged;
+            return m.asset.state === AssetState.Visited || m.asset.state === AssetState.TaggedDot;
         });
 
         return visitedAssets.length;

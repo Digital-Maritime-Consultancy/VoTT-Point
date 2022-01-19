@@ -200,7 +200,7 @@ export default class MockFactory {
         const childPath = `${rootAsset.path}#t=${timestamp}`;
         const childAsset = AssetService.createAssetFromFilePath(childPath);
         childAsset.type = AssetType.VideoFrame;
-        childAsset.state = AssetState.Tagged;
+        childAsset.state = AssetState.TaggedDot;
         childAsset.parent = rootAsset;
         childAsset.timestamp = timestamp;
         childAsset.size = { ...rootAsset.size };

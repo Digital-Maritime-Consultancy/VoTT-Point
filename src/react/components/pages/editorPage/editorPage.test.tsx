@@ -376,14 +376,14 @@ describe("Editor Page Component", () => {
         expect(assetServiceMock.prototype.save).toBeCalledWith({
             asset: {
                 ...imageAsset,
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             },
             regions: editedImageAsset.regions,
             version: appInfo.version,
         });
 
         const matchingRootAsset = editorPage.state().assets.find((asset) => asset.id === imageAsset.id);
-        expect(matchingRootAsset.state).toEqual(AssetState.Tagged);
+        expect(matchingRootAsset.state).toEqual(AssetState.TaggedDot);
     });
 
     describe("Editing Video Assets", () => {
@@ -441,7 +441,7 @@ describe("Editor Page Component", () => {
             const expectedRootVideoMetadata: IAssetMetadata = {
                 asset: {
                     ...videoAsset,
-                    state: AssetState.Tagged,
+                    state: AssetState.TaggedDot,
                 },
                 regions: [],
                 version: appInfo.version,
@@ -457,7 +457,7 @@ describe("Editor Page Component", () => {
             expect(saveMock.mock.calls[1][0]).toEqual(editedVideoFrame);
 
             const matchingRootAsset = editorPage.state().assets.find((asset) => asset.id === videoAsset.id);
-            expect(matchingRootAsset.state).toEqual(AssetState.Tagged);
+            expect(matchingRootAsset.state).toEqual(AssetState.TaggedDot);
         });
     });
 

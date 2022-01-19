@@ -75,7 +75,7 @@ describe("Import Service", () => {
 
         expect(results.length).toEqual(v1FrameLength);
         results.forEach((assetMetadata) => {
-            const expectedState = assetMetadata.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
+            const expectedState = assetMetadata.regions.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
             expect(assetMetadata.asset.state).toEqual(expectedState);
             expect(assetMetadata.asset.parent).toBeUndefined();
             expect(assetMetadata.asset.timestamp).toBeUndefined();
@@ -109,7 +109,7 @@ describe("Import Service", () => {
         expect(childAssets).toHaveLength(v1FrameLength);
 
         childAssets.forEach((assetMetadata) => {
-            const expectedState = assetMetadata.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
+            const expectedState = assetMetadata.regions.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
             const expectedPath = `${assetMetadata.asset.parent.path}#t=${assetMetadata.asset.timestamp}`;
             expect(assetMetadata.asset.state).toEqual(expectedState);
             expect(assetMetadata.asset.parent).not.toBeNull();

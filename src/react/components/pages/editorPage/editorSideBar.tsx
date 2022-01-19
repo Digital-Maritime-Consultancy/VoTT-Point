@@ -128,7 +128,7 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
 
     private renderBadges = (asset: IAsset): JSX.Element => {
         switch (asset.state) {
-            case AssetState.Tagged:
+            case AssetState.TaggedDot:
                 return (
                     <span title={strings.editorPage.tagged}
                         className="badge badge-tagged">
@@ -142,7 +142,7 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                         <i className="fas fa-eye"></i>
                     </span>
                 );
-            case AssetState.TaggedRectangled:
+            case AssetState.TaggedRectangle:
                 return (
                     <span title={strings.editorPage.rectangled}
                         className="badge badge-rectangled">

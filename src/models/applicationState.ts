@@ -385,8 +385,8 @@ export enum AssetState {
     Disabled = -1, // 접근 불가
     NotVisited = 0, // 아무 작업도 수행되지 않은 상태
     Visited = 1, // 이미지를 본 상태
-    Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
-    TaggedRectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
+    TaggedDot = 2, // 이미지에 점 어노테이션 작업을 한 상태
+    TaggedRectangle = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
     Commented = 4, // 검수에 따른 커멘트가 남겨진 상태
     Rejected = 5, // 검수 결과 기각된 상태
     Approved = 6, // 검수 결과 승인된 상태

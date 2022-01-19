@@ -57,8 +57,8 @@ describe("Azure Custom Vision Export Provider", () => {
         testProject = {
             ...MockFactory.createTestProject("TestProject"),
             assets: {
-                "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-                "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+                "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+                "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
                 "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
                 "asset-4": MockFactory.createTestAsset("4", AssetState.NotVisited),
             },
@@ -174,7 +174,7 @@ describe("Azure Custom Vision Export Provider", () => {
 
                 return Promise.resolve<IAssetMetadata>({
                     asset,
-                    regions: asset.state === AssetState.Tagged ? regions : [],
+                    regions: asset.state === AssetState.TaggedDot ? regions : [],
                     version: appInfo.version,
                 });
             });
@@ -211,7 +211,7 @@ describe("Azure Custom Vision Export Provider", () => {
             (testProject.exportFormat.providerOptions as IExportProviderOptions).assetState = ExportAssetState.All;
             const provider = createProvider(testProject);
             const allAssets = await provider.getAssetsForExport();
-            const taggedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.Tagged);
+            const taggedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.TaggedDot);
             const results = await provider.export();
 
             expect(results).not.toBeNull();
@@ -225,10 +225,10 @@ describe("Azure Custom Vision Export Provider", () => {
             (testProject.exportFormat.providerOptions as IExportProviderOptions).assetState = ExportAssetState.Visited;
             const visitedAssets = _
                 .values(testProject.assets)
-                .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.Tagged);
+                .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.TaggedDot);
             const taggedAssets = _
                 .values(testProject.assets)
-                .filter((asset) => asset.state === AssetState.Tagged);
+                .filter((asset) => asset.state === AssetState.TaggedDot);
 
             const provider = createProvider(testProject);
             const results = await provider.export();
@@ -242,7 +242,7 @@ describe("Azure Custom Vision Export Provider", () => {
 
         it("Uploads binaries, regions & tags for tagged assets", async () => {
             (testProject.exportFormat.providerOptions as IExportProviderOptions).assetState = ExportAssetState.Tagged;
-            const taggedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.Tagged);
+            const taggedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.TaggedDot);
             const provider = createProvider(testProject);
             const results = await provider.export();
 

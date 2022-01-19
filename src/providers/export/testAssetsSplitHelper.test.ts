@@ -13,7 +13,7 @@ describe("splitTestAsset Helper tests", () => {
         async function testTestTrainSplit(testTrainSplit: number): Promise<void> {
             const assetArray = MockFactory.createTestAssets(13, 0);
             const tags = MockFactory.createTestTags(2);
-            assetArray.forEach((asset) => asset.state = AssetState.Tagged);
+            assetArray.forEach((asset) => asset.state = AssetState.TaggedDot);
 
             const testSplit = (100 - testTrainSplit) / 100;
             const testCount = Math.ceil(testSplit * assetArray.length);

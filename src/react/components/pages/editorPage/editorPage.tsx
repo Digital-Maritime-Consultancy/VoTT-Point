@@ -477,7 +477,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state < AssetState.Tagged) {
+            if (rootAssetMetadata.asset.state < AssetState.TaggedDot) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -768,7 +768,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             } else {
                 return assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
-                    AssetState.TaggedRectangled : AssetState.Tagged;
+                    AssetState.TaggedRectangle : AssetState.TaggedDot;
             }
         }
         return assetMetadata.asset.state;

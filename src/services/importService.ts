@@ -140,8 +140,8 @@ export default class ImportService implements IImportService {
         });
 
         const taggedAssets = videoFrameAssets
-            .filter((assetMetadata) => assetMetadata.asset.state === AssetState.Tagged);
-        const parentAssetState = taggedAssets.length > 0 ? AssetState.Tagged : AssetState.Visited;
+            .filter((assetMetadata) => assetMetadata.asset.state === AssetState.TaggedDot);
+        const parentAssetState = taggedAssets.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
         const parentAssetMetadata = await this.createAssetMetadata(parentVideoAsset, parentAssetState, []);
 
         return [parentAssetMetadata].concat(videoFrameAssets);
@@ -260,7 +260,7 @@ export default class ImportService implements IImportService {
      * @param frame The v1 asset frame
      */
     private getAssetState(frame: IV1Frame): AssetState {
-        return frame.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
+        return frame.regions.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
     }
 
     /**

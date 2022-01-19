@@ -170,7 +170,7 @@ export class AssetService {
         // Otherwise primary asset information is already persisted in the project file.
         
         // TODO: this should be updated corresponding to given task type
-        if (metadata.asset.state >= AssetState.Tagged) {
+        if (metadata.asset.state >= AssetState.TaggedDot) {
             await this.storageProvider.writeText(fileName, JSON.stringify(metadata, null, 4));
         } else {
             // If the asset is no longer tagged, then it doesn't contain any regions
@@ -270,8 +270,8 @@ export class AssetService {
         if (foundTag) {
             assetMetadata.regions = assetMetadata.regions.filter((region) => region.tags.length > 0);
             assetMetadata.asset.state = (assetMetadata.regions.length===0) ? AssetState.Visited :
-                assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ? AssetState.TaggedRectangled :
-                    AssetState.Tagged ;
+                assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ? AssetState.TaggedRectangle :
+                    AssetState.TaggedDot ;
             return true;
         }
 
