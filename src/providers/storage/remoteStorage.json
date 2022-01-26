@@ -2,10 +2,7 @@
     "title": "${strings.connections.providers.remote.title}",
     "description": "${strings.connections.providers.remote.description}",
     "required": [
-        "url",
-        "taskServerUrl",
-        "taskId",
-        "taskType"
+        "url"
     ],
     "type": "object",
     "properties": {
@@ -14,37 +11,15 @@
             "description": "${strings.connections.providers.remote.url.description}",
             "type": "string"
         },
-        "taskServerUrl": {
-            "title": "${strings.connections.providers.remote.taskServerUrl.title}",
-            "description": "${strings.connections.providers.remote.taskServerUrl.description}",
-            "type": "string"
-        },
         "taskId": {
             "title": "${strings.connections.providers.remote.taskId.title}",
             "description": "${strings.connections.providers.remote.taskId.description}",
             "type": "string"
         },
-        "taskType": {
-            "title": "${strings.connections.providers.remote.taskType.title}",
-            "description": "${strings.connections.providers.remote.taskType.description}",
-            "type": "string",
-            "enum": [
-                "purification",
-                "revise-purification",
-                "annotation",
-                "revise-annotation",
-                "audit",
-                "admin"
-            ],
-            "default": "purification",
-            "enumNames": [
-                "${strings.connections.providers.remote.taskType.options.purification}",
-                "${strings.connections.providers.remote.taskType.options.revisePurification}",
-                "${strings.connections.providers.remote.taskType.options.annotation}",
-                "${strings.connections.providers.remote.taskType.options.reviseAnnotation}",
-                "${strings.connections.providers.remote.taskType.options.audit}",
-                "${strings.connections.providers.remote.taskType.options.admin}"
-            ]
+        "taskServerUrl": {
+            "title": "${strings.connections.providers.remote.taskServerUrl.title}",
+            "description": "${strings.connections.providers.remote.taskServerUrl.description}",
+            "type": "string"
         }
     }
 }

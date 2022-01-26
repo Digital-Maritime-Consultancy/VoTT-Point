@@ -27,6 +27,10 @@ export const korean: IAppStrings = {
         openLocalProject: {
             title: "로컬 프로젝트 열기", // Open Local Project"
         },
+        openTask: {
+            title: "태스크로부터 프로젝트 생성",
+            selectConnection: "태스크 선택",
+        },
         openCloudProject: {
             title: "클라우드 프로젝트 열기", // Open Cloud Project,
             selectConnection: "Connection 선택", // Select a Connection
@@ -209,25 +213,13 @@ export const korean: IAppStrings = {
                     title: "서버 주소 (URL)",
                     description: "",
                 },
-                taskServerUrl: {
-                    title: "Stella 서버 주소",
-                    description: "",
-                },
                 taskId: {
-                    title: "작업 ID 토큰",  // Container Name,
-                    description: "",
+                    title: "태스크 ID",
+                    description: "할당된 태스크 아이디",
                 },
-                taskType: {
-                    title: "작업 유형",
-                    description: "Type of task",
-                    options: {
-                        purification: "정제 작업",
-                        revisePurification: "정제 검수 작업",
-                        annotation: "가공 작업",
-                        reviseAnnotation: "가공 검수 작업",
-                        audit: "검증 작업",
-                        admin: "관리자",
-                    },
+                taskServerUrl: {
+                    title: "태스크 서버 URL",
+                    description: "태스크 서버의 주소",
                 },
             },
             bing: {

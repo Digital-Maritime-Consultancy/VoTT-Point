@@ -466,7 +466,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
         assetMetadata.asset.state = this.getAssetMetadataState(assetMetadata);
-        console.log(assetMetadata.asset.state);
 
         // Update root asset if not already in the "Tagged" state
         // This is primarily used in the case where a Video Frame is being edited.
@@ -577,7 +576,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.Approve:
                 await this.updateAssetMetadataState(AssetState.Approved, true);
                 break;
+            case ToolbarItemName.SaveProject:
+                await this.uploadToStella();
+                break;
         }
+    }
+
+    private uploadToStella = async() => {
+        alert(`Upload to stella: ${this.props.project.stellaUrl}`);
     }
 
     private processPoint2Rect = async () => {
@@ -783,6 +789,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 state,
                 disabled: state === AssetState.Disabled,
                 approved: completed,
+                taskId: this.props.project.name,
             },
         } as IAssetMetadata);
     }

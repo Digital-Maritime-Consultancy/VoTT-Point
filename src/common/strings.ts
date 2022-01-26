@@ -34,6 +34,10 @@ export interface IAppStrings {
         openLocalProject: {
             title: string;
         },
+        openTask: {
+            title: string;
+            selectConnection: string;
+        },
         openCloudProject: {
             title: string;
             selectConnection: string;
@@ -206,25 +210,13 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                taskServerUrl: {
-                    title: string,
-                    description: string,
-                },
                 taskId: {
                     title: string,
                     description: string,
                 },
-                taskType: {
+                taskServerUrl: {
                     title: string,
                     description: string,
-                    options: {
-                        purification: string,
-                        revisePurification: string,
-                        annotation: string,
-                        reviseAnnotation: string,
-                        audit: string,
-                        admin: string,
-                    },
                 },
             },
             bing: {

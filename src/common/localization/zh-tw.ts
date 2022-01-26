@@ -27,6 +27,10 @@ export const chinesetw: IAppStrings = {
         openLocalProject: {
             title: "打開本機專案", // Open Local Project
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "打開雲端專案", // Open Cloud Project
             selectConnection: "選擇連線", // Select a Connection
@@ -213,25 +217,13 @@ export const chinesetw: IAppStrings = {
                     title: "Server URL",
                     description: "URL of remote work server",
                 },
-                taskServerUrl: {
-                    title: "Stella server URL",
-                    description: "URL of Stella server",
-                },
                 taskId: {
                     title: "Task ID",
-                    description: "Token of Task ID",
+                    description: "ID of the task that is assigned to you",
                 },
-                taskType: {
-                    title: "Task type",
-                    description: "Type of task",
-                    options: {
-                        purification: "Purification",
-                        revisePurification: "Revise purification",
-                        annotation: "Annotation",
-                        reviseAnnotation: "Revise annotation",
-                        audit: "Audit",
-                        admin: "Admin",
-                    },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
                 },
             },
             bing: {

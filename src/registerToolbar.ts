@@ -88,7 +88,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowUp", "W", "w"],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
@@ -98,7 +98,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
@@ -144,11 +144,10 @@ export default function registerToolbar() {
     ToolbarItemFactory.register({
         name: ToolbarItemName.SaveProject,
         tooltip: strings.editorPage.toolbar.saveProject,
-        icon: "fa-save",
+        icon: "fa-check-circle",
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     }, SaveProject);
-
 }

@@ -56,7 +56,7 @@ export default class CondensedList extends React.Component<ICondensedListProps> 
                     }
                     {(items && items.length > 0) &&
                         <ul className="condensed-list-items">
-                            {items.map((item) => <Component key={item.id}
+                            {items.map((item, key) => <Component key={key}
                                 item={item}
                                 onClick={(e) => this.onItemClick(e, item)}
                                 onDelete={(e) => this.onItemDelete(e, item)} />)}
@@ -87,9 +87,9 @@ export default class CondensedList extends React.Component<ICondensedListProps> 
  * Generic list item with an onClick function and a name
  * @param param0 - {item: {name: ""}, onClick: (item) => void;}
  */
-export function ListItem({ item, onClick }) {
+export function ListItem({ key, item, onClick }) {
     return (
-        <li>
+        <li key={key}>
             <a onClick={onClick}>
                 <span className="px-2">{item.name}</span>
             </a>

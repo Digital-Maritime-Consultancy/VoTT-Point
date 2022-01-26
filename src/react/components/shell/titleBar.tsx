@@ -8,6 +8,7 @@ import { HelpMenu } from "./helpMenu";
 export interface ITitleBarProps extends React.Props<TitleBar> {
     icon?: string | JSX.Element;
     title?: string;
+    stellaUrl?: string;
 }
 
 export interface ITitleBarState {
@@ -65,7 +66,12 @@ export class TitleBar extends React.Component<ITitleBarProps, ITitleBarState> {
 
         return (
             <div className="title-bar bg-lighter-3">
-                {(this.state.platform === PlatformType.Windows || this.state.platform === PlatformType.Web) &&
+                {(this.state.platform === PlatformType.Web) &&
+                    <div className="title-bar-icon">
+                        <a href={`${this.props.stellaUrl}`}>Back to Stella</a>
+                    </div>
+                }
+                {(this.state.platform === PlatformType.Windows) &&
                     <div className="title-bar-icon">
                         {typeof (this.props.icon) === "string" && <i className={`${this.props.icon}`}></i>}
                         {typeof (this.props.icon) !== "string" && this.props.icon}

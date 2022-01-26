@@ -28,6 +28,10 @@ export const spanish: IAppStrings = {
         openLocalProject: {
             title: "Abrir Proyecto Local",
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "Abrir Proyecto de la Nube",
             selectConnection: "Select a Connection",
@@ -205,25 +209,13 @@ export const spanish: IAppStrings = {
                     title: "Server URL",
                     description: "URL of remote work server",
                 },
-                taskServerUrl: {
-                    title: "Stella server URL",
-                    description: "URL of Stella server",
-                },
                 taskId: {
                     title: "Task ID",
-                    description: "Token of Task ID",
+                    description: "ID of the task that is assigned to you",
                 },
-                taskType: {
-                    title: "Task type",
-                    description: "Type of task",
-                    options: {
-                        purification: "Purification",
-                        revisePurification: "Revise purification",
-                        annotation: "Annotation",
-                        reviseAnnotation: "Revise annotation",
-                        audit: "Audit",
-                        admin: "Admin",
-                    },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
                 },
             },
             bing: {

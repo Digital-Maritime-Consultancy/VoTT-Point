@@ -110,6 +110,7 @@ export interface IProject {
     useSecurityToken: boolean;
     securityToken?: string;
     description?: string;
+    taskType: TaskType;
     tags: ITag[];
     sourceConnection: IConnection;
     targetConnection: IConnection;
@@ -120,6 +121,7 @@ export interface IProject {
     autoSave: boolean;
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
+    stellaUrl?: string;
 }
 
 /**
@@ -399,7 +401,35 @@ export enum TaskType {
     Annotation = "annotation", // 가공 작업
     ReviseAnnotation = "revise-annotation", // 가공 검수 작업
     Audit = "audit", // 검증 작업
-    Admin = "admin",
+    Admin = "admin", // 관리자
+    NotAssigned = "notassigned", //지정 안됨
+}
+
+export interface IProgress {
+    state: AssetState;
+}
+
+/**
+ * @name - Task
+ * @description - Defines a region within an asset
+ * @member id - Unique identifier for this region
+ * @member type - Defines the type of region
+ * @member tags - Defines a list of tags applied to a region
+ * @member points - Defines a list of points that define a region
+ */
+export interface ITask {
+    id: string;
+    vottBackendUrl: string;
+    imageServerUrl: string;
+    stellaUrl: string;
+    description: string;
+    classList: { [name: string]: string };
+    imageList: { [name: string]: string };
+    type: string;
+    status: string;
+    createdAt?: string;
+    lastUpdatedAt?: string;
+    progress?: { [name: string]: IProgress };
 }
 
 /**

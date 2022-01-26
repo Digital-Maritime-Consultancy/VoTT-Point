@@ -100,9 +100,11 @@ export class AssetService {
 
     private assetProviderInstance: IAssetProvider;
     private storageProviderInstance: IStorageProvider;
+    private taskId: string;
 
     constructor(private project: IProject) {
         Guard.null(project);
+        this.taskId = project.id;
     }
 
     /**
@@ -164,7 +166,7 @@ export class AssetService {
     public async save(metadata: IAssetMetadata): Promise<IAssetMetadata> {
         Guard.null(metadata);
 
-        const fileName = `${metadata.asset.id}${constants.assetMetadataFileExtension}`;
+        const fileName = `${metadata.asset.id}--${this.taskId}${constants.assetMetadataFileExtension}`;
 
         // Only save asset metadata if asset is in a tagged state
         // Otherwise primary asset information is already persisted in the project file.
@@ -191,7 +193,7 @@ export class AssetService {
     public async getAssetMetadata(asset: IAsset): Promise<IAssetMetadata> {
         Guard.null(asset);
 
-        const fileName = `${asset.id}${constants.assetMetadataFileExtension}`;
+        const fileName = `${asset.id}--${this.taskId}${constants.assetMetadataFileExtension}`;
         try {
             const json = await this.storageProvider.readText(fileName);
             return JSON.parse(json) as IAssetMetadata;

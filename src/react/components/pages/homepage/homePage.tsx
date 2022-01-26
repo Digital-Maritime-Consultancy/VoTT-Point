@@ -21,6 +21,7 @@ import { IAssetMetadata } from "../../../../models/applicationState";
 import { toast } from "react-toastify";
 import MessageBox from "../../common/messageBox/messageBox";
 import { isElectron } from "../../../../common/hostProcess";
+import { TaskPicker } from "../../common/taskPicker/taskPicker";
 
 export interface IHomePageProps extends RouteComponentProps, React.Props<HomePage> {
     recentProjects: IProject[];
@@ -58,6 +59,7 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
     };
     private filePicker: React.RefObject<FilePicker> = React.createRef();
     private deleteConfirm: React.RefObject<Confirm> = React.createRef();
+    private taskPicker: React.RefObject<TaskPicker> = React.createRef();
     private cloudFilePicker: React.RefObject<CloudFilePicker> = React.createRef();
     private importConfirm: React.RefObject<Confirm> = React.createRef();
 
@@ -85,14 +87,15 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
                             </li>
                         }
                         <li>
-                            {/*Open Cloud Project*/}
-                            <a href="#" onClick={this.handleOpenCloudProjectClick} className="p-5 cloud-open-project">
-                                <i className="fas fa-cloud fa-9x"></i>
-                                <h6>{strings.homePage.openCloudProject.title}</h6>
+                            {/*Create Project from Task*/}
+                            <a href="#" onClick={this.handleOpenTaskProjectClick} className="p-5 cloud-open-project">
+                                <i className="fas fa-file-import fa-9x"></i>
+                                <h6>{strings.homePage.openTask.title}</h6>
                             </a>
-                            <CloudFilePicker
-                                ref={this.cloudFilePicker}
+                            <TaskPicker
+                                ref={this.taskPicker}
                                 connections={this.props.connections}
+                                onSaveProject={(project: IProject) => this.saveProject(project)}
                                 onSubmit={(content) => this.loadSelectedProject(JSON.parse(content))}
                                 fileExtension={constants.projectFileExtension}
                             />
@@ -135,6 +138,10 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
         this.cloudFilePicker.current.open();
     }
 
+    private handleOpenTaskProjectClick = () => {
+        this.taskPicker.current.open();
+    }
+
     private onProjectFileUpload = async (e, project) => {
         let projectJson: IProject;
 
@@ -166,6 +173,11 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
 
     private loadSelectedProject = async (project: IProject) => {
         await this.props.actions.loadProject(project);
+        this.props.history.push(`/projects/${project.id}/edit/${EditingContext.Revise}`);
+    }
+
+    private saveProject = async (project: IProject) => {
+        await this.props.actions.saveProject(project);
         this.props.history.push(`/projects/${project.id}/edit/${EditingContext.Revise}`);
     }
 

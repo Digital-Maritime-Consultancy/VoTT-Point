@@ -285,6 +285,7 @@ export default class MockFactory {
             useSecurityToken: true,
             securityToken: `Security-Token-${name}`,
             assets: {},
+            taskType: TaskType.NotAssigned,
             exportFormat: MockFactory.exportFormat(),
             sourceConnection: connection,
             targetConnection: connection,
@@ -569,9 +570,8 @@ export default class MockFactory {
     public static createRemoteStorageOptions(): IRemoteStorageOptions {
     return {
         url: "http://localhost",
-        taskServerUrl: "",
         taskId: "",
-        taskType: TaskType.Purification,
+        taskServerUrl: "http://localhost",
         };
     }
 
