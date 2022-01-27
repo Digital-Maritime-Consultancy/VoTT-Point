@@ -208,12 +208,10 @@ export class RemoteStorage implements IStorageProvider {
 
         if(response.data.imageServerUrl) {
             const items = [];
-            console.log(response.data.imageList);
             for (let key in response.data.imageList) {
                 let value = response.data.imageList[key];
                 items.push(`${this.getUrl()}/${value}`);
             }
-            console.log(items);
             return items
                 .map((filePath) => AssetService.createAssetFromFilePath(filePath))
                 .filter((asset) => asset.type !== AssetType.Unknown);

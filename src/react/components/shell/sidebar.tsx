@@ -2,7 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import ConditionalNavLink from "../common/conditionalNavLink/conditionalNavLink";
 import { strings } from "../../../common/strings";
-import { EditingContext } from "../../../models/applicationState";
+import { EditingContext, TaskType } from "../../../models/applicationState";
+import { getIconNameFromTaskType, getPathFromTaskType } from "../common/taskPicker/taskRouter";
 
 /**
  * Side bar that remains visible throughout app experience
@@ -13,7 +14,6 @@ import { EditingContext } from "../../../models/applicationState";
  */
 export default function Sidebar({ project }) {
     const projectId = project ? project.id : null;
-
     return (
         <div className="bg-lighter-2 app-sidebar">
             <ul>
@@ -22,34 +22,16 @@ export default function Sidebar({ project }) {
                         <i className="fas fa-home"></i>
                     </NavLink>
                 </li>
-                <li>
+                {
+                    project &&
+                    <li>
                     <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/${EditingContext.EditDot}`}>
-                        <i className="fas fa-dot-circle"></i>
-                    </ConditionalNavLink>
-                </li>
-                <li>
-                    <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/${EditingContext.EditRect}`}>
-                        <i className="fas fa-vector-square"></i>
-                    </ConditionalNavLink>
-                </li>
-                <li>
-                    <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/${EditingContext.Purify}`}>
-                        <i className="fas fa-eye"></i>
-                    </ConditionalNavLink>
-                </li>
-                <li>
-                    <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/${EditingContext.Revise}`}>
-                        <i className="fas fa-check"></i>
-                    </ConditionalNavLink>
-                </li>
+                                title={strings.tags.editor}
+                                to={`/projects/${projectId}/edit/${getPathFromTaskType(project.taskType as TaskType)}`}>
+                                <i className={`fas ${getIconNameFromTaskType(project.taskType as TaskType)}`}></i>
+                            </ConditionalNavLink>
+                    </li>
+                }
                 <li>
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.projectSettings.title}

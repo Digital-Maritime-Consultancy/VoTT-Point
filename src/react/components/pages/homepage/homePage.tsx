@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import MessageBox from "../../common/messageBox/messageBox";
 import { isElectron } from "../../../../common/hostProcess";
 import { TaskPicker } from "../../common/taskPicker/taskPicker";
+import { getPathFromTaskType } from "../../common/taskPicker/taskRouter";
 
 export interface IHomePageProps extends RouteComponentProps, React.Props<HomePage> {
     recentProjects: IProject[];
@@ -173,12 +174,12 @@ export default class HomePage extends React.Component<IHomePageProps, IHomePageS
 
     private loadSelectedProject = async (project: IProject) => {
         await this.props.actions.loadProject(project);
-        this.props.history.push(`/projects/${project.id}/edit/${EditingContext.Revise}`);
+        this.props.history.push(`/projects/${project.id}/edit/${getPathFromTaskType(project.taskType)}`);
     }
 
     private saveProject = async (project: IProject) => {
         await this.props.actions.saveProject(project);
-        this.props.history.push(`/projects/${project.id}/edit/${EditingContext.Revise}`);
+        this.props.history.push(`/projects/${project.id}/edit/${getPathFromTaskType(project.taskType)}`);
     }
 
     private deleteProject = async (project: IProject) => {

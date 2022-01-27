@@ -32,6 +32,7 @@ import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
+import { getPathFromTaskType } from "../../common/taskPicker/taskRouter";
 
 /**
  * Properties for Editor Page
@@ -156,8 +157,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.EditDot;
-        if (this.state.context !== currentContext){
+        const currentContext = this.props.match.params["context"] ?
+            this.props.match.params["context"] : getPathFromTaskType(this.props.project.taskType);
+        if (this.state.context !== currentContext) {
             // refresh view
             this.setState({
                 context: currentContext,
