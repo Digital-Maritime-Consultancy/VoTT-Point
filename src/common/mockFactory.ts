@@ -453,6 +453,22 @@ export default class MockFactory {
     }
 
     /**
+     * Creates fake data for testing Azure Cloud Storage
+     */
+     public static createRemoteStorageData() {
+        const options = MockFactory.createRemoteStorageOptions();
+        return {
+            blobName: "file1.jpg",
+            blobText: "This is the content",
+            fileType: "image/jpg",
+            containerName: "taskId",
+            containers: MockFactory.createAzureContainers(),
+            blobs: MockFactory.createAzureBlobs(),
+            options,
+        };
+    }
+
+    /**
      * Creates fake Blob object
      * @param name Name of blob
      * @param content Content of blob
