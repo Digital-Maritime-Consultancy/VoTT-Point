@@ -275,7 +275,7 @@ export interface IAssetVideoSettings {
  * @member name - Generated name for asset
  * @member path - Relative path to asset within the underlying data source
  * @member size - Size / dimensions of asset
- * @member disabled - State of purification
+ * @member isDisabled - Outcome of purification
  * @member approved - State of rejection
  * @member format - The asset format (jpg, png, mp4, etc)
  * @member comment - Comment for asset
@@ -287,7 +287,7 @@ export interface IAsset {
     name: string;
     path: string;
     size: ISize;
-    disabled: boolean;
+    isDisabled: boolean;
     approved: boolean;
     completed: boolean;
     format?: string;

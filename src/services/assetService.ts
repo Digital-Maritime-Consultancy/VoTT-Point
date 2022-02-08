@@ -64,7 +64,7 @@ export class AssetService {
             name: assetFileName,
             path: assetFilePath,
             size: null,
-            disabled: false,
+            isDisabled: false,
             approved: false,
             completed: false,
         };

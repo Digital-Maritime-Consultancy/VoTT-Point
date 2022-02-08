@@ -758,9 +758,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
      */
     private getAssetMetadataState(assetMetadata: IAssetMetadata): AssetState {
         if (this.isTaggableAssetType(assetMetadata.asset)) {
-            if (assetMetadata.asset.disabled) {
+            if (assetMetadata.asset.isDisabled) {
                 return AssetState.Disabled;
-            } else if (!assetMetadata.asset.disabled && assetMetadata.asset.approved) {
+            } else if (!assetMetadata.asset.isDisabled && assetMetadata.asset.approved) {
                 return AssetState.Approved;
             } else if (assetMetadata.asset.state === AssetState.NotVisited) {
                 return AssetState.Visited;
@@ -782,7 +782,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             asset: {
                 ...this.state.selectedAsset.asset,
                 state,
-                disabled: state === AssetState.Disabled,
+                isDisabled: state === AssetState.Disabled,
                 approved: completed,
                 taskId: this.props.project.name,
             },
