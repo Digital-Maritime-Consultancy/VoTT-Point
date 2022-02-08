@@ -33,6 +33,7 @@ import { ActiveLearningService } from "../../../../services/activeLearningServic
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
 import { getPathFromTaskType } from "../../common/taskPicker/taskRouter";
+import axios from "axios";
 
 /**
  * Properties for Editor Page
@@ -571,12 +572,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 break;
             case ToolbarItemName.Reject:
                 await this.updateAssetMetadataState(AssetState.Rejected, true);
+                await this.updateAbilityToStella(true);
                 break;
             case ToolbarItemName.Disable:
                 await this.updateAssetMetadataState(AssetState.Disabled);
                 break;
             case ToolbarItemName.Approve:
                 await this.updateAssetMetadataState(AssetState.Approved, true);
+                await this.updateAbilityToStella(false);
                 break;
         }
     }
@@ -584,8 +587,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     private processPoint2Rect = async () => {
         if (!this.onBeforeAssetSelected()) {
             return;
-        }
-        else {
+        } else {
             if (!this.dotToRectService) {
                 toast.error("You need to set an URL for Dot-to-Rect service");
                 return ;
@@ -620,6 +622,23 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 return;
             });
             //toast.dismiss(toastId);
+        }
+    }
+
+    private updateAbilityToStella = async (isDisabled: boolean) => {
+        if (this.props.project.stellaUrl) {
+            try {
+                const apiUrl = `${this.props.project.stellaUrl}/file/status?uuid=${this.props.project.name}&isDisabled=${isDisabled}`;
+                await axios.put(apiUrl).then(e => toast.info("Successfully updated to Stella."));
+            } catch (e) {
+                if (e.statusCode === 409) {
+                    alert("Error reaching to the server: " + this.props.project.stellaUrl);
+                    return;
+                }
+                throw e;
+            }
+        } else {
+            alert("Stella URL is not found!");
         }
     }
 
