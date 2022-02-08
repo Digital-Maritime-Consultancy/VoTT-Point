@@ -422,6 +422,7 @@ export interface ITask {
     vottBackendUrl: string;
     imageServerUrl: string;
     stellaUrl: string;
+    dotToRectUrl: string;
     description: string;
     classList: { [name: string]: string };
     imageList: { [name: string]: string };
