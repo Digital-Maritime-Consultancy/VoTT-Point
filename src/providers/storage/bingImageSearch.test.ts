@@ -83,7 +83,7 @@ describe("Bing Image Search", () => {
             type: AssetType.Image,
             state: AssetState.NotVisited,
             size: null,
-            disabled: false,
+            isDisabled: false,
             approved: false,
             completed: false,
         };
