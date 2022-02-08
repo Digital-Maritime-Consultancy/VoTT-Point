@@ -578,14 +578,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.Approve:
                 await this.updateAssetMetadataState(AssetState.Approved, true);
                 break;
-            case ToolbarItemName.SaveProject:
-                await this.uploadToStella();
-                break;
         }
-    }
-
-    private uploadToStella = async() => {
-        alert(`Upload to stella: ${this.props.project.stellaUrl}`);
     }
 
     private processPoint2Rect = async () => {
