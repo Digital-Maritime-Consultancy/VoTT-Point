@@ -535,6 +535,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         // Add regions to the canvas
         this.state.currentAsset.regions.forEach((region: IRegion) => {
             if (this.props.context === EditingContext.EditDot && region.type === RegionType.Point ||
+                this.props.context === EditingContext.EditDot && region.type === RegionType.Rectangle ||
                 this.props.context === EditingContext.EditRect && region.type === RegionType.Rectangle) {
                 const loadedRegionData = CanvasHelpers.getRegionData(region);
                 this.editor.RM.addRegion(

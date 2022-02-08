@@ -42,13 +42,33 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
+        name: ToolbarItemName.DrawPoint,
+        tooltip: strings.editorPage.toolbar.drawPoint,
+        icon: "fa-dot-circle",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["O", "o"],
+        context: [EditingContext.EditDot],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.SubmitPoints,
+        tooltip: strings.editorPage.toolbar.submitPoints,
+        icon: "fas fa-upload",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["P", "p"],
+        context: [EditingContext.EditDot],
+    });
+
+    ToolbarItemFactory.register({
         name: ToolbarItemName.DrawRectangle,
         tooltip: strings.editorPage.toolbar.drawRectangle,
         icon: "fa-vector-square",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["R", "r"],
-        context: [EditingContext.EditRect],
+        context: [EditingContext.EditDot, EditingContext.EditRect],
     });
 
     ToolbarItemFactory.register({
@@ -72,16 +92,6 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.DrawPoint,
-        tooltip: strings.editorPage.toolbar.drawPoint,
-        icon: "fa-dot-circle",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.State,
-        accelerators: ["O", "o"],
-        context: [EditingContext.EditDot],
-    });
-
-    ToolbarItemFactory.register({
         name: ToolbarItemName.PreviousAsset,
         tooltip: strings.editorPage.toolbar.previousAsset,
         icon: "fas fa-arrow-circle-up",
@@ -99,16 +109,6 @@ export default function registerToolbar() {
         type: ToolbarItemType.Action,
         accelerators: ["ArrowDown", "S", "s"],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
-    });
-
-    ToolbarItemFactory.register({
-        name: ToolbarItemName.SubmitPoints,
-        tooltip: strings.editorPage.toolbar.submitPoints,
-        icon: "fas fa-upload",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.Action,
-        accelerators: ["P", "p"],
-        context: [EditingContext.EditDot],
     });
 
     /*
