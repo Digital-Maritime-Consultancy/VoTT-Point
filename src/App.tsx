@@ -74,7 +74,9 @@ export default class App extends React.Component<IAppProps> {
                             <div className={`app-shell platform-${platform}`}>
                                 <TitleBar icon="fas fa-tags"
                                     title={this.props.currentProject ? this.props.currentProject.name : ""}
-                                    stellaUrl={this.props.currentProject ? this.props.currentProject.stellaUrl : "#"}>
+                                    stellaUrl={this.props.currentProject ?
+                                        `${this.props.currentProject.stellaUrl}/task/list`
+                                            : "http://localhost:8081/task/list"}>
                                     <div className="app-help-menu-icon"><HelpMenu/></div>
                                 </TitleBar>
                                 <div className="app-main">
