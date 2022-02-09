@@ -8,6 +8,7 @@ import EditorPage from "../pages/editorPage/editorPage";
 import ExportPage from "../pages/export/exportPage";
 import ProjectSettingsPage from "../pages/projectSettings/projectSettingsPage";
 import Dot2RectPage from "../pages/dot2Rect/dot2RectPage";
+import TaskPage from "../pages/\btaskPage/taskPage";
 
 /**
  * @name - Main Content Router
@@ -21,6 +22,7 @@ export default function MainContentRouter() {
                 <Route path="/settings" component={AppSettingsPage} />
                 <Route path="/connections/:connectionId" component={ConnectionPage} />
                 <Route path="/connections" exact component={ConnectionPage} />
+                <Route path="/task/:taskId" component={TaskPage} />
                 <Route path="/projects/:projectId/edit/:type/:status" component={EditorPage} />
                 <Route path="/projects/create" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/settings" component={ProjectSettingsPage} />

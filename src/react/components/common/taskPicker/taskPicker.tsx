@@ -114,6 +114,25 @@ export class TaskPicker extends React.Component<ITaskPickerProps, ITaskPickerSta
         );
     }
 
+    public async fileList(connection: IConnection) {
+        const storageProvider = StorageProviderFactory.createFromConnection(connection);
+        const files = await storageProvider.listFiles(
+            connection.providerOptions["containerName"],
+            this.props.fileExtension);
+        const fileItems = [];
+        for (let i = 0; i < files.length; i++) {
+            fileItems.push({
+                id: `file-${i + 1}`,
+                name: files[i],
+            });
+        }
+        return this.getCondensedList(
+            `${this.props.fileExtension || "All"} Files in "${connection.name}"`,
+            fileItems,
+            this.onClickFile,
+        );
+    }
+
     private getInitialState(): ITaskPickerState {
         return {
             isOpen: false,
@@ -181,26 +200,6 @@ export class TaskPicker extends React.Component<ITaskPickerProps, ITaskPickerSta
             condensedList: fileList,
             backDisabled: false,
         });
-    }
-
-    private async fileList(connection: IConnection) {
-        const storageProvider = StorageProviderFactory.createFromConnection(connection);
-        const files = await storageProvider.listFiles(
-            connection.providerOptions["containerName"],
-            this.props.fileExtension);
-        
-        const fileItems = [];
-        for (let i = 0; i < files.length; i++) {
-            fileItems.push({
-                id: `file-${i + 1}`,
-                name: files[i],
-            });
-        }
-        return this.getCondensedList(
-            `${this.props.fileExtension || "All"} Files in "${connection.name}"`,
-            fileItems,
-            this.onClickFile,
-        );
     }
 
     private onClickFile(args) {
