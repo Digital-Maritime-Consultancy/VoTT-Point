@@ -1,4 +1,4 @@
-import { TaskType } from './../models/applicationState';
+import { TaskStatus, TaskType } from './../models/applicationState';
 import shortid from "shortid";
 import {
     AssetState, AssetType, IApplicationState, IAppSettings, IAsset, IAssetMetadata,
@@ -285,7 +285,8 @@ export default class MockFactory {
             useSecurityToken: true,
             securityToken: `Security-Token-${name}`,
             assets: {},
-            taskType: TaskType.NotAssigned,
+            taskType: TaskType.Cleansing,
+            taskStatus: TaskStatus.New,
             exportFormat: MockFactory.exportFormat(),
             sourceConnection: connection,
             targetConnection: connection,

@@ -1,33 +1,53 @@
-import { EditingContext, TaskType } from "../../../../models/applicationState";
+import { EditingContext, TaskContext, TaskStatus, TaskType } from "../../../../models/applicationState";
 
-export const getPathFromTaskType = (taskType: TaskType): string => {
-    switch (taskType) {
-        case TaskType.Annotation:
+export const getEditingContext = (taskType: TaskType, taskStatus: TaskStatus): EditingContext => {
+    const taskContext = TaskContext.NotAssigned;
+    if (taskType === TaskType.Cleansing) {
+        if (taskStatus === TaskStatus.In_progress) {
+            return getPathFromTaskType(TaskContext.Purification);
+        } else if (taskStatus === TaskStatus.Review) {
+            return getPathFromTaskType(TaskContext.RevisePurification);
+        }
+    } else if (taskType === TaskType.Annotation) {
+        if (taskStatus === TaskStatus.In_progress) {
+            return getPathFromTaskType(TaskContext.Annotation);
+        } else if (taskStatus === TaskStatus.Review) {
+            return getPathFromTaskType(TaskContext.ReviseAnnotation);
+        }
+    } else if (taskType === TaskType.Evaluation) {
+        return getPathFromTaskType(TaskContext.Audit);
+    }
+    return getPathFromTaskType(taskContext);
+}
+
+export const getPathFromTaskType = (taskContext: TaskContext): EditingContext => {
+    switch (taskContext) {
+        case TaskContext.Annotation:
             return EditingContext.EditDot;
-        case TaskType.ReviseAnnotation:
+        case TaskContext.ReviseAnnotation:
             return EditingContext.EditRect;
-        case TaskType.Purification:
+        case TaskContext.Purification:
             return EditingContext.Purify;
-        case TaskType.RevisePurification:
+        case TaskContext.RevisePurification:
             return EditingContext.Revise;
-        case TaskType.Audit:
+        case TaskContext.Audit:
             return EditingContext.EditRect;
         default:
             return EditingContext.None;
     }
 }
 
-export const getIconNameFromTaskType = (taskType: TaskType): string => {
-    switch (taskType) {
-        case TaskType.Annotation:
+export const getIconNameFromTaskType = (taskContext: TaskContext): string => {
+    switch (taskContext) {
+        case TaskContext.Annotation:
             return "fa-dot-circle";
-        case TaskType.ReviseAnnotation:
+        case TaskContext.ReviseAnnotation:
             return "fa-vector-square";
-        case TaskType.Purification:
+        case TaskContext.Purification:
             return "fa-check";
-        case TaskType.RevisePurification:
+        case TaskContext.RevisePurification:
             return "fa-user-check";
-        case TaskType.Audit:
+        case TaskContext.Audit:
             return "fa-vector-square";
         default:
             return "fa-eye";

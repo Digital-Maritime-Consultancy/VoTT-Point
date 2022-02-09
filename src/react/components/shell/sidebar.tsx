@@ -2,8 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import ConditionalNavLink from "../common/conditionalNavLink/conditionalNavLink";
 import { strings } from "../../../common/strings";
-import { EditingContext, TaskType } from "../../../models/applicationState";
-import { getIconNameFromTaskType, getPathFromTaskType } from "../common/taskPicker/taskRouter";
+import { TaskContext } from "../../../models/applicationState";
+import { getEditingContext, getIconNameFromTaskType } from "../common/taskPicker/taskRouter";
 
 /**
  * Side bar that remains visible throughout app experience
@@ -27,8 +27,8 @@ export default function Sidebar({ project }) {
                     <li>
                     <ConditionalNavLink disabled={!projectId}
                                 title={strings.tags.editor}
-                                to={`/projects/${projectId}/edit/${getPathFromTaskType(project.taskType as TaskType)}`}>
-                                <i className={`fas ${getIconNameFromTaskType(project.taskType as TaskType)}`}></i>
+                                to={`/projects/${projectId}/edit/${project.taskType}/${project.taskStatus}`}>
+                                <i className={`fas ${getIconNameFromTaskType(project.taskType as TaskContext)}`}></i>
                             </ConditionalNavLink>
                     </li>
                 }

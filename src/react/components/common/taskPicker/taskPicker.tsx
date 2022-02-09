@@ -131,7 +131,6 @@ export class TaskPicker extends React.Component<ITaskPickerProps, ITaskPickerSta
         const response = await axios.get(apiUrl);
         const project: IProject = response.data as IProject;
         this.props.onSaveProject(project);
-        console.log(JSON.stringify(project));
         this.props.onSubmit(JSON.stringify(project));
     }
 

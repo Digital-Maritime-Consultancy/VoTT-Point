@@ -2,7 +2,7 @@ import shortid from "shortid";
 import {
     IProject, ITag, IConnection, AppError, ErrorCode,
     IAssetMetadata, IRegion, RegionType, AssetState, IFileInfo,
-    IAsset, AssetType, ModelPathType, TaskType,
+    IAsset, AssetType, TaskType, TaskStatus,
 } from "../models/applicationState";
 import { IV1Project, IV1Region } from "../models/v1Models";
 import packageJson from "../../package.json";
@@ -61,7 +61,8 @@ export default class ImportService implements IImportService {
             securityToken: `${projectInfo.file.name.split(".")[0]} Token`,
             description: "Converted V1 Project",
             tags: parsedTags,
-            taskType: TaskType.NotAssigned,
+            taskType: TaskType.Cleansing,
+            taskStatus: TaskStatus.New,
             sourceConnection: connection,
             targetConnection: connection,
             exportFormat: null,

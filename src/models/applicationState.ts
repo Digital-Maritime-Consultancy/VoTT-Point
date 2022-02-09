@@ -111,6 +111,7 @@ export interface IProject {
     securityToken?: string;
     description?: string;
     taskType: TaskType;
+    taskStatus: TaskStatus;
     tags: ITag[];
     sourceConnection: IConnection;
     targetConnection: IConnection;
@@ -395,7 +396,29 @@ export enum AssetState {
     Completed = 7, // 작업 완료
 }
 
+/**
+ * @name - TaskType
+ * @description - Defines the type of task given from Stella
+ */
 export enum TaskType {
+    Cleansing = "Cleansing",
+    Annotation = "Annotation",
+    Evaluation = "Evaluation",
+}
+
+/**
+ * @name - TaskStatus
+ * @description - Defines the status of task given from Stella
+ */
+export enum TaskStatus {
+    New = "New",
+    In_progress = "In_progress",
+    Review = "Review",
+    Finished = "Finished",
+    Canceled = "Canceled",
+}
+
+export enum TaskContext {
     Purification = "purification", // 정제 작업
     RevisePurification = "revise-purification", // 정제 검수 작업
     Annotation = "annotation", // 가공 작업

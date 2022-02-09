@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskType,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -32,7 +32,7 @@ import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
-import { getPathFromTaskType } from "../../common/taskPicker/taskRouter";
+import { getEditingContext } from "../../common/taskPicker/taskRouter";
 import axios from "axios";
 
 /**
@@ -158,13 +158,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentContext = this.props.match.params["context"] ?
-            this.props.match.params["context"] : getPathFromTaskType(this.props.project.taskType);
-        if (this.state.context !== currentContext) {
+        const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
+            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
+            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
+        if (this.state.context !== currentEditingContext) {
             // refresh view
             this.setState({
-                context: currentContext,
-                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentContext) >= 0),
+                context: currentEditingContext,
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
             });
