@@ -131,7 +131,7 @@ export class RemoteStorage implements IStorageProvider {
             const apiUrl = this.getUrl().includes('task') ? `${this.getUrl()}/all` : `${this.getUrl()}`;
             const config = { headers: {"Access-Control-Allow-Origin": "*"} };
             return await axios.get(apiUrl, config)
-                .then(response => response.data.map(d => d.id)).catch(e => []);
+                .then(response => response.data.map(d => d.uuid ? d.uuid : d.id)).catch(e => []);
         } catch (e) {
             if (e.statusCode === 409) {
                 alert("Error reaching to the server");
