@@ -2,7 +2,7 @@ import shortid from "shortid";
 import {
     IProject, ITag, IConnection, AppError, ErrorCode,
     IAssetMetadata, IRegion, RegionType, AssetState, IFileInfo,
-    IAsset, AssetType, ModelPathType,
+    IAsset, AssetType, TaskType, TaskStatus,
 } from "../models/applicationState";
 import { IV1Project, IV1Region } from "../models/v1Models";
 import packageJson from "../../package.json";
@@ -61,6 +61,8 @@ export default class ImportService implements IImportService {
             securityToken: `${projectInfo.file.name.split(".")[0]} Token`,
             description: "Converted V1 Project",
             tags: parsedTags,
+            taskType: TaskType.Cleansing,
+            taskStatus: TaskStatus.New,
             sourceConnection: connection,
             targetConnection: connection,
             exportFormat: null,
@@ -68,6 +70,7 @@ export default class ImportService implements IImportService {
                 frameExtractionRate: originalProject.framerate ? Number(originalProject.framerate) : 15,
             },
             activeLearningSettings: null,
+            dotToRectSettings: null,
             autoSave: true,
         };
     }
@@ -139,8 +142,8 @@ export default class ImportService implements IImportService {
         });
 
         const taggedAssets = videoFrameAssets
-            .filter((assetMetadata) => assetMetadata.asset.state === AssetState.Tagged);
-        const parentAssetState = taggedAssets.length > 0 ? AssetState.Tagged : AssetState.Visited;
+            .filter((assetMetadata) => assetMetadata.asset.state === AssetState.TaggedDot);
+        const parentAssetState = taggedAssets.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
         const parentAssetMetadata = await this.createAssetMetadata(parentVideoAsset, parentAssetState, []);
 
         return [parentAssetMetadata].concat(videoFrameAssets);
@@ -259,7 +262,7 @@ export default class ImportService implements IImportService {
      * @param frame The v1 asset frame
      */
     private getAssetState(frame: IV1Frame): AssetState {
-        return frame.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
+        return frame.regions.length > 0 ? AssetState.TaggedDot : AssetState.Visited;
     }
 
     /**

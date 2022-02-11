@@ -8,9 +8,9 @@ import { AssetState } from "../../../models/applicationState";
 describe("StatusBarMetrics Component", () => {
     const testProject = MockFactory.createTestProject("TestProject");
     const testAssets = MockFactory.createTestAssets();
-    testAssets[0].state = AssetState.Tagged;
-    testAssets[1].state = AssetState.Tagged;
-    testAssets[2].state = AssetState.Tagged;
+    testAssets[0].state = AssetState.TaggedDot;
+    testAssets[1].state = AssetState.TaggedDot;
+    testAssets[2].state = AssetState.TaggedDot;
     testAssets[3].state = AssetState.Visited;
     testAssets[4].state = AssetState.Visited;
     testProject.assets = _.keyBy(testAssets, (asset) => asset.id);

@@ -27,6 +27,10 @@ export const japanese: IAppStrings = {
         openLocalProject: {
             title: "ローカルプロジェクトを開く", // Open Local Project"
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "クラウドプロジェクトを開く", // Open Cloud Project,
             selectConnection: "接続を選択", // Select a Connection"
@@ -203,6 +207,22 @@ export const japanese: IAppStrings = {
                     // Creates the blob container if it does not already exist"
                 },
             },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "URL of remote work server",
+                },
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
+                },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
+                },
+            },
             bing: {
                 title: "Bing 画像検索",  // Bing Image Search,
                 options: {
@@ -268,6 +288,11 @@ export const japanese: IAppStrings = {
         height: "高さ", // Height,
         tagged: "タグ付き", // Tagged,
         visited: "訪問済み", // Visited,
+        rectangled: "Rect received",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "選択（V）", // Select (V),
             pan: "パン", // Pan,
@@ -284,8 +309,13 @@ export const japanese: IAppStrings = {
             saveProject: "プロジェクトを保存", // Save Project,
             exportProject: "プロジェクトをエクスポート",  // Export Project,
             activeLearning: "アクティブ ラーニング",  // Active Learning"
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {
@@ -485,6 +515,21 @@ export const japanese: IAppStrings = {
             loadingModel: "アクティブ ラーニング モデルを読み込んでいます...", // Loading active learning model...,
             errorLoadModel: "アクティブ ラーニング モデルの読み込みエラー", // Error loading active learning model,
             saveSuccess: "アクティブ ラーニング設定を保存しました",  // Successfully saved active learning settings"
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

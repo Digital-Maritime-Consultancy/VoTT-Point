@@ -27,6 +27,10 @@ export const korean: IAppStrings = {
         openLocalProject: {
             title: "로컬 프로젝트 열기", // Open Local Project"
         },
+        openTask: {
+            title: "태스크로부터 프로젝트 생성",
+            selectConnection: "태스크 선택",
+        },
         openCloudProject: {
             title: "클라우드 프로젝트 열기", // Open Cloud Project,
             selectConnection: "Connection 선택", // Select a Connection
@@ -190,18 +194,32 @@ export const korean: IAppStrings = {
                     description: "",
                 },
                 containerName: {
-                    title: "컨테이너 이름",  // Container Name,
+                    title: "Container Name",
                     description: "",
                 },
                 sas: {
-                    title: "SAS", // SAS,
-                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
-                    // Shared access signature used to authenticate to the blob storage account"
+                    title: "SAS",
+                    description: "Shared access signature used to authenticate to the blob storage account",
                 },
                 createContainer: {
-                    title: "컨테이너 만들기",  // Create Container,
-                    description: "Blob 컨테이너가 없으면 새로 생성합니다.",
-                    // Creates the blob container if it does not already exist"
+                    title: "Create Container",
+                    description: "Creates the blob container if it does not already exist",
+                },
+            },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "서버 주소 (URL)",
+                    description: "",
+                },
+                taskId: {
+                    title: "태스크 ID",
+                    description: "할당된 태스크 아이디",
+                },
+                taskServerUrl: {
+                    title: "태스크 서버 URL",
+                    description: "태스크 서버의 주소",
                 },
             },
             bing: {
@@ -269,6 +287,11 @@ export const korean: IAppStrings = {
         height: "높이", // Height,
         tagged: "태그", // Tagged,
         visited: "방문", // Visited,
+        rectangled: "인식결과수신",
+        approved: "검수완료",
+        completed: "작업완료",
+        notapplicable: "기각",
+        commented: "의견게재",
         toolbar: {
             select: "선택 (V)", // Select (V),
             pan: "팬", // Pan,
@@ -285,8 +308,13 @@ export const korean: IAppStrings = {
             saveProject: "프로젝트 저장", // Save Project,
             exportProject: "프로젝트 내보내기",  // Export Project,
             activeLearning: "Active Learning",  // Active Learning"
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "기각",
+            reject: "검수결과-기각",
+            approve: "검수결과-승인",
+            comment: "의견개제",
         },
         videoPlayer: {
             previousTaggedFrame: {
@@ -486,6 +514,21 @@ export const korean: IAppStrings = {
             loadingModel: "Active Learning 모델 불러오는 중 ...", // Loading active learning model...,
             errorLoadModel: "Active Learning 모델을 불러오는 중 오류가 발생했습니다", // Error loading active learning model,
             saveSuccess: "Active Learning 모델 설정을 성공적으로 저장했습니다",  // Successfully saved active learning settings"
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle 인식 자동화 서비스",
+        form: {
+            properties: {
+                url: {
+                    title: "서버 URL",
+                    description: "인식 자동화 서버 URL을 입력해주세요",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "인식 자동화 서버로의 접속 실패",
+            saveSuccess: "인식 자동화 서버 접속 성공",
         },
     },
     profile: {

@@ -27,6 +27,10 @@ export const chinesetw: IAppStrings = {
         openLocalProject: {
             title: "打開本機專案", // Open Local Project
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "打開雲端專案", // Open Cloud Project
             selectConnection: "選擇連線", // Select a Connection
@@ -206,6 +210,22 @@ export const chinesetw: IAppStrings = {
                     description: "新增blob容器（如果還不存在時）", // Creates the blob container if it does not already exist
                 },
             },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "URL of remote work server",
+                },
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
+                },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
+                },
+            },
             bing: {
                 title: "Bing 影像搜尋", // Bing Image Search
                 options: {
@@ -271,6 +291,11 @@ export const chinesetw: IAppStrings = {
         height: "高度", // Height
         tagged: "已標記", // Tagged
         visited: "已檢視", // Visited
+        rectangled: "Rect received",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "選擇 (V)", // Select (V)
             pan: "全景", // Pan
@@ -287,8 +312,13 @@ export const chinesetw: IAppStrings = {
             saveProject: "儲存專案", // Save Project
             exportProject: "匯出專案", // Export Project
             activeLearning: "主動學習", // Active Learning
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {
@@ -489,6 +519,21 @@ export const chinesetw: IAppStrings = {
             loadingModel: "正在載入主動學習模型...", // Loading active learning model...
             errorLoadModel: "載入主動學習模型時出現錯誤", // Error loading active learning model
             saveSuccess: "已成功儲存主動學習設定", // Successfully saved active learning settings
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

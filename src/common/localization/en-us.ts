@@ -27,6 +27,10 @@ export const english: IAppStrings = {
         openLocalProject: {
             title: "Open Local Project",
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "Open Cloud Project",
             selectConnection: "Select a Connection",
@@ -196,6 +200,22 @@ export const english: IAppStrings = {
                     description: "Creates the blob container if it does not already exist",
                 },
             },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "URL of remote work server",
+                },
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
+                },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
+                },
+            },
             bing: {
                 title: "Bing Image Search",
                 options: {
@@ -261,6 +281,11 @@ export const english: IAppStrings = {
         height: "Height",
         tagged: "Tagged",
         visited: "Visited",
+        rectangled: "Rectangle received",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",
@@ -277,8 +302,13 @@ export const english: IAppStrings = {
             saveProject: "Save Project",
             exportProject: "Export Project",
             activeLearning: "Active Learning",
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {
@@ -472,6 +502,21 @@ export const english: IAppStrings = {
             loadingModel: "Loading active learning model...",
             errorLoadModel: "Error loading active learning model",
             saveSuccess: "Successfully saved active learning settings",
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

@@ -28,6 +28,10 @@ export const spanish: IAppStrings = {
         openLocalProject: {
             title: "Abrir Proyecto Local",
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "Abrir Proyecto de la Nube",
             selectConnection: "Select a Connection",
@@ -198,6 +202,22 @@ export const spanish: IAppStrings = {
                     description: "Crea el contenedor de blobs si aún no existe",
                 },
             },
+            remote: {
+                title: "Remote Storage",
+                description: "",
+                url: {
+                    title: "Server URL",
+                    description: "URL of remote work server",
+                },
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
+                },
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
+                },
+            },
             bing: {
                 title: "Búsqueda de Imágenes Bing",
                 options: {
@@ -263,6 +283,11 @@ export const spanish: IAppStrings = {
         height: "Altura",
         tagged: "Etiquetado",
         visited: "Visitado",
+        rectangled: "Rect received",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Seleccionar",
             pan: "Pan",
@@ -279,8 +304,13 @@ export const spanish: IAppStrings = {
             saveProject: "Guardar Proyecto",
             exportProject: "Exprtar Proyecto",
             activeLearning: "Aprendizaje Activo",
+            dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {
@@ -476,6 +506,21 @@ export const spanish: IAppStrings = {
             loadingModel: "Cargando modelo...",
             errorLoadModel: "Error al cargar el modelo",
             saveSuccess: "La configuración de aprendizaje activa se ha guardada correctamente",
+        },
+    },
+    dot2Rect: {
+        title: "Dot to Rectangle",
+        form: {
+            properties: {
+                url: {
+                    title: "URL",
+                    description: "Enter server URL",
+                },
+            },
+        },
+        messages: {
+            errorConnection: "Error connecting to the given URL",
+            saveSuccess: "Successfully saved dot to rect settings",
         },
     },
     profile: {

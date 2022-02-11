@@ -31,7 +31,9 @@ import Alert from "../../common/alert/alert";
 import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
-import { PointToRectService } from "../../../../services/pointToRectService";
+import { DotToRectService } from "../../../../services/dotToRectService";
+import { getEditingContext } from "../../common/taskPicker/taskRouter";
+import axios from "axios";
 
 /**
  * Properties for Editor Page
@@ -117,6 +119,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         additionalSettings: {
             videoSettings: (this.props.project) ? this.props.project.videoSettings : null,
             activeLearningSettings: (this.props.project) ? this.props.project.activeLearningSettings : null,
+            dotToRectService: (this.props.project) ? this.props.project.dotToRectSettings : null,
         },
         thumbnailSize: this.props.appSettings.thumbnailSize || { width: 175, height: 155 },
         isValid: true,
@@ -125,7 +128,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     };
 
     private activeLearningService: ActiveLearningService = null;
-    private pointToRectService: PointToRectService = null;
+    private dotToRectService: DotToRectService = null;
     private loadingProjectAssets: boolean = false;
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvas: RefObject<Canvas> = React.createRef();
@@ -142,8 +145,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-        this.pointToRectService = new PointToRectService("http://192.168.1.70:6978");
-        this.pointToRectService.ensureConnected();
+
+        // dot to rect service check
+        if (this.props.project && this.props.project.dotToRectSettings && this.props.project.dotToRectSettings.url) {
+            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url);
+        }
     }
 
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
@@ -152,12 +158,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.PlantSeed;
-        if (this.state.context !== currentContext){
+        const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
+            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
+            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
+        if (this.state.context !== currentEditingContext) {
             // refresh view
             this.setState({
-                context: currentContext,
-                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentContext) >= 0),
+                context: currentEditingContext,
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
             });
@@ -457,16 +465,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const initialState = assetMetadata.asset.state;
-
         // The root asset can either be the actual asset being edited (ex: VideoFrame) or the top level / root
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
-        if (this.isTaggableAssetType(assetMetadata.asset)) {
-            assetMetadata.asset.state = assetMetadata.regions.length > 0 ? AssetState.Tagged : AssetState.Visited;
-        } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-            assetMetadata.asset.state = AssetState.Visited;
-        }
+        assetMetadata.asset.state = this.getAssetMetadataState(assetMetadata);
 
         // Update root asset if not already in the "Tagged" state
         // This is primarily used in the case where a Video Frame is being edited.
@@ -477,7 +480,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state !== AssetState.Tagged) {
+            if (rootAssetMetadata.asset.state < AssetState.TaggedDot) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -487,8 +490,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         // Only update asset metadata if state changes or is different
         if (initialState !== assetMetadata.asset.state || this.state.selectedAsset !== assetMetadata) {
-            console.log("onAssetMetadata");
-            console.log(assetMetadata);
             await this.props.actions.saveAssetMetadata(this.props.project, assetMetadata);
         }
 
@@ -547,7 +548,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 });
                 break;
             case ToolbarItemName.SubmitPoints:
-                await this.sendPoints();
+                await this.processPoint2Rect();
                 break;
             case ToolbarItemName.DrawPoint:
                 this.setState({
@@ -567,43 +568,79 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.NextAsset:
                 await this.goToRootAsset(1);
                 break;
-            case ToolbarItemName.CompleteRevision:
-                await this.completeRevision();
+            case ToolbarItemName.Complete:
+                await this.updateAssetMetadataState(AssetState.Completed, true);
+                break;
+            case ToolbarItemName.Reject:
+                await this.updateAssetMetadataState(AssetState.Rejected, true);
+                await this.updateAbilityToStella(true);
+                break;
+            case ToolbarItemName.Disable:
+                await this.updateAssetMetadataState(AssetState.Disabled);
+                break;
+            case ToolbarItemName.Approve:
+                await this.updateAssetMetadataState(AssetState.Approved, true);
+                await this.updateAbilityToStella(false);
                 break;
         }
     }
 
-    private sendPoints = async () => {
-        if (!this.state.isValid) {
-            this.setState({ showInvalidRegionWarning: true });
+    private processPoint2Rect = async () => {
+        if (!this.onBeforeAssetSelected()) {
             return;
-        }
-
-        try {
-            // Predict and add regions to current asset
-            if (this.pointToRectService && !this.pointToRectService.isConnected()) {
-                console.log(this.pointToRectService.isConnected())
-                alert("Server is not reachable");
-                return;
+        } else {
+            if (!this.dotToRectService) {
+                toast.error("You need to set an URL for Dot-to-Rect service");
+                return ;
             }
-        } catch (e) {
-            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error reaching server");
-        }
-
-        try {
-            const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
-            const updatedAssetMetadata = await this.pointToRectService
-                .process(assetMetadata);
-
-            await this.onAssetMetadataChanged(updatedAssetMetadata);
-            this.setState({ selectedAsset: updatedAssetMetadata});
-        } catch (e) {
-            throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+            // server connection confirmation
+            let toastId: number = null;
+            await this.dotToRectService.ensureConnected()
+            .then(async res => {
+                try {
+                    const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
+                    if (assetMetadata.regions.length === 0){
+                        alert("You need dots to be converted to rectangles");
+                        return;
+                    }
+                    if (this.dotToRectService) {
+                        const updatedAssetMetadata = await this.dotToRectService
+                        .process(assetMetadata);
+                        await this.onAssetMetadataChanged(updatedAssetMetadata);
+                        this.setState({ selectedAsset: updatedAssetMetadata});
+                    }
+                    else {
+                        alert("You need to set an URL for Dot-to-Rect service");
+                    }
+                } catch (e) {
+                    throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
+                }
+            }).then(() => {
+                toast.dismiss(toastId);
+            })
+            .catch(e=> {
+                toast.error(strings.dot2Rect.messages.errorConnection);
+                return;
+            });
+            //toast.dismiss(toastId);
         }
     }
 
-    private completeRevision = async () => {
-
+    private updateAbilityToStella = async (isDisabled: boolean) => {
+        if (this.props.project.stellaUrl) {
+            try {
+                const apiUrl = `${this.props.project.stellaUrl}/file/status?uuid=${this.props.project.name}&isDisabled=${isDisabled}`;
+                await axios.put(apiUrl).then(e => toast.info("Successfully updated to Stella."));
+            } catch (e) {
+                if (e.statusCode === 409) {
+                    alert("Error reaching to the server: " + this.props.project.stellaUrl);
+                    return;
+                }
+                throw e;
+            }
+        } else {
+            alert("Stella URL is not found!");
+        }
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {
@@ -672,9 +709,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             this.setState({ showInvalidRegionWarning: true });
             return;
         }
-
         const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, asset);
-
         try {
             if (!assetMetadata.asset.size) {
                 const assetProps = await HtmlFileReader.readAssetAttributes(asset);
@@ -736,6 +771,42 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         });
 
         this.setState({ assets: updatedAssets });
+    }
+
+    /**
+     * Get current state of Asset metadata
+     */
+    private getAssetMetadataState(assetMetadata: IAssetMetadata): AssetState {
+        if (this.isTaggableAssetType(assetMetadata.asset)) {
+            if (assetMetadata.asset.isDisabled) {
+                return AssetState.Disabled;
+            } else if (!assetMetadata.asset.isDisabled && assetMetadata.asset.approved) {
+                return AssetState.Approved;
+            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
+                return AssetState.Visited;
+            } else if (assetMetadata.asset.approved) {
+                return AssetState.Completed;
+            } else {
+                return assetMetadata.regions.length === 0 ?
+                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
+                    AssetState.TaggedRectangle : AssetState.TaggedDot;
+            }
+        }
+        return assetMetadata.asset.state;
+    }
+
+    private updateAssetMetadataState = async (state: AssetState, completed: boolean = false) => {
+        this.onAssetMetadataChanged(
+            {
+            ...this.state.selectedAsset,
+            asset: {
+                ...this.state.selectedAsset.asset,
+                state,
+                isDisabled: state === AssetState.Disabled,
+                approved: completed,
+                taskId: this.props.project.name,
+            },
+        } as IAssetMetadata);
     }
 
 }

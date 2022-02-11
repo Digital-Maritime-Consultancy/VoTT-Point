@@ -141,13 +141,13 @@ describe("Project metrics page", () => {
             let state: AssetState = AssetState.NotVisited;
 
             if (project.tags.length > 0) {
-                state = index < testAssetsWithRegion ? AssetState.Tagged : AssetState.Visited;
+                state = index < testAssetsWithRegion ? AssetState.TaggedDot : AssetState.Visited;
             } else {
                 state = index < testAssetsWithRegion ? AssetState.Visited : AssetState.NotVisited;
             }
 
             const regions = [];
-            if (state === AssetState.Tagged) {
+            if (state === AssetState.TaggedDot) {
                 const tagIndex = index % project.tags.length;
                 const tags = [project.tags[tagIndex].name];
                 for (let i = 0; i < regionsPerAsset; i++) {

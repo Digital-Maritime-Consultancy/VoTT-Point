@@ -128,11 +128,11 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
 
     private renderBadges = (asset: IAsset): JSX.Element => {
         switch (asset.state) {
-            case AssetState.Tagged:
+            case AssetState.TaggedDot:
                 return (
                     <span title={strings.editorPage.tagged}
                         className="badge badge-tagged">
-                        <i className="fas fa-tag"></i>
+                        <i className="fas fa-dot-circle"></i>
                     </span>
                 );
             case AssetState.Visited:
@@ -140,6 +140,41 @@ export default class EditorSideBar extends React.Component<IEditorSideBarProps, 
                     <span title={strings.editorPage.visited}
                         className="badge badge-visited">
                         <i className="fas fa-eye"></i>
+                    </span>
+                );
+            case AssetState.TaggedRectangle:
+                return (
+                    <span title={strings.editorPage.rectangled}
+                        className="badge badge-rectangled">
+                        <i className="fas fa-square"></i>
+                    </span>
+                );
+            case AssetState.Approved:
+                return (
+                    <span title={strings.editorPage.approved}
+                        className="badge badge-approved">
+                        <i className="fas fa-check"></i>
+                    </span>
+                );
+            case AssetState.Completed:
+                return (
+                    <span title={strings.editorPage.completed}
+                        className="badge badge-completed">
+                        <i className="fas fa-tag"></i>
+                    </span>
+                );
+            case AssetState.Disabled:
+                return (
+                    <span title={strings.editorPage.notapplicable}
+                        className="badge badge-notapplicable">
+                        <i className="fas fa-times-circle"></i>
+                    </span>
+                );
+            case AssetState.Commented:
+                return (
+                    <span title={strings.editorPage.commented}
+                        className="badge badge-commented">
+                        <i className="fas fa-exclamation-circle"></i>
                     </span>
                 );
             default:

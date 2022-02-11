@@ -16,6 +16,7 @@ export default interface IApplicationActions {
     reloadApplication(): Promise<void>;
     saveAppSettings(appSettings: IAppSettings): IAppSettings;
     ensureSecurityToken(project: IProject): IAppSettings;
+    addNewSecurityToken(name: string): IAppSettings;
 }
 
 /**
@@ -61,29 +62,48 @@ export function ensureSecurityToken(project: IProject):
     (dispatch: Dispatch, getState: () => IApplicationState) => Promise<IAppSettings> {
     return async (dispatch: Dispatch, getState: () => IApplicationState) => {
         const appState = getState();
-        let securityToken = appState.appSettings.securityTokens
+        const securityToken = appState.appSettings.securityTokens
             .find((st) => st.name === project.securityToken);
 
         if (securityToken) {
             return appState.appSettings;
         }
 
-        securityToken = {
-            name: `${project.name} Token`,
-            key: generateKey(),
-        };
+        await addNewSecurityToken(project.name);
+        return appState.appSettings;
+    };
+}
+
+
+export function addNewSecurityToken(name: string):
+    (dispatch: Dispatch, getState: () => IApplicationState) => Promise<IAppSettings> {
+    return async (dispatch: Dispatch, getState: () => IApplicationState) => {
+        const appState = getState();
+
+        const securityToken = appState.appSettings.securityTokens
+            .find((st) => st.name === name);
+
+        if (securityToken) {
+            console.log("Token already exists!");
+            return appState.appSettings;
+        }
 
         const updatedAppSettings: IAppSettings = {
             devToolsEnabled: appState.appSettings.devToolsEnabled,
-            securityTokens: [...appState.appSettings.securityTokens, securityToken],
+            securityTokens: [...appState.appSettings.securityTokens, generateSecurityToken(`${name} Token`)],
         };
 
         await this.saveAppSettings(updatedAppSettings);
-
-        project.securityToken = securityToken.name;
         dispatch(ensureSecurityTokenAction(updatedAppSettings));
         return updatedAppSettings;
+    }
+}
+
+function generateSecurityToken(name: string): any {
+    const securityToken = {
+        name, key: generateKey(),
     };
+    return securityToken;
 }
 
 /**

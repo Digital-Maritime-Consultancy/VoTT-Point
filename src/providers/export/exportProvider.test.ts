@@ -31,8 +31,8 @@ describe("Export Provider Base", () => {
         testProject = {
             ...MockFactory.createTestProject("TestProject"),
             assets: {
-                "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-                "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+                "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+                "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
                 "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
                 "asset-4": MockFactory.createTestAsset("4", AssetState.NotVisited),
             },
@@ -82,7 +82,7 @@ describe("Export Provider Base", () => {
         const assetsToExport = await exportProvider.getAssetsForExport();
         const visitedAssets = _
             .values(testProject.assets)
-            .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.Tagged);
+            .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.TaggedDot);
         expect(assetsToExport.length).toEqual(visitedAssets.length);
     });
 
@@ -99,7 +99,7 @@ describe("Export Provider Base", () => {
         const assetsToExport = await exportProvider.getAssetsForExport();
         const taggedAssets = _
             .values(testProject.assets)
-            .filter((asset) => asset.state === AssetState.Tagged);
+            .filter((asset) => asset.state === AssetState.TaggedDot);
         expect(assetsToExport.length).toEqual(taggedAssets.length);
     });
 });

@@ -41,7 +41,7 @@ describe("Active Learning Service", () => {
         const assetMetadata: IAssetMetadata = {
             asset: {
                 ...asset,
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             },
             regions: [],
             version: appInfo.version,
@@ -69,7 +69,7 @@ describe("Active Learning Service", () => {
         const assetMetadata: IAssetMetadata = {
             asset: {
                 ...asset,
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             },
             regions: [
                 uniqueRegion,

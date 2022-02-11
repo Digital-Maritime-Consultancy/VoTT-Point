@@ -27,8 +27,8 @@ describe("CSV Format Export Provider", () => {
     const testProject: IProject = {
         ...MockFactory.createTestProject(),
         assets: {
-            "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-            "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+            "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+            "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
             "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
             "asset-4": MockFactory.createTestAsset("4", AssetState.NotVisited),
         },

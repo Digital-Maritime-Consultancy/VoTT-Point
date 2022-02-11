@@ -1,0 +1,25 @@
+{
+    "title": "${strings.connections.providers.remote.title}",
+    "description": "${strings.connections.providers.remote.description}",
+    "required": [
+        "url"
+    ],
+    "type": "object",
+    "properties": {
+        "url": {
+            "title": "${strings.connections.providers.remote.url.title}",
+            "description": "${strings.connections.providers.remote.url.description}",
+            "type": "string"
+        },
+        "taskId": {
+            "title": "${strings.connections.providers.remote.taskId.title}",
+            "description": "${strings.connections.providers.remote.taskId.description}",
+            "type": "string"
+        },
+        "taskServerUrl": {
+            "title": "${strings.connections.providers.remote.taskServerUrl.title}",
+            "description": "${strings.connections.providers.remote.taskServerUrl.description}",
+            "type": "string"
+        }
+    }
+}

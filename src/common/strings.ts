@@ -34,6 +34,10 @@ export interface IAppStrings {
         openLocalProject: {
             title: string;
         },
+        openTask: {
+            title: string;
+            selectConnection: string;
+        },
         openCloudProject: {
             title: string;
             selectConnection: string;
@@ -199,6 +203,22 @@ export interface IAppStrings {
                     description: string,
                 }
             },
+            remote: {
+                title: string;
+                description: string,
+                url: {
+                    title: string,
+                    description: string,
+                },
+                taskId: {
+                    title: string,
+                    description: string,
+                },
+                taskServerUrl: {
+                    title: string,
+                    description: string,
+                },
+            },
             bing: {
                 title: string,
                 endpoint: {
@@ -264,6 +284,11 @@ export interface IAppStrings {
         height: string;
         tagged: string;
         visited: string;
+        rectangled: string;
+        approved: string;
+        completed: string;
+        notapplicable: string;
+        commented: string;
         toolbar: {
             select: string;
             pan: string;
@@ -280,8 +305,13 @@ export interface IAppStrings {
             saveProject: string;
             exportProject: string;
             activeLearning: string;
+            dot2Rect: string;
             submitPoints: string;
             completeRevision: string;
+            disable: string;
+            reject: string;
+            approve: string;
+            comment: string;
         }
         videoPlayer: {
             nextTaggedFrame: {
@@ -472,6 +502,21 @@ export interface IAppStrings {
         messages: {
             loadingModel: string;
             errorLoadModel: string;
+            saveSuccess: string;
+        }
+    };
+    dot2Rect: {
+        title: string;
+        form: {
+            properties: {
+                url: {
+                    title: string,
+                    description: string,
+                },
+            },
+        }
+        messages: {
+            errorConnection: string;
             saveSuccess: string;
         }
     };

@@ -25,8 +25,8 @@ describe("TFRecords Json Export Provider", () => {
     const testAssets = MockFactory.createTestAssets(10, 1);
     const baseTestProject = MockFactory.createTestProject("Test Project");
     baseTestProject.assets = {
-        "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-        "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+        "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+        "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
         "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
         "asset-4": MockFactory.createTestAsset("4", AssetState.NotVisited),
     };

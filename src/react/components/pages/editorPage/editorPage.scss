@@ -281,7 +281,14 @@ canvas {
 }
 
 .badge-visited,
-.badge-tagged {
+.badge-tagged,
+.badge-rectangled,
+.badge-revised,
+.badge-completed,
+.badge-commented,
+.badge-notapplicable,
+.badge-approved,
+ {
   color: #fff;
   position: absolute;
   z-index: 2;
@@ -296,7 +303,37 @@ canvas {
 }
 
 .badge-visited {
+  background-color: rgba(rgb(131, 129, 4), 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-rectangled {
+  background-color: rgba(darkgreen, 0.9);
+  border: 1px solid $lighter-2;
+}
+
+.badge-approved {
+  background-color: rgba(rgb(38, 145, 11), 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-completed {
+  background-color: rgba(rgb(194, 16, 134), 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-commented {
   background-color: rgba(darkorange, 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-completed {
+  background-color: rgba(rgb(0, 15, 100), 0.9);
+  border: 1px solid $lighter-3;
+}
+
+.badge-notapplicable {
+  background-color: rgba(red, 0.9);
   border: 1px solid $lighter-3;
 }
 
