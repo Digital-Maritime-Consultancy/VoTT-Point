@@ -28,7 +28,7 @@ export const korean: IAppStrings = {
             title: "로컬 프로젝트 열기", // Open Local Project"
         },
         openTask: {
-            title: "태스크로부터 프로젝트 생성",
+            title: "시작하기",
             selectConnection: "태스크 선택",
         },
         openCloudProject: {
