@@ -5,6 +5,7 @@ import { IConnection, IProject, StorageType } from "../../../../models/applicati
 import { StorageProviderFactory } from "../../../../providers/storage/storageProviderFactory";
 import CondensedList, { ListItem } from "../condensedList/condensedList";
 import axios from "axios";
+import { IRemoteStorageOptions } from "../../../../providers/storage/remoteStorage";
 
 /**
  * Properties for Task Picker
@@ -146,11 +147,15 @@ export class TaskPicker extends React.Component<ITaskPickerProps, ITaskPickerSta
     }
 
     private async ok() {
-        const apiUrl = `http://localhost:8090/task/newProject?uuid=${this.state.selectedFile}`;
-        const response = await axios.get(apiUrl);
-        const project: IProject = response.data as IProject;
-        this.props.onSaveProject(project);
-        this.props.onSubmit(JSON.stringify(project));
+        if (this.state.selectedConnection && this.state.selectedConnection.providerOptions) {
+            const apiUrl =
+                `${(this.state.selectedConnection.providerOptions as IRemoteStorageOptions).taskServerUrl}/newProject?uuid=${this.state.selectedFile}`;
+            const response = await axios.get(apiUrl);
+            const project: IProject = response.data as IProject;
+            this.props.onSaveProject(project);
+            this.props.onSubmit(JSON.stringify(project));
+        }
+        
     }
 
     private back() {

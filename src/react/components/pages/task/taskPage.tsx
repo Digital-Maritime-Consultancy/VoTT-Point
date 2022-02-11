@@ -5,24 +5,17 @@ import { bindActionCreators } from "redux";
 import { strings, interpolate } from "../../../../common/strings";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
-import { CloudFilePicker } from "../../common/cloudFilePicker/cloudFilePicker";
-import CondensedList from "../../common/condensedList/condensedList";
 import Confirm from "../../common/confirm/confirm";
-import FilePicker from "../../common/filePicker/filePicker";
 import "./taskPage.scss";
 import { constants } from "../../../../common/constants";
 import {
     IApplicationState, IConnection, IProject, IFileInfo,
     ErrorCode, AppError, IAppError, IAppSettings, IAsset, EditingContext,
 } from "../../../../models/applicationState";
-import ImportService from "../../../../services/importService";
-import { IAssetMetadata } from "../../../../models/applicationState";
 import { toast } from "react-toastify";
-import MessageBox from "../../common/messageBox/messageBox";
-import { isElectron } from "../../../../common/hostProcess";
 import { TaskPicker } from "../../common/taskPicker/taskPicker";
 import { StorageProviderFactory } from "../../../../providers/storage/storageProviderFactory";
-import { IRemoteStorageOptions, RemoteStorage } from "../../../../providers/storage/remoteStorage";
+import { IRemoteStorageOptions } from "../../../../providers/storage/remoteStorage";
 import axios from "axios";
 
 export interface ITaskPageProps extends RouteComponentProps, React.Props<TaskPage> {
@@ -122,7 +115,6 @@ export default class TaskPage extends React.Component<ITaskPageProps, ITaskPageS
                     name: files[i],
                 });
             }
-            console.log(fileItems);
             // We will only use the task file having the same name with the given task ID
             const taskFile = fileItems.filter(e => e.name === this.props.match.params["taskId"]).pop();
             if (taskFile) {
