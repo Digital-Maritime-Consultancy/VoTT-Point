@@ -8,7 +8,7 @@ import EditorPage from "../pages/editorPage/editorPage";
 import ExportPage from "../pages/export/exportPage";
 import ProjectSettingsPage from "../pages/projectSettings/projectSettingsPage";
 import Dot2RectPage from "../pages/dot2Rect/dot2RectPage";
-import TaskPage from "../pages/\btaskPage/taskPage";
+import TaskPage from "../pages/task/taskPage";
 
 /**
  * @name - Main Content Router

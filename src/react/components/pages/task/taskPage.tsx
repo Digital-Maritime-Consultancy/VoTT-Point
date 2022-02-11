@@ -122,6 +122,7 @@ export default class TaskPage extends React.Component<ITaskPageProps, ITaskPageS
                     name: files[i],
                 });
             }
+            console.log(fileItems);
             // We will only use the task file having the same name with the given task ID
             const taskFile = fileItems.filter(e => e.name === this.props.match.params["taskId"]).pop();
             if (taskFile) {
