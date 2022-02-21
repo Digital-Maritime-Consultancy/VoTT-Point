@@ -126,7 +126,7 @@ export default class TaskPage extends React.Component<ITaskPageProps, ITaskPageS
     }
 
     private async createProjectFromTask(url: string, taskId: string) {
-        const apiUrl = `${url}/newProject?uuid=${taskId}`;
+        const apiUrl = `${url}/create?uuid=${taskId}`;
         const response = await axios.get(apiUrl);
         const project: IProject = response.data as IProject;
         this.props.applicationActions.addNewSecurityToken(project.name);
