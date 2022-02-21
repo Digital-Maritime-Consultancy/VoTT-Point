@@ -1,3 +1,4 @@
+import { TaskStatus, TaskType } from './../models/applicationState';
 import shortid from "shortid";
 import {
     AssetState, AssetType, IApplicationState, IAppSettings, IAsset, IAssetMetadata,
@@ -184,6 +185,9 @@ export default class MockFactory {
                 width: 800,
                 height: 600,
             },
+            isDisabled: false,
+            approved: false,
+            completed: false,
         };
     }
 
@@ -196,7 +200,7 @@ export default class MockFactory {
         const childPath = `${rootAsset.path}#t=${timestamp}`;
         const childAsset = AssetService.createAssetFromFilePath(childPath);
         childAsset.type = AssetType.VideoFrame;
-        childAsset.state = AssetState.Tagged;
+        childAsset.state = AssetState.TaggedDot;
         childAsset.parent = rootAsset;
         childAsset.timestamp = timestamp;
         childAsset.size = { ...rootAsset.size };
@@ -281,6 +285,8 @@ export default class MockFactory {
             useSecurityToken: true,
             securityToken: `Security-Token-${name}`,
             assets: {},
+            taskType: TaskType.Cleansing,
+            taskStatus: TaskStatus.New,
             exportFormat: MockFactory.exportFormat(),
             sourceConnection: connection,
             targetConnection: connection,
@@ -448,6 +454,22 @@ export default class MockFactory {
     }
 
     /**
+     * Creates fake data for testing Azure Cloud Storage
+     */
+     public static createRemoteStorageData() {
+        const options = MockFactory.createRemoteStorageOptions();
+        return {
+            blobName: "file1.jpg",
+            blobText: "This is the content",
+            fileType: "image/jpg",
+            containerName: "taskId",
+            containers: MockFactory.createAzureContainers(),
+            blobs: MockFactory.createAzureBlobs(),
+            options,
+        };
+    }
+
+    /**
      * Creates fake Blob object
      * @param name Name of blob
      * @param content Content of blob
@@ -565,9 +587,8 @@ export default class MockFactory {
     public static createRemoteStorageOptions(): IRemoteStorageOptions {
     return {
         url: "http://localhost",
-        accountName: "",
         taskId: "",
-        createContainer: false,
+        taskServerUrl: "http://localhost",
         };
     }
 

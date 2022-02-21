@@ -110,6 +110,8 @@ export interface IProject {
     useSecurityToken: boolean;
     securityToken?: string;
     description?: string;
+    taskType: TaskType;
+    taskStatus: TaskStatus;
     tags: ITag[];
     sourceConnection: IConnection;
     targetConnection: IConnection;
@@ -120,6 +122,7 @@ export interface IProject {
     autoSave: boolean;
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
+    stellaUrl?: string;
 }
 
 /**
@@ -269,10 +272,14 @@ export interface IAssetVideoSettings {
  * @description - Defines an asset within a VoTT project
  * @member id - Unique identifier for asset
  * @member type - Type of asset (Image, Video, etc)
+ * @member state - State of Asset
  * @member name - Generated name for asset
  * @member path - Relative path to asset within the underlying data source
  * @member size - Size / dimensions of asset
+ * @member isDisabled - Outcome of purification
+ * @member approved - State of rejection
  * @member format - The asset format (jpg, png, mp4, etc)
+ * @member comment - Comment for asset
  */
 export interface IAsset {
     id: string;
@@ -281,10 +288,14 @@ export interface IAsset {
     name: string;
     path: string;
     size: ISize;
+    isDisabled: boolean;
+    approved: boolean;
+    completed: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;
     predicted?: boolean;
+    comment?: string;
 }
 
 /**
@@ -374,12 +385,75 @@ export enum AssetType {
  * @member Tagged - Specifies an asset has been visited and tagged
  */
 export enum AssetState {
+    Disabled = -1, // 접근 불가
     NotVisited = 0, // 아무 작업도 수행되지 않은 상태
     Visited = 1, // 이미지를 본 상태
-    Tagged = 2, // 이미지에 점 어노테이션 작업을 한 상태
-    Rectangled = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
-    Revised = 4, // 작업자 검수가 완료된 상태
-    Approved = 5, // 검수자의 검수가 완료된 상태
+    TaggedDot = 2, // 이미지에 점 어노테이션 작업을 한 상태
+    TaggedRectangle = 3, // 이미지에 사각형 어노테이션 작업이 완료된 상태, 작업자의 검수가 준비된 상태
+    Commented = 4, // 검수에 따른 커멘트가 남겨진 상태
+    Rejected = 5, // 검수 결과 기각된 상태
+    Approved = 6, // 검수 결과 승인된 상태
+    Completed = 7, // 작업 완료
+}
+
+/**
+ * @name - TaskType
+ * @description - Defines the type of task given from Stella
+ */
+export enum TaskType {
+    Cleansing = "Cleansing",
+    Annotation = "Annotation",
+    Evaluation = "Evaluation",
+}
+
+/**
+ * @name - TaskStatus
+ * @description - Defines the status of task given from Stella
+ */
+export enum TaskStatus {
+    New = "New",
+    In_progress = "In_progress",
+    Review = "Review",
+    Finished = "Finished",
+    Canceled = "Canceled",
+}
+
+export enum TaskContext {
+    Purification = "purification", // 정제 작업
+    RevisePurification = "revise-purification", // 정제 검수 작업
+    Annotation = "annotation", // 가공 작업
+    ReviseAnnotation = "revise-annotation", // 가공 검수 작업
+    Audit = "audit", // 검증 작업
+    Admin = "admin", // 관리자
+    NotAssigned = "notassigned", //지정 안됨
+}
+
+export interface IProgress {
+    state: AssetState;
+}
+
+/**
+ * @name - Task
+ * @description - Defines a region within an asset
+ * @member id - Unique identifier for this region
+ * @member type - Defines the type of region
+ * @member tags - Defines a list of tags applied to a region
+ * @member points - Defines a list of points that define a region
+ */
+export interface ITask {
+    id: string;
+    vottBackendUrl: string;
+    imageServerUrl: string;
+    stellaUrl: string;
+    dotToRectUrl: string;
+    description: string;
+    classList: { [name: string]: string };
+    imageList: { [name: string]: string };
+    type: string;
+    status: string;
+    createdAt?: string;
+    lastUpdatedAt?: string;
+    progress?: { [name: string]: IProgress };
 }
 
 /**
@@ -398,9 +472,11 @@ export enum RegionType {
 }
 
 export enum EditingContext {
-    PlantSeed = "plant",
-    ReviseGenerated = "revise",
-    None = "none",
+    EditDot = "editdot",
+    EditRect = "editrect",
+    Purify = "purify",
+    Revise = "revise",
+    None = "",
 }
 
 export enum EditorMode {

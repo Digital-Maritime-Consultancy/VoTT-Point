@@ -168,7 +168,7 @@ describe("Asset Service", () => {
             const assetMetadata: IAssetMetadata = {
                 asset: {
                     ...testAssets[0],
-                    state: AssetState.Tagged,
+                    state: AssetState.TaggedDot,
                 },
                 regions: [],
                 version: "",
@@ -351,7 +351,7 @@ describe("Asset Service", () => {
             }
             const assets = MockFactory.createTestAssets(assetCount);
             assets.forEach((asset) => {
-                asset.state = AssetState.Tagged;
+                asset.state = AssetState.TaggedDot;
             });
 
             project.assets = _.keyBy(assets, (asset) => asset.id);
@@ -368,7 +368,7 @@ describe("Asset Service", () => {
             const region = MockFactory.createTestRegion(undefined, [tag1, tag2]);
             const asset: IAsset = {
                 ...MockFactory.createTestAsset("1"),
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             };
             const assetMetadata = MockFactory.createTestAssetMetadata(asset, [region]);
             AssetService.prototype.getAssetMetadata = jest.fn((asset: IAsset) => Promise.resolve(assetMetadata));
@@ -398,7 +398,7 @@ describe("Asset Service", () => {
             const region = MockFactory.createTestRegion(undefined, [tag1]);
             const asset: IAsset = {
                 ...MockFactory.createTestAsset("1"),
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             };
             const assetMetadata = MockFactory.createTestAssetMetadata(asset, [region]);
             AssetService.prototype.getAssetMetadata = jest.fn((asset: IAsset) => Promise.resolve(assetMetadata));
@@ -418,7 +418,7 @@ describe("Asset Service", () => {
             const region = MockFactory.createTestRegion(undefined, [tag1]);
             const asset: IAsset = {
                 ...MockFactory.createTestAsset("1"),
-                state: AssetState.Tagged,
+                state: AssetState.TaggedDot,
             };
             const assetMetadata = MockFactory.createTestAssetMetadata(asset, [region]);
             AssetService.prototype.getAssetMetadata = jest.fn((asset: IAsset) => Promise.resolve(assetMetadata));

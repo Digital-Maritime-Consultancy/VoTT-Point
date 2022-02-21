@@ -34,6 +34,10 @@ export interface IAppStrings {
         openLocalProject: {
             title: string;
         },
+        openTask: {
+            title: string;
+            selectConnection: string;
+        },
         openCloudProject: {
             title: string;
             selectConnection: string;
@@ -206,22 +210,14 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                accountName: {
+                taskId: {
                     title: string,
                     description: string,
                 },
-                containerName: {
+                taskServerUrl: {
                     title: string,
                     description: string,
                 },
-                sas: {
-                    title: string,
-                    description: string,
-                },
-                createContainer: {
-                    title: string,
-                    description: string,
-                }
             },
             bing: {
                 title: string,
@@ -289,8 +285,10 @@ export interface IAppStrings {
         tagged: string;
         visited: string;
         rectangled: string;
-        revised: string;
         approved: string;
+        completed: string;
+        notapplicable: string;
+        commented: string;
         toolbar: {
             select: string;
             pan: string;
@@ -310,6 +308,10 @@ export interface IAppStrings {
             dot2Rect: string;
             submitPoints: string;
             completeRevision: string;
+            disable: string;
+            reject: string;
+            approve: string;
+            comment: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

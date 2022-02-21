@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import ConditionalNavLink from "../common/conditionalNavLink/conditionalNavLink";
 import { strings } from "../../../common/strings";
+import { TaskContext } from "../../../models/applicationState";
+import { getEditingContext, getIconNameFromTaskType } from "../common/taskPicker/taskRouter";
 
 /**
  * Side bar that remains visible throughout app experience
@@ -12,7 +14,6 @@ import { strings } from "../../../common/strings";
  */
 export default function Sidebar({ project }) {
     const projectId = project ? project.id : null;
-
     return (
         <div className="bg-lighter-2 app-sidebar">
             <ul>
@@ -21,20 +22,16 @@ export default function Sidebar({ project }) {
                         <i className="fas fa-home"></i>
                     </NavLink>
                 </li>
-                <li>
+                {
+                    project &&
+                    <li>
                     <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/plant`}>
-                        <i className="fas fa-dot-circle"></i>
-                    </ConditionalNavLink>
-                </li>
-                <li>
-                    <ConditionalNavLink disabled={!projectId}
-                        title={strings.tags.editor}
-                        to={`/projects/${projectId}/edit/revise`}>
-                        <i className="fas fa-user-check"></i>
-                    </ConditionalNavLink>
-                </li>
+                                title={strings.tags.editor}
+                                to={`/projects/${projectId}/edit/${project.taskType}/${project.taskStatus}`}>
+                                <i className={`fas ${getIconNameFromTaskType(project.taskType as TaskContext)}`}></i>
+                            </ConditionalNavLink>
+                    </li>
+                }
                 <li>
                     <ConditionalNavLink disabled={!projectId}
                         title={strings.projectSettings.title}

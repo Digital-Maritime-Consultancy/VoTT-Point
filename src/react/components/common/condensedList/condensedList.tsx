@@ -2,6 +2,7 @@ import React, { SyntheticEvent } from "react";
 import "./condensedList.scss";
 import { Link } from "react-router-dom";
 
+const shortid = require('shortid');
 /**
  * Properties for Condensed List Component
  * @member title - Title of condensed list
@@ -56,7 +57,7 @@ export default class CondensedList extends React.Component<ICondensedListProps> 
                     }
                     {(items && items.length > 0) &&
                         <ul className="condensed-list-items">
-                            {items.map((item) => <Component key={item.id}
+                            {items.map((item, key) => <Component key={key}
                                 item={item}
                                 onClick={(e) => this.onItemClick(e, item)}
                                 onDelete={(e) => this.onItemDelete(e, item)} />)}
@@ -89,7 +90,7 @@ export default class CondensedList extends React.Component<ICondensedListProps> 
  */
 export function ListItem({ item, onClick }) {
     return (
-        <li>
+        <li key={shortid.generate()}>
             <a onClick={onClick}>
                 <span className="px-2">{item.name}</span>
             </a>

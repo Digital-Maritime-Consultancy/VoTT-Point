@@ -156,7 +156,7 @@ export class VideoAsset extends React.Component<IVideoAssetProps> {
         const currentTime = this.getVideoPlayerState().currentTime;
         const previousFrame = _
             .reverse(this.props.childAssets)
-            .find((asset) => asset.state === AssetState.Tagged && asset.timestamp < currentTime);
+            .find((asset) => asset.state === AssetState.TaggedDot && asset.timestamp < currentTime);
 
         if (previousFrame) {
             this.seekToTime(previousFrame.timestamp);
@@ -170,7 +170,7 @@ export class VideoAsset extends React.Component<IVideoAssetProps> {
     private moveNextTaggedFrame = () => {
         const currentTime = this.getVideoPlayerState().currentTime;
         const nextFrame = this.props.childAssets
-            .find((asset) => asset.state === AssetState.Tagged && asset.timestamp > currentTime);
+            .find((asset) => asset.state === AssetState.TaggedDot && asset.timestamp > currentTime);
 
         if (nextFrame) {
             this.seekToTime(nextFrame.timestamp);
@@ -374,7 +374,7 @@ export class VideoAsset extends React.Component<IVideoAssetProps> {
      * @param videoDuration The total video duration
      */
     private renderChildAssetMarker = (childAsset: IAsset, videoDuration: number) => {
-        const className = childAsset.state === AssetState.Tagged ? "video-timeline-tagged" : "video-timeline-visited";
+        const className = childAsset.state === AssetState.TaggedDot ? "video-timeline-tagged" : "video-timeline-visited";
         const childPosition: number = (childAsset.timestamp / videoDuration);
         const style = { left: `${childPosition * 100}%` };
 

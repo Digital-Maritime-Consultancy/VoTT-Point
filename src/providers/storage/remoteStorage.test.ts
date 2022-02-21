@@ -1,15 +1,15 @@
 import MockFactory from "../../common/mockFactory";
 import registerProviders from "../../registerProviders";
-import { AzureBlobStorage } from "./azureBlobStorage";
 jest.mock("@azure/storage-blob");
 import { BlockBlobURL, ContainerURL, ServiceURL, Aborter } from "@azure/storage-blob";
 jest.mock("../../services/assetService");
 import { AssetService } from "../../services/assetService";
 import { AssetType } from "../../models/applicationState";
+import { RemoteStorage } from "./remoteStorage";
 
 describe("Remote storage functions", () => {
 
-    const ad = MockFactory.createAzureData();
+    const ad = MockFactory.createRemoteStorageData();
     const options = ad.options;
 
     const serviceURL = ServiceURL as jest.Mocked<typeof ServiceURL>;
@@ -33,7 +33,7 @@ describe("Remote storage functions", () => {
             blobBody: Promise.resolve(blob),
         }));
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
 
         const content = await provider.readText(ad.blobName);
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -57,7 +57,7 @@ describe("Remote storage functions", () => {
             blobBody: Promise.resolve(blob),
         }));
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
 
         const content = await provider.readBinary(ad.blobName);
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -78,7 +78,7 @@ describe("Remote storage functions", () => {
             blobBody: Promise.resolve(blob),
         }));
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
 
         provider.writeText(ad.blobName, ad.blobText);
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -99,7 +99,7 @@ describe("Remote storage functions", () => {
     it("Writes a buffer to a blob", () => {
         const blockBlobURL = BlockBlobURL as jest.Mocked<typeof BlockBlobURL>;
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
 
         provider.writeText(ad.blobName, Buffer.from(ad.blobText));
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -118,7 +118,7 @@ describe("Remote storage functions", () => {
     });
 
     it("Lists the blobs within a container", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         const blobs = await provider.listFiles(null);
         expect(containerURL.prototype.listBlobFlatSegment).toBeCalled();
         expect(blobs).toEqual(ad.blobs.segment.blobItems.map((element) => element.name));
@@ -127,7 +127,7 @@ describe("Remote storage functions", () => {
     it("Deletes a blob within a container", async () => {
         const blockBlobURL = BlockBlobURL as jest.Mocked<typeof BlockBlobURL>;
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
 
         provider.deleteFile(ad.blobName);
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -142,14 +142,14 @@ describe("Remote storage functions", () => {
     });
 
     it("Lists the containers within an account", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         const containers = await provider.listContainers(null);
         expect(serviceURL.prototype.listContainersSegment).toBeCalled();
         expect(containers).toEqual(ad.containers.containerItems.map((element) => element.name));
     });
 
     it("Creates a container in the account", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         await expect(provider.createContainer(null)).resolves.not.toBeNull();
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
             expect.any(ServiceURL),
@@ -163,7 +163,7 @@ describe("Remote storage functions", () => {
             return Promise.reject({ statusCode: 409 });
         });
 
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         await expect(provider.createContainer(null)).resolves.not.toBeNull();
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
             expect.any(ServiceURL),
@@ -173,7 +173,7 @@ describe("Remote storage functions", () => {
     });
 
     it("Deletes a container in the account", () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         provider.deleteContainer(null);
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
             expect.any(ServiceURL),
@@ -183,7 +183,7 @@ describe("Remote storage functions", () => {
     });
 
     it("getAssets", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         AssetService.createAssetFromFilePath = jest.fn(() => {
             return {
                 type: AssetType.Image,
@@ -196,7 +196,7 @@ describe("Remote storage functions", () => {
     });
 
     it("get file name from url", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         const url = "https://account.blob.core.windows.net/container/filename.jpg?aBcDeFGHiJkLMnoP";
         const fileName = provider.getFileName(url);
         expect(fileName).toEqual("filename.jpg");
@@ -208,7 +208,7 @@ describe("Remote storage functions", () => {
             containerName: "newContainer",
             createContainer: true,
         };
-        const provider: AzureBlobStorage = new AzureBlobStorage(newOptions);
+        const provider: RemoteStorage = new RemoteStorage(newOptions);
 
         provider.initialize();
         expect(ContainerURL.fromServiceURL).toBeCalledWith(
@@ -218,21 +218,8 @@ describe("Remote storage functions", () => {
     });
 
     it("does not create a container when not specified", async () => {
-        const provider: AzureBlobStorage = new AzureBlobStorage(options);
+        const provider: RemoteStorage = new RemoteStorage(options);
         await provider.initialize();
         expect(serviceURL.prototype.listContainersSegment).toBeCalled();
-    });
-
-    it("throws an error if container not found and not created", async () => {
-        const newContainerName = "newContainer";
-        const provider: AzureBlobStorage = new AzureBlobStorage({
-            ...options,
-            containerName: newContainerName,
-        });
-        try {
-            await provider.initialize();
-        } catch (e) {
-            expect(e.message).toEqual(`Container "${newContainerName}" does not exist`);
-        }
     });
 });

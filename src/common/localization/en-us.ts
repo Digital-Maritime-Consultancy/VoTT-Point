@@ -27,6 +27,10 @@ export const english: IAppStrings = {
         openLocalProject: {
             title: "Open Local Project",
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "Open Cloud Project",
             selectConnection: "Select a Connection",
@@ -201,23 +205,15 @@ export const english: IAppStrings = {
                 description: "",
                 url: {
                     title: "Server URL",
-                    description: "",
+                    description: "URL of remote work server",
                 },
-                accountName: {
-                    title: "Account Name",
-                    description: "",
-                },
-                containerName: {
+                taskId: {
                     title: "Task ID",
-                    description: "",
+                    description: "ID of the task that is assigned to you",
                 },
-                sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
-                },
-                createContainer: {
-                    title: "Create Task",
-                    description: "Creates task if it does not already exist",
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
                 },
             },
             bing: {
@@ -285,9 +281,11 @@ export const english: IAppStrings = {
         height: "Height",
         tagged: "Tagged",
         visited: "Visited",
-        rectangled: "Rect received",
-        revised: "Revised",
-        approved: "Approved",
+        rectangled: "Rectangle received",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Select (V)",
             pan: "Pan",
@@ -307,6 +305,10 @@ export const english: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {

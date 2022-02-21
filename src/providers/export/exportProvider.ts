@@ -87,10 +87,10 @@ export abstract class ExportProvider
 
         switch (this.options.assetState) {
             case ExportAssetState.Visited:
-                predicate = (asset) => asset.state === AssetState.Visited || asset.state === AssetState.Tagged;
+                predicate = (asset) => asset.state === AssetState.Visited || asset.state === AssetState.TaggedDot;
                 break;
             case ExportAssetState.Tagged:
-                predicate = (asset) => asset.state === AssetState.Tagged;
+                predicate = (asset) => asset.state === AssetState.TaggedDot;
                 break;
             case ExportAssetState.All:
             default:

@@ -2,34 +2,24 @@
     "title": "${strings.connections.providers.remote.title}",
     "description": "${strings.connections.providers.remote.description}",
     "required": [
-        "url",
-        "accountName",
-        "containerName",
-        "sas"
+        "url"
     ],
     "type": "object",
     "properties": {
         "url": {
             "title": "${strings.connections.providers.remote.url.title}",
+            "description": "${strings.connections.providers.remote.url.description}",
             "type": "string"
         },
-        "accountName": {
-            "title": "${strings.connections.providers.remote.accountName.title}",
+        "taskId": {
+            "title": "${strings.connections.providers.remote.taskId.title}",
+            "description": "${strings.connections.providers.remote.taskId.description}",
             "type": "string"
         },
-        "containerName": {
-            "title": "${strings.connections.providers.remote.containerName.title}",
+        "taskServerUrl": {
+            "title": "${strings.connections.providers.remote.taskServerUrl.title}",
+            "description": "${strings.connections.providers.remote.taskServerUrl.description}",
             "type": "string"
-        },
-        "sas": {
-            "title": "${strings.connections.providers.remote.sas.title}",
-            "description": "${strings.connections.providers.remote.sas.description}",
-            "type": "string"
-        },
-        "createContainer": {
-            "title": "${strings.connections.providers.remote.createContainer.title}",
-            "description": "${strings.connections.providers.remote.createContainer.description}",
-            "type": "boolean"
         }
     }
 }

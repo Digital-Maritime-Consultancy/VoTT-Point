@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -32,6 +32,8 @@ import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
+import { getEditingContext } from "../../common/taskPicker/taskRouter";
+import axios from "axios";
 
 /**
  * Properties for Editor Page
@@ -156,12 +158,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentContext = this.props.match.params["context"] ? this.props.match.params["context"] : EditingContext.PlantSeed;
-        if (this.state.context !== currentContext){
+        const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
+            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
+            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
+        if (this.state.context !== currentEditingContext) {
             // refresh view
             this.setState({
-                context: currentContext,
-                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentContext) >= 0),
+                context: currentEditingContext,
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
             });
@@ -461,18 +465,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const initialState = assetMetadata.asset.state;
-        
         // The root asset can either be the actual asset being edited (ex: VideoFrame) or the top level / root
         // asset selected from the side bar (image/video).
         const rootAsset = { ...(assetMetadata.asset.parent || assetMetadata.asset) };
 
-        if (this.isTaggableAssetType(assetMetadata.asset)) {
-            assetMetadata.asset.state = assetMetadata.regions.length === 0 ?
-                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
-                    AssetState.Rectangled : AssetState.Tagged;
-        } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-            assetMetadata.asset.state = AssetState.Visited;
-        }
+        assetMetadata.asset.state = this.getAssetMetadataState(assetMetadata);
 
         // Update root asset if not already in the "Tagged" state
         // This is primarily used in the case where a Video Frame is being edited.
@@ -483,7 +480,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state < AssetState.Tagged) {
+            if (rootAssetMetadata.asset.state === AssetState.NotVisited
+                    || rootAssetMetadata.asset.state === AssetState.Visited) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -571,8 +569,16 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.NextAsset:
                 await this.goToRootAsset(1);
                 break;
-            case ToolbarItemName.CompleteRevision:
-                await this.completeRevision();
+            case ToolbarItemName.Complete:
+                await this.updateAssetMetadataState(AssetState.Completed, true);
+                break;
+            case ToolbarItemName.Disable:
+                await this.updateAssetMetadataState(AssetState.Disabled,
+                    this.props.project.taskStatus === TaskStatus.Review);
+                break;
+            case ToolbarItemName.Approve:
+                await this.updateAssetMetadataState(AssetState.Approved,
+                    this.props.project.taskStatus === TaskStatus.Review);
                 break;
         }
     }
@@ -580,8 +586,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     private processPoint2Rect = async () => {
         if (!this.onBeforeAssetSelected()) {
             return;
-        }
-        else {
+        } else {
+            if (!this.dotToRectService) {
+                toast.error("You need to set an URL for Dot-to-Rect service");
+                return ;
+            }
             // server connection confirmation
             let toastId: number = null;
             await this.dotToRectService.ensureConnected()
@@ -599,7 +608,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         this.setState({ selectedAsset: updatedAssetMetadata});
                     }
                     else {
-                        alert("You need to set URL for a Point-to-Rect server");
+                        alert("You need to set an URL for Dot-to-Rect service");
                     }
                 } catch (e) {
                     throw new AppError(ErrorCode.ActiveLearningPredictionError, "Error predicting regions");
@@ -613,10 +622,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             });
             //toast.dismiss(toastId);
         }
-    }
-
-    private completeRevision = async () => {
-
     }
 
     private predictRegions = async (canvas?: HTMLCanvasElement) => {
@@ -747,6 +752,42 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         });
 
         this.setState({ assets: updatedAssets });
+    }
+
+    /**
+     * Get current state of Asset metadata
+     */
+    private getAssetMetadataState(assetMetadata: IAssetMetadata): AssetState {
+        if (this.isTaggableAssetType(assetMetadata.asset)) {
+            if (assetMetadata.asset.isDisabled) {
+                return AssetState.Disabled;
+            } else if (!assetMetadata.asset.isDisabled && assetMetadata.asset.approved) {
+                return AssetState.Approved;
+            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
+                return AssetState.Visited;
+            } else if (assetMetadata.asset.approved) {
+                return AssetState.Completed;
+            } else {
+                return assetMetadata.regions.length === 0 ?
+                AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
+                    AssetState.TaggedRectangle : AssetState.TaggedDot;
+            }
+        }
+        return assetMetadata.asset.state;
+    }
+
+    private updateAssetMetadataState = async (state: AssetState, completed: boolean = false) => {
+        this.onAssetMetadataChanged(
+            {
+            ...this.state.selectedAsset,
+            asset: {
+                ...this.state.selectedAsset.asset,
+                state,
+                isDisabled: state === AssetState.Disabled,
+                approved: completed,
+                taskId: this.props.project.name,
+            },
+        } as IAssetMetadata);
     }
 
 }

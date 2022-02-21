@@ -47,6 +47,10 @@ export default class Dot2RectPage extends React.Component<IDot2RectPageProps, ID
                 await this.props.actions.loadProject(projectToLoad);
             }
         }
+
+        if (this.props.project.dotToRectSettings) {
+            this.setState({ settings: this.props.project.dotToRectSettings });
+        }
     }
 
     public componentDidUpdate(prevProps: Readonly<IDot2RectPageProps>) {

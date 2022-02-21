@@ -25,8 +25,8 @@ describe("PascalVOC Json Export Provider", () => {
     const testAssets = MockFactory.createTestAssets(10, 1);
     const baseTestProject = MockFactory.createTestProject("Test Project");
     baseTestProject.assets = {
-        "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-        "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+        "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+        "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
         "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
     };
     baseTestProject.sourceConnection = MockFactory.createTestConnection("test", "localFileSystemProxy");
@@ -252,7 +252,7 @@ describe("PascalVOC Json Export Provider", () => {
 
             const testProject = { ...baseTestProject };
             const testAssets = MockFactory.createTestAssets(10, 0);
-            testAssets.forEach((asset) => asset.state = AssetState.Tagged);
+            testAssets.forEach((asset) => asset.state = AssetState.TaggedDot);
             testProject.assets = _.keyBy(testAssets, (asset) => asset.id);
             testProject.tags = MockFactory.createTestTags(3);
 
@@ -285,7 +285,7 @@ describe("PascalVOC Json Export Provider", () => {
 
             const testProject = { ...baseTestProject };
             const testAssets = MockFactory.createTestAssets(10, 0);
-            testAssets.forEach((asset) => asset.state = AssetState.Tagged);
+            testAssets.forEach((asset) => asset.state = AssetState.TaggedDot);
             testProject.assets = _.keyBy(testAssets, (asset) => asset.id);
             testProject.tags = MockFactory.createTestTags(3);
 
@@ -319,7 +319,7 @@ describe("PascalVOC Json Export Provider", () => {
 
                 const testProject = { ...baseTestProject };
                 const testAssets = MockFactory.createTestAssets(10, 0);
-                testAssets.forEach((asset) => asset.state = AssetState.Tagged);
+                testAssets.forEach((asset) => asset.state = AssetState.TaggedDot);
                 testProject.assets = _.keyBy(testAssets, (asset) => asset.id);
                 testProject.tags = [MockFactory.createTestTag("1")];
 
@@ -355,7 +355,7 @@ describe("PascalVOC Json Export Provider", () => {
 
                 const testProject = { ...baseTestProject };
                 const testAssets = MockFactory.createTestAssets(13, 0);
-                testAssets.forEach((asset) => asset.state = AssetState.Tagged);
+                testAssets.forEach((asset) => asset.state = AssetState.TaggedDot);
                 testProject.assets = _.keyBy(testAssets, (asset) => asset.id);
                 testProject.tags = MockFactory.createTestTags(3);
 

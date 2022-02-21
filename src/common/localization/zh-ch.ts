@@ -27,6 +27,10 @@ export const chinese: IAppStrings = {
         openLocalProject: {
             title: "打开本地项目", // Open Local Project
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "打开云端项目", // Open Cloud Project
             selectConnection: "选择一个连接", // Select a Connection
@@ -208,23 +212,15 @@ export const chinese: IAppStrings = {
                 description: "",
                 url: {
                     title: "Server URL",
-                    description: "",
+                    description: "URL of remote work server",
                 },
-                accountName: {
-                    title: "Account Name",
-                    description: "",
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
                 },
-                containerName: {
-                    title: "Container Name",
-                    description: "",
-                },
-                sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
-                },
-                createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
                 },
             },
             bing: {
@@ -293,8 +289,10 @@ export const chinese: IAppStrings = {
         tagged: "已标记", // Tagged
         visited: "已访问", // Visited
         rectangled: "Rect received",
-        revised: "Revised",
-        approved: "Approved",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "选择[V]", // Select (V)
             pan: "泛", // Pan
@@ -314,6 +312,10 @@ export const chinese: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {

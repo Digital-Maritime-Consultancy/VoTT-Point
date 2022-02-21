@@ -24,8 +24,8 @@ describe("VoTT Json Export Provider", () => {
     const testProject: IProject = {
         ...MockFactory.createTestProject(),
         assets: {
-            "asset-1": MockFactory.createTestAsset("1", AssetState.Tagged),
-            "asset-2": MockFactory.createTestAsset("2", AssetState.Tagged),
+            "asset-1": MockFactory.createTestAsset("1", AssetState.TaggedDot),
+            "asset-2": MockFactory.createTestAsset("2", AssetState.TaggedDot),
             "asset-3": MockFactory.createTestAsset("3", AssetState.Visited),
             "asset-4": MockFactory.createTestAsset("4", AssetState.NotVisited),
         },
@@ -129,7 +129,7 @@ describe("VoTT Json Export Provider", () => {
 
             const exportedAssets = _.values(exportObject.assets);
             const expectedAssets = _.values(testProject.assets)
-                .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.Tagged);
+                .filter((asset) => asset.state === AssetState.Visited || asset.state === AssetState.TaggedDot);
 
             // Ensure provider information not included in export JSON
             expect(exportObject.sourceConnection).toBeUndefined();
@@ -156,7 +156,7 @@ describe("VoTT Json Export Provider", () => {
             const exportObject = JSON.parse(exportJson);
 
             const exportedAssets = _.values(exportObject.assets);
-            const expectedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.Tagged);
+            const expectedAssets = _.values(testProject.assets).filter((asset) => asset.state === AssetState.TaggedDot);
 
             // Ensure provider information not included in export JSON
             expect(exportObject.sourceConnection).toBeUndefined();

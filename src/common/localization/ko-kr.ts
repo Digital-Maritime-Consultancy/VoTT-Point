@@ -27,6 +27,10 @@ export const korean: IAppStrings = {
         openLocalProject: {
             title: "로컬 프로젝트 열기", // Open Local Project"
         },
+        openTask: {
+            title: "시작하기",
+            selectConnection: "태스크 선택",
+        },
         openCloudProject: {
             title: "클라우드 프로젝트 열기", // Open Cloud Project,
             selectConnection: "Connection 선택", // Select a Connection
@@ -206,26 +210,16 @@ export const korean: IAppStrings = {
                 title: "Remote Storage",
                 description: "",
                 url: {
-                    title: "Server URL",
+                    title: "서버 주소 (URL)",
                     description: "",
                 },
-                accountName: {
-                    title: "Account Name",
-                    description: "",
+                taskId: {
+                    title: "태스크 ID",
+                    description: "할당된 태스크 아이디",
                 },
-                containerName: {
-                    title: "작업 ID",  // Container Name,
-                    description: "",
-                },
-                sas: {
-                    title: "SAS", // SAS,
-                    description: "Blob Storage 계정을 인증하는 데 사용되는 공유 액세스 서명",
-                    // Shared access signature used to authenticate to the blob storage account"
-                },
-                createContainer: {
-                    title: "작업 만들기",  // Create Container,
-                    description: "작업을 새로 생성합니다.",
-                    // Creates the blob container if it does not already exist"
+                taskServerUrl: {
+                    title: "태스크 서버 URL",
+                    description: "태스크 서버의 주소",
                 },
             },
             bing: {
@@ -294,8 +288,10 @@ export const korean: IAppStrings = {
         tagged: "태그", // Tagged,
         visited: "방문", // Visited,
         rectangled: "인식결과수신",
-        revised: "작업완료",
         approved: "검수완료",
+        completed: "작업완료",
+        notapplicable: "기각",
+        commented: "의견게재",
         toolbar: {
             select: "선택 (V)", // Select (V),
             pan: "팬", // Pan,
@@ -315,6 +311,10 @@ export const korean: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "기각",
+            reject: "검수결과-기각",
+            approve: "검수결과-승인",
+            comment: "의견개제",
         },
         videoPlayer: {
             previousTaggedFrame: {

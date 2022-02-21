@@ -28,6 +28,10 @@ export const spanish: IAppStrings = {
         openLocalProject: {
             title: "Abrir Proyecto Local",
         },
+        openTask: {
+            title: "Create Project From Task",
+            selectConnection: "Select a Task Server",
+        },
         openCloudProject: {
             title: "Abrir Proyecto de la Nube",
             selectConnection: "Select a Connection",
@@ -203,23 +207,15 @@ export const spanish: IAppStrings = {
                 description: "",
                 url: {
                     title: "Server URL",
-                    description: "",
+                    description: "URL of remote work server",
                 },
-                accountName: {
-                    title: "Account Name",
-                    description: "",
+                taskId: {
+                    title: "Task ID",
+                    description: "ID of the task that is assigned to you",
                 },
-                containerName: {
-                    title: "Container Name",
-                    description: "",
-                },
-                sas: {
-                    title: "SAS",
-                    description: "Shared access signature used to authenticate to the blob storage account",
-                },
-                createContainer: {
-                    title: "Create Container",
-                    description: "Creates the blob container if it does not already exist",
+                taskServerUrl: {
+                    title: "Task Server URL",
+                    description: "URL of task server",
                 },
             },
             bing: {
@@ -288,8 +284,10 @@ export const spanish: IAppStrings = {
         tagged: "Etiquetado",
         visited: "Visitado",
         rectangled: "Rect received",
-        revised: "Revised",
-        approved: "Approved",
+        approved: "Revised",
+        completed: "Completed",
+        notapplicable: "Not applicable",
+        commented: "Commented",
         toolbar: {
             select: "Seleccionar",
             pan: "Pan",
@@ -309,6 +307,10 @@ export const spanish: IAppStrings = {
             dot2Rect: "Dot to Rect",
             submitPoints: "Submit Points",
             completeRevision: "Complete",
+            disable: "Disable",
+            reject: "Reject",
+            approve: "Approve",
+            comment: "Comment",
         },
         videoPlayer: {
             previousTaggedFrame: {

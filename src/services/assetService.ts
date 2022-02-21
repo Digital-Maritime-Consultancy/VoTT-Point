@@ -64,6 +64,9 @@ export class AssetService {
             name: assetFileName,
             path: assetFilePath,
             size: null,
+            isDisabled: false,
+            approved: false,
+            completed: false,
         };
     }
 
@@ -97,9 +100,11 @@ export class AssetService {
 
     private assetProviderInstance: IAssetProvider;
     private storageProviderInstance: IStorageProvider;
+    private taskId: string;
 
     constructor(private project: IProject) {
         Guard.null(project);
+        this.taskId = project.id;
     }
 
     /**
@@ -161,17 +166,18 @@ export class AssetService {
     public async save(metadata: IAssetMetadata): Promise<IAssetMetadata> {
         Guard.null(metadata);
 
-        const fileName = `${metadata.asset.id}${constants.assetMetadataFileExtension}`;
+        const fileName = `${metadata.asset.id}--${this.taskId}${constants.assetMetadataFileExtension}`;
 
         // Only save asset metadata if asset is in a tagged state
         // Otherwise primary asset information is already persisted in the project file.
-        if (metadata.asset.state >= AssetState.Tagged) {
+        // TODO: this should be updated corresponding to given task type
+        if (metadata.asset.state === AssetState.Disabled || metadata.asset.state >= AssetState.TaggedDot) {
             await this.storageProvider.writeText(fileName, JSON.stringify(metadata, null, 4));
         } else {
             // If the asset is no longer tagged, then it doesn't contain any regions
             // and the file is not required.
             try {
-                await this.storageProvider.deleteFile(fileName);
+                // await this.storageProvider.deleteFile(fileName);
             } catch (err) {
                 // The file may not exist - that's OK
             }
@@ -186,7 +192,7 @@ export class AssetService {
     public async getAssetMetadata(asset: IAsset): Promise<IAssetMetadata> {
         Guard.null(asset);
 
-        const fileName = `${asset.id}${constants.assetMetadataFileExtension}`;
+        const fileName = `${asset.id}--${this.taskId}${constants.assetMetadataFileExtension}`;
         try {
             const json = await this.storageProvider.readText(fileName);
             return JSON.parse(json) as IAssetMetadata;
@@ -265,8 +271,8 @@ export class AssetService {
         if (foundTag) {
             assetMetadata.regions = assetMetadata.regions.filter((region) => region.tags.length > 0);
             assetMetadata.asset.state = (assetMetadata.regions.length===0) ? AssetState.Visited :
-                assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ? AssetState.Rectangled :
-                    AssetState.Tagged ;
+                assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ? AssetState.TaggedRectangle :
+                    AssetState.TaggedDot ;
             return true;
         }
 
