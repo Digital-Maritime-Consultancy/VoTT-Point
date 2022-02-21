@@ -170,9 +170,8 @@ export class AssetService {
 
         // Only save asset metadata if asset is in a tagged state
         // Otherwise primary asset information is already persisted in the project file.
-        
         // TODO: this should be updated corresponding to given task type
-        if (metadata.asset.state >= AssetState.TaggedDot) {
+        if (metadata.asset.state === AssetState.Disabled || metadata.asset.state >= AssetState.TaggedDot) {
             await this.storageProvider.writeText(fileName, JSON.stringify(metadata, null, 4));
         } else {
             // If the asset is no longer tagged, then it doesn't contain any regions
