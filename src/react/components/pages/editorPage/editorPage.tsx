@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -480,7 +480,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state < AssetState.TaggedDot) {
+            if (rootAssetMetadata.asset.state === AssetState.NotVisited
+                    || rootAssetMetadata.asset.state === AssetState.Visited) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -571,14 +572,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.Complete:
                 await this.updateAssetMetadataState(AssetState.Completed, true);
                 break;
-            case ToolbarItemName.Reject:
-                await this.updateAssetMetadataState(AssetState.Rejected, true);
-                break;
             case ToolbarItemName.Disable:
-                await this.updateAssetMetadataState(AssetState.Disabled);
+                await this.updateAssetMetadataState(AssetState.Disabled,
+                    this.props.project.taskStatus === TaskStatus.Review);
                 break;
             case ToolbarItemName.Approve:
-                await this.updateAssetMetadataState(AssetState.Approved, true);
+                await this.updateAssetMetadataState(AssetState.Approved,
+                    this.props.project.taskStatus === TaskStatus.Review);
                 break;
         }
     }
