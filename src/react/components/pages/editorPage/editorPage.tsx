@@ -577,7 +577,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
             case ToolbarItemName.Approve:
-                console.log("!!");
                 await this.updateAssetMetadataState(AssetState.Approved,
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
