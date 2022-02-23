@@ -13,10 +13,6 @@ import { IApplicationState } from "./models/applicationState";
 import registerProviders from "./registerProviders";
 import registerMixins from "./registerMixins";
 
-import { setUpAppInsights } from "./telemetry";
-
-setUpAppInsights();
-
 registerMixins();
 registerProviders();
 const defaultState: IApplicationState = initialState;
