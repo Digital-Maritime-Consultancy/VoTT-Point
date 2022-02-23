@@ -577,6 +577,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
             case ToolbarItemName.Approve:
+                console.log("!!");
                 await this.updateAssetMetadataState(AssetState.Approved,
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
@@ -761,12 +762,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (this.isTaggableAssetType(assetMetadata.asset)) {
             if (assetMetadata.asset.isDisabled) {
                 return AssetState.Disabled;
-            } else if (!assetMetadata.asset.isDisabled && assetMetadata.asset.approved) {
+            } else if (assetMetadata.asset.approved) {
                 return AssetState.Approved;
             } else if (assetMetadata.asset.state === AssetState.NotVisited) {
                 return AssetState.Visited;
-            } else if (assetMetadata.asset.approved) {
-                return AssetState.Completed;
             } else {
                 return assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
@@ -784,7 +783,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 ...this.state.selectedAsset.asset,
                 state,
                 isDisabled: state === AssetState.Disabled,
-                approved: completed,
+                approved: state === AssetState.Approved,
+                completed,
                 taskId: this.props.project.name,
             },
         } as IAssetMetadata);
