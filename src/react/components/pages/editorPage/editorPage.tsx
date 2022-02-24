@@ -235,12 +235,15 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     </div>
                     <div className="editor-page-content" onClick={this.onPageClick}>
                         <div className="editor-page-content-main">
-                            <div className="editor-page-content-main-header">
-                                <EditorToolbar project={this.props.project}
-                                    items={this.state.filteredToolbarItems}
-                                    actions={this.props.actions}
-                                    onToolbarItemSelected={this.onToolbarItemSelected} />
-                            </div>
+                            {
+                                this.state.context !== EditingContext.None &&
+                                <div className="editor-page-content-main-header">
+                                    <EditorToolbar project={this.props.project}
+                                        items={this.state.filteredToolbarItems}
+                                        actions={this.props.actions}
+                                        onToolbarItemSelected={this.onToolbarItemSelected} />
+                                </div>
+                            }
                             <div className="editor-page-content-main-body">
                                 {selectedAsset &&
                                     <Canvas
@@ -250,7 +253,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                         onCanvasRendered={this.onCanvasRendered}
                                         onSelectedRegionsChanged={this.onSelectedRegionsChanged}
                                         editorMode={this.state.editorMode}
-                                        selectionMode={this.state.selectionMode}
+                                        selectionMode={
+                                            this.state.context === EditingContext.None ?
+                                                SelectionMode.NONE : this.state.selectionMode}
                                         project={this.props.project}
                                         lockedTags={this.state.lockedTags}
                                         context={this.state.context}>
