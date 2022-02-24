@@ -2,6 +2,9 @@ import { EditingContext, TaskContext, TaskStatus, TaskType } from "../../../../m
 
 export const getEditingContext = (taskType: TaskType, taskStatus: TaskStatus): EditingContext => {
     const taskContext = TaskContext.NotAssigned;
+    if (taskStatus === TaskStatus.Finished) {
+        return getPathFromTaskType(TaskContext.Audit);
+    }
     if (taskType === TaskType.Cleansing) {
         if (taskStatus === TaskStatus.In_progress) {
             return getPathFromTaskType(TaskContext.Purification);
@@ -15,7 +18,7 @@ export const getEditingContext = (taskType: TaskType, taskStatus: TaskStatus): E
             return getPathFromTaskType(TaskContext.ReviseAnnotation);
         }
     } else if (taskType === TaskType.Evaluation) {
-        return getPathFromTaskType(TaskContext.Audit);
+        return getPathFromTaskType(TaskContext.ReviseAnnotation);
     }
     return getPathFromTaskType(taskContext);
 }
@@ -31,7 +34,7 @@ export const getPathFromTaskType = (taskContext: TaskContext): EditingContext =>
         case TaskContext.RevisePurification:
             return EditingContext.Revise;
         case TaskContext.Audit:
-            return EditingContext.EditRect;
+            return EditingContext.None;
         default:
             return EditingContext.None;
     }
@@ -48,7 +51,7 @@ export const getIconNameFromTaskType = (taskContext: TaskContext): string => {
         case TaskContext.RevisePurification:
             return "fa-user-check";
         case TaskContext.Audit:
-            return "fa-vector-square";
+            return "fa-eye";
         default:
             return "fa-eye";
     }
