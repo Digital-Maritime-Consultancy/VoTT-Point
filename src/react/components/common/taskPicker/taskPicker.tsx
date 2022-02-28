@@ -149,7 +149,7 @@ export class TaskPicker extends React.Component<ITaskPickerProps, ITaskPickerSta
     private async ok() {
         if (this.state.selectedConnection && this.state.selectedConnection.providerOptions) {
             const apiUrl =
-                `${(this.state.selectedConnection.providerOptions as IRemoteStorageOptions).taskServerUrl}/create?uuid=${this.state.selectedFile}`;
+                `${(this.state.selectedConnection.providerOptions as IRemoteStorageOptions).url}/create?uuid=${this.state.selectedFile}`;
             const response = await axios.get(apiUrl);
             const project: IProject = response.data as IProject;
             this.props.onSaveProject(project);

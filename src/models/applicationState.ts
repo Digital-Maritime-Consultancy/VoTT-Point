@@ -454,6 +454,7 @@ export interface ITask {
     status: string;
     createdAt?: string;
     lastUpdatedAt?: string;
+    lastUsedForProjectCreation?: string;
     progress?: { [name: string]: IProgress };
 }
 
