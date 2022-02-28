@@ -179,16 +179,25 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     public copyRegions = async () => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         await Clipboard.writeObject(this.getSelectedRegions());
     }
 
     public cutRegions = async () => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const selectedRegions = this.getSelectedRegions();
         await Clipboard.writeObject(selectedRegions);
         this.deleteRegions(selectedRegions);
     }
 
     public pasteRegions = async () => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const regionsToPaste: IRegion[] = await Clipboard.readObject();
         const asset = this.state.currentAsset;
         const duplicates = CanvasHelpers.duplicateRegionsAndMove(
@@ -205,6 +214,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     public getSelectedRegions = (): IRegion[] => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const selectedRegions = this.editor.RM.getSelectedRegionsBounds().map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
@@ -223,6 +235,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     private removeAllRegions = () => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const ids = this.state.currentAsset.regions.map((r) => r.id);
         for (const id of ids) {
             this.editor.RM.deleteRegionById(id);
@@ -257,6 +272,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     private deleteRegions = (regions: IRegion[]) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         this.deleteRegionsFromCanvasTools(regions);
         this.deleteRegionsFromAsset(regions);
     }
@@ -280,7 +298,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onSelectionEnd = (regionData: RegionData) => {
-        if (CanvasHelpers.isEmpty(regionData)) {
+        if (CanvasHelpers.isEmpty(regionData) || this.props.context === EditingContext.None) {
             return;
         }
         const id = shortid.generate();
@@ -323,6 +341,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @param selectedRegions
      */
     private updateAssetRegions = (regions: IRegion[]) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const currentAsset: IAssetMetadata = {
             ...this.state.currentAsset,
             regions,
@@ -341,6 +362,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionMoveEnd = (id: string, regionData: RegionData) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const currentRegions = this.state.currentAsset.regions;
         const movedRegionIndex = currentRegions.findIndex((region) => region.id === id);
         const movedRegion = currentRegions[movedRegionIndex];
@@ -370,6 +394,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionDelete = (id: string) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         // Remove from Canvas Tools
         this.editor.RM.deleteRegionById(id);
 
@@ -391,6 +418,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionSelected = (id: string, multiSelect: boolean) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const selectedRegions = this.getSelectedRegions();
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
@@ -534,18 +564,30 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         // Add regions to the canvas
         this.state.currentAsset.regions.forEach((region: IRegion) => {
-            if (this.props.context === EditingContext.EditDot && region.type === RegionType.Point ||
-                this.props.context === EditingContext.EditDot && region.type === RegionType.Rectangle ||
-                this.props.context === EditingContext.EditRect && region.type === RegionType.Rectangle) {
-                const loadedRegionData = CanvasHelpers.getRegionData(region);
-                this.editor.RM.addRegion(
-                    region.id,
-                    this.editor.scaleRegionToFrameSize(
-                        loadedRegionData,
-                        this.state.currentAsset.asset.size.width,
-                        this.state.currentAsset.asset.size.height,
-                    ),
-                    CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+            if (this.props.context === EditingContext.EditDot || this.props.context === EditingContext.None) {
+                if (region.type === RegionType.Point || region.type === RegionType.Rectangle) {
+                    const loadedRegionData = CanvasHelpers.getRegionData(region);
+                    this.editor.RM.addRegion(
+                        region.id,
+                        this.editor.scaleRegionToFrameSize(
+                            loadedRegionData,
+                            this.state.currentAsset.asset.size.width,
+                            this.state.currentAsset.asset.size.height,
+                        ),
+                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+                }
+            } else if (this.props.context === EditingContext.EditRect) {
+                if (region.type === RegionType.Rectangle) {
+                    const loadedRegionData = CanvasHelpers.getRegionData(region);
+                    this.editor.RM.addRegion(
+                        region.id,
+                        this.editor.scaleRegionToFrameSize(
+                            loadedRegionData,
+                            this.state.currentAsset.asset.size.width,
+                            this.state.currentAsset.asset.size.height,
+                        ),
+                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+                }
             }
         });
     }

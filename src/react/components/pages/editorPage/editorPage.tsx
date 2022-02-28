@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -235,12 +235,15 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     </div>
                     <div className="editor-page-content" onClick={this.onPageClick}>
                         <div className="editor-page-content-main">
-                            <div className="editor-page-content-main-header">
-                                <EditorToolbar project={this.props.project}
-                                    items={this.state.filteredToolbarItems}
-                                    actions={this.props.actions}
-                                    onToolbarItemSelected={this.onToolbarItemSelected} />
-                            </div>
+                            {
+                                this.state.context !== EditingContext.None &&
+                                <div className="editor-page-content-main-header">
+                                    <EditorToolbar project={this.props.project}
+                                        items={this.state.filteredToolbarItems}
+                                        actions={this.props.actions}
+                                        onToolbarItemSelected={this.onToolbarItemSelected} />
+                                </div>
+                            }
                             <div className="editor-page-content-main-body">
                                 {selectedAsset &&
                                     <Canvas
@@ -250,7 +253,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                         onCanvasRendered={this.onCanvasRendered}
                                         onSelectedRegionsChanged={this.onSelectedRegionsChanged}
                                         editorMode={this.state.editorMode}
-                                        selectionMode={this.state.selectionMode}
+                                        selectionMode={
+                                            this.state.context === EditingContext.None ?
+                                                SelectionMode.NONE : this.state.selectionMode}
                                         project={this.props.project}
                                         lockedTags={this.state.lockedTags}
                                         context={this.state.context}>
@@ -480,7 +485,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state < AssetState.TaggedDot) {
+            if (rootAssetMetadata.asset.state === AssetState.NotVisited
+                    || rootAssetMetadata.asset.state === AssetState.Visited) {
                 rootAssetMetadata.asset.state = assetMetadata.asset.state;
                 await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
             }
@@ -571,16 +577,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             case ToolbarItemName.Complete:
                 await this.updateAssetMetadataState(AssetState.Completed, true);
                 break;
-            case ToolbarItemName.Reject:
-                await this.updateAssetMetadataState(AssetState.Rejected, true);
-                await this.updateAbilityToStella(true);
-                break;
             case ToolbarItemName.Disable:
-                await this.updateAssetMetadataState(AssetState.Disabled);
+                await this.updateAssetMetadataState(AssetState.Disabled,
+                    this.props.project.taskStatus === TaskStatus.Review);
                 break;
             case ToolbarItemName.Approve:
-                await this.updateAssetMetadataState(AssetState.Approved, true);
-                await this.updateAbilityToStella(false);
+                await this.updateAssetMetadataState(AssetState.Approved,
+                    this.props.project.taskStatus === TaskStatus.Review);
                 break;
         }
     }
@@ -623,23 +626,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 return;
             });
             //toast.dismiss(toastId);
-        }
-    }
-
-    private updateAbilityToStella = async (isDisabled: boolean) => {
-        if (this.props.project.stellaUrl) {
-            try {
-                const apiUrl = `${this.props.project.stellaUrl}/file/status?uuid=${this.props.project.name}&isDisabled=${isDisabled}`;
-                await axios.put(apiUrl).then(e => toast.info("Successfully updated to Stella."));
-            } catch (e) {
-                if (e.statusCode === 409) {
-                    alert("Error reaching to the server: " + this.props.project.stellaUrl);
-                    return;
-                }
-                throw e;
-            }
-        } else {
-            alert("Stella URL is not found!");
         }
     }
 
@@ -719,6 +705,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             console.warn("Error computing asset size");
         }
 
+        if (this.props.project.taskType === TaskType.Evaluation) {
+            assetMetadata.asset.forEvaluation = true;
+        }
+
         this.setState({
             selectedAsset: assetMetadata,
         }, async () => {
@@ -780,12 +770,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (this.isTaggableAssetType(assetMetadata.asset)) {
             if (assetMetadata.asset.isDisabled) {
                 return AssetState.Disabled;
-            } else if (!assetMetadata.asset.isDisabled && assetMetadata.asset.approved) {
+            } else if (assetMetadata.asset.approved) {
                 return AssetState.Approved;
             } else if (assetMetadata.asset.state === AssetState.NotVisited) {
                 return AssetState.Visited;
-            } else if (assetMetadata.asset.approved) {
-                return AssetState.Completed;
             } else {
                 return assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
@@ -803,7 +791,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 ...this.state.selectedAsset.asset,
                 state,
                 isDisabled: state === AssetState.Disabled,
-                approved: completed,
+                approved: state === AssetState.Approved,
+                completed,
+                forEvaluation: this.props.project.taskType === TaskType.Evaluation,
                 taskId: this.props.project.name,
             },
         } as IAssetMetadata);

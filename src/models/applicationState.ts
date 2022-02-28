@@ -291,6 +291,7 @@ export interface IAsset {
     isDisabled: boolean;
     approved: boolean;
     completed: boolean;
+    forEvaluation: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;
@@ -476,7 +477,7 @@ export enum EditingContext {
     EditRect = "editrect",
     Purify = "purify",
     Revise = "revise",
-    None = "",
+    None = "none",
 }
 
 export enum EditorMode {

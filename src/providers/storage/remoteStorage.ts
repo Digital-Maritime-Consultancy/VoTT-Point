@@ -48,7 +48,7 @@ export class RemoteStorage implements IStorageProvider {
      */
     public async readText(blobName: string): Promise<string> {
         try {
-            const apiUrl = `${this.getUrl()}/${blobName}}`;
+            const apiUrl = `${this.getUrl()}/${blobName}`;
             const response = await axios.get(apiUrl);
             if (response.status === 200) {
                 return JSON.stringify(response.data);
@@ -78,7 +78,7 @@ export class RemoteStorage implements IStorageProvider {
     public async writeText(blobName: string, content: string | Buffer) {
         try {
             const config = { headers: {'Content-Type': 'application/json'} };
-            const apiUrl = `${this.getUrl()}/${blobName}}`;
+            const apiUrl = `${this.getUrl()}/${blobName}`;
             await axios.put(apiUrl, content, config);
         } catch (e) {
             if (e.statusCode === 409) {
@@ -105,7 +105,7 @@ export class RemoteStorage implements IStorageProvider {
      */
     public async deleteFile(blobName: string): Promise<void> {
         try {
-            const apiUrl = `${this.getUrl()}/${blobName}}`;
+            const apiUrl = `${this.getUrl()}/${blobName}`;
             await axios.delete(apiUrl);
         } catch (e) {
             if (e.statusCode === 409) {
@@ -181,7 +181,7 @@ export class RemoteStorage implements IStorageProvider {
      */
     public async deleteContainer(containerName: string): Promise<void> {
         try {
-            const apiUrl = `${this.getUrl()}/${containerName}}`;
+            const apiUrl = `${this.getUrl()}/${containerName}`;
             await axios.delete(apiUrl);
         } catch (e) {
             if (e.statusCode === 409) {

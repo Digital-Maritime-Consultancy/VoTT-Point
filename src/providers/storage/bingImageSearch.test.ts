@@ -86,6 +86,7 @@ describe("Bing Image Search", () => {
             isDisabled: false,
             approved: false,
             completed: false,
+            forEvaluation: false,
         };
 
         const provider = new BingImageSearch(defaultOptions);

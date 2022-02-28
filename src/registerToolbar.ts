@@ -15,7 +15,6 @@ export enum ToolbarItemName {
     Complete = "completeRevision",
     SaveProject = "saveProject",
     Disable = "disable",
-    Reject = "reject",
     Approve = "approve",
     Comment = "comment",
 }
