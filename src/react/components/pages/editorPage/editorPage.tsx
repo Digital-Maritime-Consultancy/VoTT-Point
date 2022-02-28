@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus,
+    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType,
 } from "../../../../models/applicationState";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
@@ -705,6 +705,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             console.warn("Error computing asset size");
         }
 
+        if (this.props.project.taskType === TaskType.Evaluation) {
+            assetMetadata.asset.forEvaluation = true;
+        }
+
         this.setState({
             selectedAsset: assetMetadata,
         }, async () => {
@@ -789,6 +793,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 isDisabled: state === AssetState.Disabled,
                 approved: state === AssetState.Approved,
                 completed,
+                forEvaluation: this.props.project.taskType === TaskType.Evaluation,
                 taskId: this.props.project.name,
             },
         } as IAssetMetadata);

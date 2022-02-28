@@ -291,6 +291,7 @@ export interface IAsset {
     isDisabled: boolean;
     approved: boolean;
     completed: boolean;
+    forEvaluation: boolean;
     format?: string;
     timestamp?: number;
     parent?: IAsset;

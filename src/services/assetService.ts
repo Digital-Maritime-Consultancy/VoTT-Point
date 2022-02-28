@@ -67,6 +67,7 @@ export class AssetService {
             isDisabled: false,
             approved: false,
             completed: false,
+            forEvaluation: false,
         };
     }
 

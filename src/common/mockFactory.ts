@@ -188,6 +188,7 @@ export default class MockFactory {
             isDisabled: false,
             approved: false,
             completed: false,
+            forEvaluation: false,
         };
     }
 
