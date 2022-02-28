@@ -4,7 +4,7 @@ import { Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "./react/components/shell/sidebar";
 import MainContentRouter from "./react/components/shell/mainContentRouter";
-import { IAppError, IApplicationState, IProject, ErrorCode } from "./models/applicationState";
+import { IAppError, IApplicationState, IProject, ErrorCode, TaskType } from "./models/applicationState";
 import "./App.scss";
 import "react-toastify/dist/ReactToastify.css";
 import IAppErrorActions, * as appErrorActions from "./redux/actions/appErrorActions";
@@ -75,8 +75,12 @@ export default class App extends React.Component<IAppProps> {
                                 <TitleBar icon="fas fa-tags"
                                     title={this.props.currentProject ? this.props.currentProject.name : ""}
                                     stellaUrl={this.props.currentProject ?
-                                        `${this.props.currentProject.stellaUrl}/task/list`
-                                            : "http://localhost:8081/task/list"}>
+                                        `${this.props.currentProject.stellaUrl}/${this.props.currentProject &&
+                                        this.props.currentProject.taskType === TaskType.Evaluation ?
+                                            "exam" : "task"}/list`
+                                        : `http://localhost:8081/${this.props.currentProject &&
+                                        this.props.currentProject.taskType === TaskType.Evaluation ?
+                                            "exam" : "task"}/list`}>
                                     <div className="app-help-menu-icon"><HelpMenu/></div>
                                 </TitleBar>
                                 <div className="app-main">
