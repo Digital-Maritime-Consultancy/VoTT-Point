@@ -8,6 +8,7 @@ import { strings } from "./common/strings";
 export enum ToolbarItemName {
     SelectCanvas = "selectCanvas",
     DrawRectangle = "drawRectangle",
+    DrawPolygon = "drawPolygon",
     DrawPoint = "drawPoint",
     SubmitPoints = "submitPoints",
     PreviousAsset = "previousAsset",
@@ -56,7 +57,7 @@ export default function registerToolbar() {
         icon: "fas fa-upload",
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,
-        accelerators: ["P", "p"],
+        accelerators: ["K", "k"],
         context: [EditingContext.EditDot],
     });
 
@@ -67,6 +68,16 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.State,
         accelerators: ["R", "r"],
+        context: [EditingContext.EditDot, EditingContext.EditRect],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.DrawPolygon,
+        tooltip: strings.editorPage.toolbar.drawPolygon,
+        icon: "fa-draw-polygon",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["P", "p"],
         context: [EditingContext.EditDot, EditingContext.EditRect],
     });
 

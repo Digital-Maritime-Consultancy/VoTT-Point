@@ -562,6 +562,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     editorMode: EditorMode.Point,
                 });
                 break;
+            case ToolbarItemName.DrawPolygon:
+                this.setState({
+                    selectionMode: SelectionMode.POLYGON,
+                    editorMode: EditorMode.Polygon,
+                });
+                break;
             case ToolbarItemName.SelectCanvas:
                 this.setState({
                     selectionMode: SelectionMode.NONE,
