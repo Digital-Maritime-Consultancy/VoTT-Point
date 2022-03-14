@@ -485,12 +485,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state === AssetState.NotVisited
-                    || rootAssetMetadata.asset.state === AssetState.Visited) {
-                rootAssetMetadata.asset.state = assetMetadata.asset.state;
-                await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
-            }
-
             rootAsset.state = rootAssetMetadata.asset.state;
         }
 
@@ -560,6 +554,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 this.setState({
                     selectionMode: SelectionMode.POINT,
                     editorMode: EditorMode.Point,
+                });
+                break;
+            case ToolbarItemName.DrawPolygon:
+                this.setState({
+                    selectionMode: SelectionMode.POLYGON,
+                    editorMode: EditorMode.Polygon,
                 });
                 break;
             case ToolbarItemName.SelectCanvas:
@@ -772,8 +772,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 return AssetState.Disabled;
             } else if (assetMetadata.asset.approved) {
                 return AssetState.Approved;
-            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-                return AssetState.Visited;
             } else {
                 return assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
