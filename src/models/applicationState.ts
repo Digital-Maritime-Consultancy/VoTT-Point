@@ -46,6 +46,7 @@ export enum ErrorCode {
     ProjectInvalidJson = "projectInvalidJson",
     ProjectInvalidSecurityToken = "projectInvalidSecurityToken",
     ProjectDuplicateName = "projectDuplicateName",
+    ProjectLoadError = "projectLoadError",
     SecurityTokenNotFound = "securityTokenNotFound",
     ExportFormatNotFound = "exportFormatNotFound",
     PasteRegionTooBig = "pasteRegionTooBig",

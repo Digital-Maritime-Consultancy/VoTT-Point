@@ -1,0 +1,11 @@
+{
+    "id": "stella-connection",
+    "name": "Stella",
+    "description": "default connection configuration for VoTT-dot",
+    "providerType": "remoteStorage",
+    "providerOptions": {
+        "url": "http://localhost:8090/file",
+        "taskId": "",
+        "taskServerUrl": "http://localhost:8090/task"
+    }
+}

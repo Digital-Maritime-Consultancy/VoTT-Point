@@ -35,6 +35,9 @@ import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
 import axios from "axios";
 
+import connectionJson from "../../../../assets/defaultConnection.json";
+import { StorageProviderFactory } from "../../../../providers/storage/storageProviderFactory";
+
 /**
  * Properties for Editor Page
  * @member project - Project being edited
@@ -141,7 +144,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             await this.loadProjectAssets();
         } else if (projectId) {
             const project = this.props.recentProjects.find((project) => project.id === projectId);
-            await this.props.actions.loadProject(project);
+            if (project) {
+                await this.props.actions.loadProject(project);
+            } else {
+                // LOAD PROJECT ON-DEMAND: we will load project from remote storage
+                const connection = connectionJson;
+                await this.props.actions.loadProjectFromStorage(connection, projectId);
+            }
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
