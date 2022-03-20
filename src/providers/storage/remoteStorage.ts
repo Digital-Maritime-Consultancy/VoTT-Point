@@ -106,9 +106,14 @@ export class RemoteStorage implements IStorageProvider {
     public async deleteFile(blobName: string): Promise<void> {
         try {
             const apiUrl = `${this.getUrl()}/${blobName}`;
-            await axios.delete(apiUrl);
+            await axios.delete(apiUrl).catch(() => null);
         } catch (e) {
-            if (e.statusCode === 409) {
+            console.log(e);
+            if (e.statusCode === 404) {
+                alert("Data not found");
+                return;
+            }
+            else if (e.statusCode === 409) {
                 alert("Error reaching to the server");
                 return;
             }

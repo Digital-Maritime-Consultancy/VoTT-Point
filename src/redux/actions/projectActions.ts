@@ -9,18 +9,21 @@ import {
     IApplicationState,
     IAsset,
     IAssetMetadata,
+    IConnection,
     IProject,
 } from "../../models/applicationState";
 import { createAction, createPayloadAction, IPayloadAction } from "./actionCreators";
 import { IExportResults } from "../../providers/export/exportProvider";
 import { appInfo } from "../../common/appInfo";
 import { strings } from "../../common/strings";
+import { IStorageProviderRegistrationOptions } from "../../providers/storage/storageProviderFactory";
 
 /**
  * Actions to be performed in relation to projects
  */
 export default interface IProjectActions {
     loadProject(project: IProject): Promise<IProject>;
+    loadProjectFromStorage(connection: IConnection, projectId: string): Promise<IProject>;
     saveProject(project: IProject): Promise<IProject>;
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
@@ -44,12 +47,28 @@ export function loadProject(project: IProject):
 
         // Lookup security token used to decrypt project settings
         const projectToken = appState.appSettings.securityTokens
-            .find((securityToken) => securityToken.name === project.securityToken);
+            .find((securityToken) => securityToken && project && securityToken.name === project.securityToken);
 
-        if (project.useSecurityToken && !projectToken) {
+        if (project && project.useSecurityToken && !projectToken) {
             throw new AppError(ErrorCode.SecurityTokenNotFound, "Security Token Not Found");
         }
         const loadedProject = await projectService.load(project, projectToken);
+
+        dispatch(loadProjectAction(loadedProject));
+        return loadedProject;
+    };
+}
+
+/**
+ * Dispatches Load Project action and resolves with IProject
+ * @param connection - Connection
+ * @param projectId - Project ID to load
+ */
+export function loadProjectFromStorage(connection: IConnection, projectId: string)
+    : (dispatch: Dispatch, getState: () => IApplicationState) => Promise<IProject> {
+    return async (dispatch: Dispatch, getState: () => IApplicationState) => {
+        const projectService = new ProjectService();
+        const loadedProject = await projectService.loadFromConnection(connection, projectId);
 
         dispatch(loadProjectAction(loadedProject));
         return loadedProject;
@@ -107,7 +126,6 @@ export function deleteProject(project: IProject)
         }
 
         const decryptedProject = await projectService.load(project, projectToken);
-
         await projectService.delete(decryptedProject);
         dispatch(deleteProjectAction(decryptedProject));
     };
