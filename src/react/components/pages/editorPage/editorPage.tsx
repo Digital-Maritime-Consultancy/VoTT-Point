@@ -33,10 +33,8 @@ import { ActiveLearningService } from "../../../../services/activeLearningServic
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
-import axios from "axios";
 
 import connectionJson from "../../../../assets/defaultConnection.json";
-import { StorageProviderFactory } from "../../../../providers/storage/storageProviderFactory";
 
 /**
  * Properties for Editor Page
@@ -166,6 +164,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             await this.loadProjectAssets();
         }
 
+        const query = new URLSearchParams(this.props.location.search);
+        const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
         // Updating toolbar according to editing context
         const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
             getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
@@ -177,6 +177,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
+                lockedTags: lockedTags,
             });
         }
 
