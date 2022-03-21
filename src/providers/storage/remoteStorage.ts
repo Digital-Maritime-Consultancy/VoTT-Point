@@ -209,7 +209,7 @@ export class RemoteStorage implements IStorageProvider {
             headers: {
                 "Accept": "application/json",
             },
-        });
+        }).catch(() => null);
 
         if(response.data.imageServerUrl) {
             const items = [];

@@ -147,6 +147,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             } else {
                 // LOAD PROJECT ON-DEMAND: we will load project from remote storage
                 const connection = connectionJson;
+                await this.props.applicationActions.addNewSecurityToken(projectId);
                 await this.props.actions.loadProjectFromStorage(connection, projectId);
             }
         }
