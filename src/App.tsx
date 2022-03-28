@@ -4,7 +4,7 @@ import { Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "./react/components/shell/sidebar";
 import MainContentRouter from "./react/components/shell/mainContentRouter";
-import { IAppError, IApplicationState, IProject, ErrorCode, TaskType } from "./models/applicationState";
+import { IAppError, IApplicationState, IProject, ErrorCode, TaskType, TaskStatus } from "./models/applicationState";
 import "./App.scss";
 import "react-toastify/dist/ReactToastify.css";
 import IAppErrorActions, * as appErrorActions from "./redux/actions/appErrorActions";
@@ -16,6 +16,7 @@ import { StatusBar } from "./react/components/shell/statusBar";
 import { StatusBarMetrics } from "./react/components/shell/statusBarMetrics";
 import { HelpMenu } from "./react/components/shell/helpMenu";
 import history from "./history";
+import connectionJson from "./assets/defaultConnection.json";
 
 interface IAppProps {
     currentProject?: IProject;
@@ -74,13 +75,7 @@ export default class App extends React.Component<IAppProps> {
                             <div className={`app-shell platform-${platform}`}>
                                 <TitleBar icon="fas fa-tags"
                                     title={this.props.currentProject ? this.props.currentProject.name : ""}
-                                    stellaUrl={this.props.currentProject ?
-                                        `${this.props.currentProject.stellaUrl}/${this.props.currentProject &&
-                                        this.props.currentProject.taskType === TaskType.Evaluation ?
-                                            "exam" : "task"}/list`
-                                        : `http://localhost:8081/${this.props.currentProject &&
-                                        this.props.currentProject.taskType === TaskType.Evaluation ?
-                                            "exam" : "task"}/list`}>
+                                    stellaUrl={this.getHomeLink()}>
                                     <div className="app-help-menu-icon"><HelpMenu/></div>
                                 </TitleBar>
                                 <div className="app-main">
@@ -97,5 +92,14 @@ export default class App extends React.Component<IAppProps> {
                 }
             </Fragment>
         );
+    }
+
+    getHomeLink() {
+        return `${connectionJson.providerOptions.stellaUrl}/${this.props.currentProject &&
+        this.props.currentProject.taskType === TaskType.Evaluation ?
+            "exam" : "task"}/${
+                this.props.currentProject &&
+                this.props.currentProject.taskStatus === TaskStatus.Review ?
+                "reviews" : "list"}`;
     }
 }
