@@ -8,6 +8,7 @@
         "taskId": "",
         "taskServerUrl": "http://localhost:8090/task",
         "imageServerUrl": "http://localhost:8090/image",
-        "dotToRectUrl": "http://localhost:8490/dot"
+        "dotToRectUrl": "http://localhost:8490/dot",
+        "stellaUrl": "http://localhost:8090"
     }
 }
