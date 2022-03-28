@@ -6,6 +6,8 @@
     "providerOptions": {
         "url": "http://localhost:8090/file",
         "taskId": "",
-        "taskServerUrl": "http://localhost:8090/task"
+        "taskServerUrl": "http://localhost:8090/task",
+        "imageServerUrl": "http://localhost:8090/image",
+        "dotToRectUrl": "http://localhost:8490/dot"
     }
 }

@@ -2,6 +2,7 @@ import { IStorageProvider } from "./storageProviderFactory";
 import { IAsset, AssetType, StorageType } from "../../models/applicationState";
 import { AssetService } from "../../services/assetService";
 import axios from "axios";
+import connectionJson from "../../assets/defaultConnection.json";
 
 const shortid = require('shortid');
 
@@ -211,17 +212,19 @@ export class RemoteStorage implements IStorageProvider {
             },
         }).catch(() => null);
 
-        if(response.data.imageServerUrl) {
-            const items = [];
+        const items = [];
+        const imgServerUrl = connectionJson && connectionJson.providerOptions.imageServerUrl ?
+            connectionJson.providerOptions.imageServerUrl : this.getUrl();
+        if (response.data) {
             for (let key in response.data.imageList) {
                 let value = response.data.imageList[key];
-                items.push(`${this.getUrl()}/${value}`);
+                items.push(`${imgServerUrl}/${value}`);
             }
             return items
                 .map((filePath) => AssetService.createAssetFromFilePath(filePath))
                 .filter((asset) => asset.type !== AssetType.Unknown);
         }
-        return null;
+        return [];
     }
 
     /**
