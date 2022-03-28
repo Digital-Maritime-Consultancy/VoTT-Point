@@ -138,7 +138,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     public async componentDidMount() {
         const projectId = this.props.match.params["projectId"];
-        if (this.props.project) {
+        if (this.props.project && this.props.project.name === projectId) {
             await this.loadProjectAssets();
         } else if (projectId) {
             const project = this.props.recentProjects.find((project) => project.id === projectId);
