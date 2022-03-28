@@ -1,3 +1,4 @@
+import { IConnection } from './../models/applicationState';
 import _ from "lodash";
 import shortid from "shortid";
 import { StorageProviderFactory } from "../providers/storage/storageProviderFactory";
@@ -52,8 +53,9 @@ export default class ProjectService implements IProjectService {
     public load(project: IProject, securityToken?: ISecurityToken): Promise<IProject> {
         Guard.null(project);
 
+        const useSecurityToken: boolean = typeof project.useSecurityToken === 'string' ? project.useSecurityToken as boolean : project.useSecurityToken;
         try {
-            const loadedProject = project.useSecurityToken
+            const loadedProject = useSecurityToken
                 ? decryptProject(project, securityToken)
                 : { ...project };
 
@@ -77,6 +79,21 @@ export default class ProjectService implements IProjectService {
             return Promise.resolve({ ...loadedProject });
         } catch (e) {
             const error = new AppError(ErrorCode.ProjectInvalidSecurityToken, "Error decrypting project settings");
+            return Promise.reject(error);
+        }
+    }
+
+    public async loadFromConnection(connection: IConnection, projectName: string): Promise<IProject> {
+        Guard.null(connection);
+        Guard.null(projectName);
+
+        try {
+            const storageProvider = StorageProviderFactory.createFromConnection(connection);
+            const projectString = await storageProvider.readText(`${projectName}${constants.projectFileExtension}`);
+            const project: IProject = JSON.parse(projectString);
+            return await this.load(project, {name: "", key: ""});
+        } catch (e) {
+            const error = new AppError(ErrorCode.ProjectLoadError, "Error loading project");
             return Promise.reject(error);
         }
     }
@@ -135,10 +152,12 @@ export default class ProjectService implements IProjectService {
 
         // Delete all asset metadata files created for project
         const deleteFiles = _.values(project.assets)
-            .map((asset) => storageProvider.deleteFile(`${asset.id}${constants.assetMetadataFileExtension}`));
+            .map((asset) => storageProvider.deleteFile(`${asset.name}--${project.name}${constants.assetMetadataFileExtension}`));
 
-        await Promise.all(deleteFiles);
-        await storageProvider.deleteFile(`${project.name}${constants.projectFileExtension}`);
+        await Promise.all(deleteFiles).then(async () => {
+            console.log(project.name);
+            await storageProvider.deleteFile(`${project.name}${constants.projectFileExtension}`)
+        });
     }
 
     /**

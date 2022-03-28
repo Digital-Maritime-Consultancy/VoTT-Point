@@ -46,6 +46,7 @@ export enum ErrorCode {
     ProjectInvalidJson = "projectInvalidJson",
     ProjectInvalidSecurityToken = "projectInvalidSecurityToken",
     ProjectDuplicateName = "projectDuplicateName",
+    ProjectLoadError = "projectLoadError",
     SecurityTokenNotFound = "securityTokenNotFound",
     ExportFormatNotFound = "exportFormatNotFound",
     PasteRegionTooBig = "pasteRegionTooBig",
@@ -454,6 +455,7 @@ export interface ITask {
     status: string;
     createdAt?: string;
     lastUpdatedAt?: string;
+    lastUsedForProjectCreation?: string;
     progress?: { [name: string]: IProgress };
 }
 

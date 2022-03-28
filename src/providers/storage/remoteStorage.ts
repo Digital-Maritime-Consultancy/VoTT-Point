@@ -2,6 +2,7 @@ import { IStorageProvider } from "./storageProviderFactory";
 import { IAsset, AssetType, StorageType } from "../../models/applicationState";
 import { AssetService } from "../../services/assetService";
 import axios from "axios";
+import connectionJson from "../../assets/defaultConnection.json";
 
 const shortid = require('shortid');
 
@@ -106,9 +107,14 @@ export class RemoteStorage implements IStorageProvider {
     public async deleteFile(blobName: string): Promise<void> {
         try {
             const apiUrl = `${this.getUrl()}/${blobName}`;
-            await axios.delete(apiUrl);
+            await axios.delete(apiUrl).catch(() => null);
         } catch (e) {
-            if (e.statusCode === 409) {
+            console.log(e);
+            if (e.statusCode === 404) {
+                alert("Data not found");
+                return;
+            }
+            else if (e.statusCode === 409) {
                 alert("Error reaching to the server");
                 return;
             }
@@ -204,19 +210,21 @@ export class RemoteStorage implements IStorageProvider {
             headers: {
                 "Accept": "application/json",
             },
-        });
+        }).catch(() => null);
 
-        if(response.data.imageServerUrl) {
-            const items = [];
+        const items = [];
+        const imgServerUrl = connectionJson && connectionJson.providerOptions.imageServerUrl ?
+            connectionJson.providerOptions.imageServerUrl : this.getUrl();
+        if (response.data) {
             for (let key in response.data.imageList) {
                 let value = response.data.imageList[key];
-                items.push(`${this.getUrl()}/${value}`);
+                items.push(`${imgServerUrl}/${value}`);
             }
             return items
                 .map((filePath) => AssetService.createAssetFromFilePath(filePath))
                 .filter((asset) => asset.type !== AssetType.Unknown);
         }
-        return null;
+        return [];
     }
 
     /**

@@ -33,7 +33,8 @@ import { ActiveLearningService } from "../../../../services/activeLearningServic
 import { toast } from "react-toastify";
 import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
-import axios from "axios";
+
+import connectionJson from "../../../../assets/defaultConnection.json";
 
 /**
  * Properties for Editor Page
@@ -137,18 +138,27 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     public async componentDidMount() {
         const projectId = this.props.match.params["projectId"];
-        if (this.props.project) {
+        if (this.props.project && this.props.project.name === projectId) {
             await this.loadProjectAssets();
         } else if (projectId) {
             const project = this.props.recentProjects.find((project) => project.id === projectId);
-            await this.props.actions.loadProject(project);
+            if (project) {
+                await this.props.actions.loadProject(project);
+            } else {
+                // LOAD PROJECT ON-DEMAND: we will load project from remote storage
+                const connection = connectionJson;
+                await this.props.applicationActions.addNewSecurityToken(projectId);
+                await this.props.actions.loadProjectFromStorage(connection, projectId);
+            }
         }
 
         this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
 
         // dot to rect service check
         if (this.props.project && this.props.project.dotToRectSettings && this.props.project.dotToRectSettings.url) {
-            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url);
+            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url ?
+                this.props.project.dotToRectSettings.url : connectionJson.providerOptions.dotToRectUrl ?
+                connectionJson.providerOptions.dotToRectUrl : "");
         }
     }
 
@@ -157,6 +167,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             await this.loadProjectAssets();
         }
 
+        const query = new URLSearchParams(this.props.location.search);
+        const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
         // Updating toolbar according to editing context
         const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
             getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
@@ -168,6 +180,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
+                lockedTags: lockedTags,
             });
         }
 
@@ -485,12 +498,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         } else {
             const rootAssetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, rootAsset);
 
-            if (rootAssetMetadata.asset.state === AssetState.NotVisited
-                    || rootAssetMetadata.asset.state === AssetState.Visited) {
-                rootAssetMetadata.asset.state = assetMetadata.asset.state;
-                await this.props.actions.saveAssetMetadata(this.props.project, rootAssetMetadata);
-            }
-
             rootAsset.state = rootAssetMetadata.asset.state;
         }
 
@@ -560,6 +567,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 this.setState({
                     selectionMode: SelectionMode.POINT,
                     editorMode: EditorMode.Point,
+                });
+                break;
+            case ToolbarItemName.DrawPolygon:
+                this.setState({
+                    selectionMode: SelectionMode.POLYGON,
+                    editorMode: EditorMode.Polygon,
                 });
                 break;
             case ToolbarItemName.SelectCanvas:
@@ -772,8 +785,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 return AssetState.Disabled;
             } else if (assetMetadata.asset.approved) {
                 return AssetState.Approved;
-            } else if (assetMetadata.asset.state === AssetState.NotVisited) {
-                return AssetState.Visited;
             } else {
                 return assetMetadata.regions.length === 0 ?
                 AssetState.Visited : assetMetadata.regions.find(r => r.type === RegionType.Rectangle) ?
