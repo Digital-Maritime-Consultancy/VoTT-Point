@@ -156,7 +156,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         // dot to rect service check
         if (this.props.project && this.props.project.dotToRectSettings && this.props.project.dotToRectSettings.url) {
-            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url);
+            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url ?
+                this.props.project.dotToRectSettings.url : connectionJson.providerOptions.dotToRectUrl ?
+                connectionJson.providerOptions.dotToRectUrl : "");
         }
     }
 
