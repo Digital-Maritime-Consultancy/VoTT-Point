@@ -53,7 +53,11 @@ export default class ProjectService implements IProjectService {
     public load(project: IProject, securityToken?: ISecurityToken): Promise<IProject> {
         Guard.null(project);
 
-        const useSecurityToken: boolean = typeof project.useSecurityToken === 'string' ? project.useSecurityToken as boolean : project.useSecurityToken;
+        if (typeof project.useSecurityToken === 'string') {
+            project.useSecurityToken = project.useSecurityToken === 'true';
+        }
+        
+        const useSecurityToken: boolean = project.useSecurityToken;
         try {
             const loadedProject = useSecurityToken
                 ? decryptProject(project, securityToken)
