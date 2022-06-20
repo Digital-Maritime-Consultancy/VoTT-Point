@@ -16,6 +16,7 @@ import { strings } from "../../../../common/strings";
 import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { Rect } from "vott-ct/lib/js/CanvasTools/Core/Rect";
 import { createContentBoundingBox } from "../../../../common/layout";
+import { ZoomType } from "vott-ct/lib/js/CanvasTools/Core/ZoomManager";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -34,6 +35,7 @@ export interface ICanvasState {
     currentAsset: IAssetMetadata;
     contentSource: ContentSource;
     enabled: boolean;
+    offset: number;
 }
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -52,6 +54,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         currentAsset: this.props.selectedAsset,
         contentSource: null,
         enabled: false,
+        offset: 0,
     };
 
     private canvasZone: React.RefObject<HTMLDivElement> = React.createRef();
@@ -60,14 +63,17 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     private template: Rect = new Rect(20, 20);
 
     public componentDidMount = () => {
-        const sz = document.getElementById("editor-zone") as HTMLDivElement;
-        this.editor = new CanvasTools.Editor(sz);
-        this.editor.autoResize = false;
+        const editorContainer = document.getElementById("editor-zone") as HTMLDivElement;
+        this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
+            isZoomEnabled: true,
+            zoomType: 3,
+        }).api;
         this.editor.onSelectionEnd = this.onSelectionEnd;
         this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
         this.editor.onRegionDelete = this.onRegionDelete;
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
+        this.editor.ZM.setMaxZoomScale(10);
 
         window.addEventListener("resize", this.onWindowResize);
     }
@@ -129,20 +135,16 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         const className = this.state.enabled ? "canvas-enabled" : "canvas-disabled";
 
         return (
-            <Fragment>
+            <div>
                 <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
                     ref={this.clearConfirm as any}
                     message={strings.editorPage.canvas.removeAllRegions.confirmation}
                     confirmButtonColor="danger"
                     onConfirm={this.removeAllRegions}
                 />
-                <div id="ct-zone" ref={this.canvasZone} className={className} onClick={(e) => e.stopPropagation()}>
-                    <div id="selection-zone">
-                        <div id="editor-zone" className="full-size" />
-                    </div>
-                </div>
+                <div id="editor-zone" ref={this.canvasZone} className={className} onClick={(e) => e.stopPropagation()} onWheel={this.handleScroll} />
                 {this.renderChildren()}
-            </Fragment>
+            </div>
         );
     }
 
@@ -612,5 +614,27 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 break;
         }
         return type;
+    }
+
+    private handleScroll = (event: any) => {
+        console.log(event);
+
+        console.log(event.pageX);
+        console.log(event.pageY);
+        /*
+        const cursorPos = getCursorPos(e);
+            console.log(cursorPos);
+            if (e.deltaY < 0) {
+                editor.ZM.callbacks.onZoomingIn(cursorPos);
+            } else if (e.deltaY > 0) {
+                editor.ZM.callbacks.onZoomingOut(cursorPos);
+            }
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            e.preventDefault();
+        this.setState({
+          offset: itemTranslate
+        });
+        */
     }
 }
