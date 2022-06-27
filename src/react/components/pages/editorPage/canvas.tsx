@@ -16,7 +16,10 @@ import { strings } from "../../../../common/strings";
 import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { Rect } from "vott-ct/lib/js/CanvasTools/Core/Rect";
 import { createContentBoundingBox } from "../../../../common/layout";
-import { ZoomType } from "vott-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { ZoomManager, ZoomType } from "vott-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { RegionsManager } from "vott-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { AreaSelector } from "vott-ct/lib/js/CanvasTools/Selection/AreaSelector";
+import { FilterPipeline } from "vott-ct/lib/js/CanvasTools/CanvasTools.Filter";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -67,19 +70,16 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
             isZoomEnabled: true,
             zoomType: 3,
-        }).api;
+        });
         this.editor.onSelectionEnd = this.onSelectionEnd;
         this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
         this.editor.onRegionDelete = this.onRegionDelete;
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
         this.editor.ZM.setMaxZoomScale(10);
-
-        window.addEventListener("resize", this.onWindowResize);
     }
 
     public componentWillUnmount() {
-        window.removeEventListener("resize", this.onWindowResize);
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
@@ -117,7 +117,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             if (this.state.enabled) {
                 this.refreshCanvasToolsRegions();
                 this.setContentSource(this.state.contentSource);
-                this.editor.AS.setSelectionMode(this.props.selectionMode);
+                this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
                 this.editor.AS.enable();
 
                 if (this.props.onSelectedRegionsChanged) {
@@ -126,7 +126,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             } else { // When the canvas has been disabled
                 this.editor.AS.disable();
                 this.clearAllRegions();
-                this.editor.AS.setSelectionMode(SelectionMode.NONE);
+                this.editor.AS.setSelectionMode({mode: SelectionMode.NONE});
             }
         }
     }
@@ -142,8 +142,10 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                     confirmButtonColor="danger"
                     onConfirm={this.removeAllRegions}
                 />
-                <div id="editor-zone" ref={this.canvasZone} className={className} onClick={(e) => e.stopPropagation()} onWheel={this.handleScroll} />
-                {this.renderChildren()}
+                <div id="selection-zone" onClick={(e) => e.stopPropagation()}>
+                    <div id="editor-zone" ref={this.canvasZone}/>
+                    {this.renderChildren()}
+                </div>
             </div>
         );
     }
@@ -219,7 +221,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.context === EditingContext.None) {
             return ;
         }
-        const selectedRegions = this.editor.RM.getSelectedRegionsBounds().map((rb) => rb.id);
+        console.log(this.editor.RM.getSelectedRegions());
+        const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
 
@@ -230,10 +233,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
             );
         }
-    }
-
-    public forceResize = (): void => {
-        this.onWindowResize();
     }
 
     private removeAllRegions = () => {
@@ -427,8 +426,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
         }
+        /*
         // Gets the scaled region data
-        const selectedRegionsData = this.editor.RM.getSelectedRegionsBounds().find((region) => region.id === id);
+        const selectedRegionsData = this.editor.RM.getSelectedRegions().find((region) => region.id === id);
 
         if (selectedRegionsData) {
             this.template = new Rect(selectedRegionsData.width, selectedRegionsData.height);
@@ -440,6 +440,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             }
             this.updateRegions(selectedRegions);
         }
+        */
     }
 
     private renderChildren = () => {
@@ -464,7 +465,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      */
     private onAssetLoaded = (contentSource: ContentSource) => {
         this.setState({ contentSource });
-        this.positionCanvas(contentSource);
     }
 
     private onAssetError = () => {
@@ -504,36 +504,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         } catch (e) {
             console.warn(e);
         }
-    }
-
-    /**
-     * Positions the canvas tools drawing surface to be exactly over the asset content
-     */
-    private positionCanvas = (contentSource: ContentSource) => {
-        if (!contentSource) {
-            return;
-        }
-
-        const canvas = this.canvasZone.current;
-        if (canvas) {
-            const boundingBox = createContentBoundingBox(contentSource);
-            canvas.style.top = `${boundingBox.top}px`;
-            canvas.style.left = `${boundingBox.left}px`;
-            canvas.style.width = `${boundingBox.width}px`;
-            canvas.style.height = `${boundingBox.height}px`;
-            this.editor.resize(boundingBox.width, boundingBox.height);
-        }
-    }
-
-    /**
-     * Resizes and re-renders the canvas when the application window size changes
-     */
-    private onWindowResize = async () => {
-        if (!this.state.contentSource) {
-            return;
-        }
-
-        this.positionCanvas(this.state.contentSource);
     }
 
     /**
