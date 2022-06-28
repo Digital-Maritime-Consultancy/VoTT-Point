@@ -79,9 +79,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.ZM.setMaxZoomScale(10);
     }
 
-    public componentWillUnmount() {
-    }
-
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
         // Handles asset changing
         if (this.props.selectedAsset !== prevProps.selectedAsset) {
@@ -90,6 +87,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         // Handle selection mode changes
         if (this.props.selectionMode !== prevProps.selectionMode) {
+            console.log(this.props.selectionMode);
             const options = (this.props.selectionMode === SelectionMode.COPYRECT) ? this.template : null;
             this.editor.AS.setSelectionMode({ mode: this.props.selectionMode, template: options });
         }
@@ -142,7 +140,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                     confirmButtonColor="danger"
                     onConfirm={this.removeAllRegions}
                 />
-                <div id="selection-zone" onClick={(e) => e.stopPropagation()}>
+                <div id="selection-zone" >
                     <div id="editor-zone" ref={this.canvasZone}/>
                     {this.renderChildren()}
                 </div>
@@ -221,7 +219,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.context === EditingContext.None) {
             return ;
         }
-        console.log(this.editor.RM.getSelectedRegions());
         const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
@@ -304,7 +301,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
         const id = shortid.generate();
 
-        this.editor.RM.addRegion(id, regionData, null);
+        console.log(regionData);
+        const tags = new CanvasTools.Core.TagsDescriptor();
+        this.editor.RM.addRegion(id, regionData, tags);
 
         this.template = new Rect(regionData.width, regionData.height);
 
@@ -422,6 +421,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.context === EditingContext.None) {
             return ;
         }
+        console.log(this.editor.RM.getSelectedRegions());
         const selectedRegions = this.getSelectedRegions();
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
