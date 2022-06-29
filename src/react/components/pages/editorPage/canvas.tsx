@@ -51,7 +51,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         context: EditingContext.None,
     };
 
-    public editor: Editor;
+    public editor: any;
 
     public state: ICanvasState = {
         currentAsset: this.props.selectedAsset,
@@ -66,11 +66,13 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     private template: Rect = new Rect(20, 20);
 
     public componentDidMount = () => {
-        const editorContainer = document.getElementById("editor-zone") as HTMLDivElement;
+        const editorContainer = document.getElementById("editorDiv") as HTMLDivElement;
+        const toolbarContainer = document.getElementById("toolbarDiv") as HTMLDivElement;
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
             isZoomEnabled: true,
             zoomType: 3,
-        });
+        }).api;
+        this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.FullToolbarSet, "./images/icons/");
         this.editor.onSelectionEnd = this.onSelectionEnd;
         this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
         this.editor.onRegionDelete = this.onRegionDelete;
@@ -140,9 +142,12 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                     confirmButtonColor="danger"
                     onConfirm={this.removeAllRegions}
                 />
-                <div id="selection-zone" >
-                    <div id="editor-zone" ref={this.canvasZone}/>
-                    {this.renderChildren()}
+                <div id="canvasToolsDiv">
+                    <div id="toolbarDiv"></div>
+                    <div id="selectionDiv">
+                        <div id="editorDiv" ref={this.canvasZone}></div>
+                        {this.renderChildren()}
+                    </div>
                 </div>
             </div>
         );
@@ -308,6 +313,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.template = new Rect(regionData.width, regionData.height);
 
         // RegionData not serializable so need to extract data
+        console.log(this.editor);
         const scaledRegionData = this.editor.scaleRegionToSourceSize(
             regionData,
             this.state.currentAsset.asset.size.width,
