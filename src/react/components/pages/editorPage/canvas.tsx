@@ -1,7 +1,7 @@
 import React, { Fragment, ReactElement } from "react";
 import * as shortid from "shortid";
-import { CanvasTools } from "vott-ct";
-import { RegionData } from "vott-ct/lib/js/CanvasTools/Core/RegionData";
+import { CanvasTools } from "@jinkijung/vott-dot-ct";
+import { RegionData } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import {
     EditingContext,
     EditorMode, IAssetMetadata,
@@ -9,17 +9,17 @@ import {
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
 import { AssetPreview, ContentSource } from "../../common/assetPreview/assetPreview";
-import { Editor } from "vott-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { Editor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 import Clipboard from "../../../../common/clipboard";
 import Confirm from "../../common/confirm/confirm";
 import { strings } from "../../../../common/strings";
-import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
-import { Rect } from "vott-ct/lib/js/CanvasTools/Core/Rect";
+import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { Rect } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
 import { createContentBoundingBox } from "../../../../common/layout";
-import { ZoomManager, ZoomType } from "vott-ct/lib/js/CanvasTools/Core/ZoomManager";
-import { RegionsManager } from "vott-ct/lib/js/CanvasTools/Region/RegionsManager";
-import { AreaSelector } from "vott-ct/lib/js/CanvasTools/Selection/AreaSelector";
-import { FilterPipeline } from "vott-ct/lib/js/CanvasTools/CanvasTools.Filter";
+import { ZoomManager, ZoomType } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { AreaSelector } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
+import { FilterPipeline } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -71,7 +71,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
             isZoomEnabled: true,
             zoomType: 3,
-        }).api;
+        });
         this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.FullToolbarSet, "./images/icons/");
         this.editor.onSelectionEnd = this.onSelectionEnd;
         this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
@@ -313,7 +313,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.template = new Rect(regionData.width, regionData.height);
 
         // RegionData not serializable so need to extract data
-        console.log(this.editor);
         const scaledRegionData = this.editor.scaleRegionToSourceSize(
             regionData,
             this.state.currentAsset.asset.size.width,
