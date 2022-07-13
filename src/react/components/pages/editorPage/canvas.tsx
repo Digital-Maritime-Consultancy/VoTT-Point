@@ -20,6 +20,10 @@ import { ZoomManager, ZoomType } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools
 import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
 import { AreaSelector } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
 import { FilterPipeline } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
+import { EditorToolbar } from "./editorToolbar";
+import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
+import IProjectActions from "../../../../redux/actions/projectActions";
+import { ToolbarItem } from "../../toolbar/toolbarItem";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -29,9 +33,11 @@ export interface ICanvasProps extends React.Props<Canvas> {
     lockedTags: string[];
     children?: ReactElement<AssetPreview>;
     context?: EditingContext;
+    actions?: IProjectActions;
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
     onCanvasRendered?: (canvas: HTMLCanvasElement) => void;
+    onToolbarItemSelected?: (toolbarItem: ToolbarItem) => void;
 }
 
 export interface ICanvasState {
@@ -39,6 +45,8 @@ export interface ICanvasState {
     contentSource: ContentSource;
     enabled: boolean;
     offset: number;
+    /** Filtered toolbar items accordning to editing context */
+    filteredToolbarItems: IToolbarItemRegistration[];
 }
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -58,11 +66,12 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         contentSource: null,
         enabled: false,
         offset: 0,
+        filteredToolbarItems: [],
     };
 
     private canvasZone: React.RefObject<HTMLDivElement> = React.createRef();
     private clearConfirm: React.RefObject<Confirm> = React.createRef();
-
+    private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private template: Rect = new Rect(20, 20);
 
     public componentDidMount = () => {
@@ -79,12 +88,21 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
         this.editor.ZM.setMaxZoomScale(10);
+        console.log(this.state.contentSource);
+        this.setContentSource(this.state.contentSource);
+        this.setState({
+            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
         // Handles asset changing
         if (this.props.selectedAsset !== prevProps.selectedAsset) {
             this.setState({ currentAsset: this.props.selectedAsset });
+        }
+
+        if (this.props.context !== prevProps.context) {
+            this.setState({
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
         }
 
         // Handle selection mode changes
@@ -133,23 +151,30 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
     public render = () => {
         const className = this.state.enabled ? "canvas-enabled" : "canvas-disabled";
-
         return (
-            <div>
+            <>
+                <div id="toolbarDiv" className="editor-page-content-main-header">
+                    {this.props.context !== EditingContext.None &&
+                        <EditorToolbar project={this.props.project}
+                                            items={this.state.filteredToolbarItems}
+                                            actions={this.props.actions}
+                                            onToolbarItemSelected={this.props.onToolbarItemSelected} />}
+                </div>
                 <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
                     ref={this.clearConfirm as any}
                     message={strings.editorPage.canvas.removeAllRegions.confirmation}
                     confirmButtonColor="danger"
                     onConfirm={this.removeAllRegions}
                 />
-                <div id="canvasToolsDiv">
-                    <div id="toolbarDiv"></div>
+                <div>
+                </div>
+                <div className="editor-page-content-main-body">
                     <div id="selectionDiv">
                         <div id="editorDiv" ref={this.canvasZone}></div>
-                        {this.renderChildren()}
                     </div>
                 </div>
-            </div>
+                {/*this.renderChildren()*/}
+            </>
         );
     }
 
@@ -335,6 +360,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
         }
         this.updateAssetRegions([...this.state.currentAsset.regions, newRegion]);
+        console.log(newRegion);
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged([newRegion]);
         }

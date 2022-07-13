@@ -756,6 +756,7 @@ export default class MockFactory {
             selectionMode: SelectionMode.RECT,
             children: null,
             lockedTags: [],
+            actions: (projectActions as any) as IProjectActions,
         };
         return new Canvas(canvasProps);
     }

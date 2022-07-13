@@ -12,7 +12,6 @@ import {
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
     ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType,
 } from "../../../../models/applicationState";
-import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
 import { ToolbarItemName } from "../../../../registerToolbar";
@@ -26,7 +25,6 @@ import Canvas from "./canvas";
 import CanvasHelpers from "./canvasHelpers";
 import "./editorPage.scss";
 import EditorSideBar from "./editorSideBar";
-import { EditorToolbar } from "./editorToolbar";
 import Alert from "../../common/alert/alert";
 import Confirm from "../../common/confirm/confirm";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
@@ -84,8 +82,6 @@ export interface IEditorPageState {
     isValid: boolean;
     /** Whether the show invalid region warning alert should display */
     showInvalidRegionWarning: boolean;
-    /** Filtered toolbar items accordning to editing context */
-    filteredToolbarItems: IToolbarItemRegistration[];
 }
 
 function mapStateToProps(state: IApplicationState) {
@@ -125,13 +121,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         thumbnailSize: this.props.appSettings.thumbnailSize || { width: 175, height: 155 },
         isValid: true,
         showInvalidRegionWarning: false,
-        filteredToolbarItems: [],
     };
 
     private activeLearningService: ActiveLearningService = null;
     private dotToRectService: DotToRectService = null;
     private loadingProjectAssets: boolean = false;
-    private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvas: RefObject<Canvas> = React.createRef();
     private renameTagConfirm: React.RefObject<Confirm> = React.createRef();
     private deleteTagConfirm: React.RefObject<Confirm> = React.createRef();
@@ -177,7 +171,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             // refresh view
             this.setState({
                 context: currentEditingContext,
-                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(currentEditingContext) >= 0),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
                 lockedTags: lockedTags,
@@ -248,41 +241,32 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     </div>
                     <div className="editor-page-content" onClick={this.onPageClick}>
                         <div className="editor-page-content-main">
-                            {
-                                this.state.context !== EditingContext.None &&
-                                <div className="editor-page-content-main-header">
-                                    <EditorToolbar project={this.props.project}
-                                        items={this.state.filteredToolbarItems}
-                                        actions={this.props.actions}
-                                        onToolbarItemSelected={this.onToolbarItemSelected} />
-                                </div>
+                            {selectedAsset &&
+                                <Canvas
+                                    ref={this.canvas}
+                                    selectedAsset={this.state.selectedAsset}
+                                    onAssetMetadataChanged={this.onAssetMetadataChanged}
+                                    onCanvasRendered={this.onCanvasRendered}
+                                    onSelectedRegionsChanged={this.onSelectedRegionsChanged}
+                                    onToolbarItemSelected={this.onToolbarItemSelected}
+                                    editorMode={this.state.editorMode}
+                                    actions={this.props.actions}
+                                    selectionMode={
+                                        this.state.context === EditingContext.None ?
+                                            SelectionMode.NONE : this.state.selectionMode}
+                                    project={this.props.project}
+                                    lockedTags={this.state.lockedTags}
+                                    context={this.state.context}>
+                                    <AssetPreview
+                                        additionalSettings={this.state.additionalSettings}
+                                        autoPlay={true}
+                                        controlsEnabled={this.state.isValid}
+                                        onBeforeAssetChanged={this.onBeforeAssetSelected}
+                                        onChildAssetSelected={this.onChildAssetSelected}
+                                        asset={this.state.selectedAsset.asset}
+                                        childAssets={this.state.childAssets} />
+                                </Canvas>
                             }
-                            <div className="editor-page-content-main-body">
-                                {selectedAsset &&
-                                    <Canvas
-                                        ref={this.canvas}
-                                        selectedAsset={this.state.selectedAsset}
-                                        onAssetMetadataChanged={this.onAssetMetadataChanged}
-                                        onCanvasRendered={this.onCanvasRendered}
-                                        onSelectedRegionsChanged={this.onSelectedRegionsChanged}
-                                        editorMode={this.state.editorMode}
-                                        selectionMode={
-                                            this.state.context === EditingContext.None ?
-                                                SelectionMode.NONE : this.state.selectionMode}
-                                        project={this.props.project}
-                                        lockedTags={this.state.lockedTags}
-                                        context={this.state.context}>
-                                        <AssetPreview
-                                            additionalSettings={this.state.additionalSettings}
-                                            autoPlay={true}
-                                            controlsEnabled={this.state.isValid}
-                                            onBeforeAssetChanged={this.onBeforeAssetSelected}
-                                            onChildAssetSelected={this.onChildAssetSelected}
-                                            asset={this.state.selectedAsset.asset}
-                                            childAssets={this.state.childAssets} />
-                                    </Canvas>
-                                }
-                            </div>
                         </div>
                         <div className="editor-page-right-sidebar">
                             <TagInput
