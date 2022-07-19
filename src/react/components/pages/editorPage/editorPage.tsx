@@ -240,34 +240,32 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         />
                     </div>
                     <div className="editor-page-content" onClick={this.onPageClick}>
-                        <div className="editor-page-content-main">
-                            {selectedAsset &&
-                                <Canvas
-                                    ref={this.canvas}
-                                    selectedAsset={this.state.selectedAsset}
-                                    onAssetMetadataChanged={this.onAssetMetadataChanged}
-                                    onCanvasRendered={this.onCanvasRendered}
-                                    onSelectedRegionsChanged={this.onSelectedRegionsChanged}
-                                    onToolbarItemSelected={this.onToolbarItemSelected}
-                                    editorMode={this.state.editorMode}
-                                    actions={this.props.actions}
-                                    selectionMode={
-                                        this.state.context === EditingContext.None ?
-                                            SelectionMode.NONE : this.state.selectionMode}
-                                    project={this.props.project}
-                                    lockedTags={this.state.lockedTags}
-                                    context={this.state.context}>
-                                    <AssetPreview
-                                        additionalSettings={this.state.additionalSettings}
-                                        autoPlay={true}
-                                        controlsEnabled={this.state.isValid}
-                                        onBeforeAssetChanged={this.onBeforeAssetSelected}
-                                        onChildAssetSelected={this.onChildAssetSelected}
-                                        asset={this.state.selectedAsset.asset}
-                                        childAssets={this.state.childAssets} />
-                                </Canvas>
-                            }
-                        </div>
+                        {selectedAsset &&
+                            <Canvas
+                                ref={this.canvas}
+                                selectedAsset={this.state.selectedAsset}
+                                onAssetMetadataChanged={this.onAssetMetadataChanged}
+                                onCanvasRendered={this.onCanvasRendered}
+                                onSelectedRegionsChanged={this.onSelectedRegionsChanged}
+                                onToolbarItemSelected={this.onToolbarItemSelected}
+                                editorMode={this.state.editorMode}
+                                actions={this.props.actions}
+                                selectionMode={
+                                    this.state.context === EditingContext.None ?
+                                        SelectionMode.NONE : this.state.selectionMode}
+                                project={this.props.project}
+                                lockedTags={this.state.lockedTags}
+                                context={this.state.context}>
+                                <AssetPreview
+                                    additionalSettings={this.state.additionalSettings}
+                                    autoPlay={true}
+                                    controlsEnabled={this.state.isValid}
+                                    onBeforeAssetChanged={this.onBeforeAssetSelected}
+                                    onChildAssetSelected={this.onChildAssetSelected}
+                                    asset={this.state.selectedAsset.asset}
+                                    childAssets={this.state.childAssets} />
+                            </Canvas>
+                        }
                         <div className="editor-page-right-sidebar">
                             <TagInput
                                 tags={this.props.project.tags}

@@ -75,23 +75,152 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     private template: Rect = new Rect(20, 20);
 
     public componentDidMount = () => {
+        // Get references for editor and toolbar containers
         const editorContainer = document.getElementById("editorDiv") as HTMLDivElement;
         const toolbarContainer = document.getElementById("toolbarDiv") as HTMLDivElement;
+
+        this.setState({
+            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
+        
+
+        // Init the editor with toolbar.
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
             isZoomEnabled: true,
             zoomType: 3,
         });
-        this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.FullToolbarSet, "./images/icons/");
-        this.editor.onSelectionEnd = this.onSelectionEnd;
-        this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
-        this.editor.onRegionDelete = this.onRegionDelete;
-        this.editor.onRegionSelected = this.onRegionSelected;
-        this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
+        this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.RectToolbarSet, "./../shared/media/icons/", false);
+
+        let incrementalRegionID = 100;
+
+        // Add new region to the editor when new region is created
+        this.editor.onSelectionEnd = (regionData) => {
+            if (CanvasHelpers.isEmpty(regionData) || this.props.context === EditingContext.None) {
+                return;
+            }
+            let id = (incrementalRegionID++).toString();
+
+            // Generate random tag
+            let tags = generateRandomTagsDescriptor();
+            this.editor.RM.addRegion(id, regionData, tags);
+            console.log(`Created ${id}: {${regionData.x}, ${regionData.y}} x {${regionData.width}, ${regionData.height}}`);
+    
+            this.template = new Rect(regionData.width, regionData.height);
+    
+            // RegionData not serializable so need to extract data
+            const scaledRegionData = this.editor.scaleRegionToSourceSize(
+                regionData,
+                this.state.currentAsset.asset.size.width,
+                this.state.currentAsset.asset.size.height,
+            );
+            const lockedTags = this.props.lockedTags;
+            
+            const newRegion = {
+                id,
+                type: RegionType.Rectangle, // this.editorModeToType(this.props.editorMode),
+                tags: lockedTags || [],
+                boundingBox: {
+                    height: scaledRegionData.height,
+                    width: scaledRegionData.width,
+                    left: scaledRegionData.x,
+                    top: scaledRegionData.y,
+                },
+                points: scaledRegionData.points,
+            };
+            if (lockedTags && lockedTags.length) {
+                //this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
+            }
+            this.updateAssetRegions([...this.state.currentAsset.regions, newRegion]);
+            console.log(newRegion);
+            if (this.props.onSelectedRegionsChanged) {
+                this.props.onSelectedRegionsChanged([newRegion]);
+            }
+        };
+        
+        // Log region manipulations
+        this.editor.onRegionMoveBegin = (id, regionData) => {
+            console.log(`Began moving ${id}: {${regionData.x}, ${regionData.y}} x {${regionData.width}, ${regionData.height}}`);
+        };
+        this.editor.onRegionMove = (id, regionData) => {
+            // console.log(`Moving ${id}: {${regionData.x}, ${regionData.y}} x {${regionData.width}, ${regionData.height}}`);
+        };
+        this.editor.onRegionMoveEnd = (id, regionData) => {
+            console.log(`Ended moving ${id}: {${regionData.x}, ${regionData.y}} x {${regionData.width}, ${regionData.height}}`);
+        };
+        this.editor.onRegionSelected = (id, multiSelection) => {
+            
+            console.log(`Selected ${id}: multiSelection = ${multiSelection}`);
+        }
+        this.editor.onRegionDelete = (id, regionData) => {
+            console.log(`Deleted ${id}: {${regionData.x}, ${regionData.y}} x {${regionData.width}, ${regionData.height}}`);
+        };
+
         this.editor.ZM.setMaxZoomScale(10);
-        console.log(this.state.contentSource);
-        this.setContentSource(this.state.contentSource);
-        this.setState({
-            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
+
+        // Short references to Colors.* classes
+        const Color = CanvasTools.Core.Colors.Color;
+        const RGBColor = CanvasTools.Core.Colors.RGBColor;
+        const LABColor = CanvasTools.Core.Colors.LABColor;
+        const HSLColor = CanvasTools.Core.Colors.HSLColor;
+
+        // Collection of primary tags. Use Color class to define color.
+        const primaryTags = [
+            new CanvasTools.Core.Tag("Awesome", new Color("#c48de7")),
+            new CanvasTools.Core.Tag("Amazing", new Color("#3b1")),
+            new CanvasTools.Core.Tag("Brilliant", new Color("#f94c48")),
+        ];
+
+        // Collection of secondary tags. Use hex-string to define color.
+        const secondaryTags = [
+            new CanvasTools.Core.Tag("Yes", "#fff"),
+            new CanvasTools.Core.Tag("No", "#000"),
+            new CanvasTools.Core.Tag("Unknown", "#999"),
+        ];
+
+        // Collection of ternary tags. Use various color formats to define color.
+        const ternaryTags = [
+            new CanvasTools.Core.Tag("one", new Color(new RGBColor(0.55, 0.24, 0.25))),
+            new CanvasTools.Core.Tag("two", new Color(new HSLColor(0.32, 0.27, 0.51))),
+            new CanvasTools.Core.Tag("many", new Color(new LABColor(0.62, 0.50, -0.55))),
+        ]
+
+        // Randomly generate tags descriptor object
+        function generateRandomTagsDescriptor() {
+            const rnd = (n) => {
+                let r = Math.floor(Math.random() * n);
+                if (r === n) {
+                    r = n - 1;
+                }
+                return r;
+            };
+
+            const primaryTag = primaryTags[rnd(3)];
+            const secondaryTag = secondaryTags[rnd(3)];
+            const ternaryTag = ternaryTags[rnd(3)];
+
+            const r = Math.random();
+            let tags;
+            
+            if (r < 0.2) {
+                // Create tags descriptor passing all three tags 
+                tags = new CanvasTools.Core.TagsDescriptor(primaryTag, [secondaryTag, ternaryTag]);
+            } else if (r < 0.4) {
+                // Create tags descriptor without primary tag
+                tags = new CanvasTools.Core.TagsDescriptor(null, [secondaryTag, ternaryTag]);
+            } else if (r < 0.8) {
+                // Create tags descriptor passing array of tags
+                tags = new CanvasTools.Core.TagsDescriptor([primaryTag, secondaryTag]);
+            } else {
+                // Create tags descriptor without specifying tags
+                tags = new CanvasTools.Core.TagsDescriptor();
+            }
+            return tags;
+        }
+
+        var showZoomDiv = document.getElementById("showZoomFactor");
+        this.editor.onZoomEnd = function (zoom) {
+            showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale*100 + " %";
+            console.log(zoom.maxZoomScale);
+        }
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
@@ -153,27 +282,28 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         const className = this.state.enabled ? "canvas-enabled" : "canvas-disabled";
         return (
             <>
-                <div id="toolbarDiv" className="editor-page-content-main-header">
+                <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
+                        ref={this.clearConfirm as any}
+                        message={strings.editorPage.canvas.removeAllRegions.confirmation}
+                        confirmButtonColor="danger"
+                        onConfirm={this.removeAllRegions}
+                />
+                <div id="canvasToolsDiv">
+                {/*<div id="anotherToolbarDiv" className="editor-page-content-main-header">
                     {this.props.context !== EditingContext.None &&
                         <EditorToolbar project={this.props.project}
                                             items={this.state.filteredToolbarItems}
                                             actions={this.props.actions}
                                             onToolbarItemSelected={this.props.onToolbarItemSelected} />}
+                    </div>*/}
+                <div id="toolbarDiv">
                 </div>
-                <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
-                    ref={this.clearConfirm as any}
-                    message={strings.editorPage.canvas.removeAllRegions.confirmation}
-                    confirmButtonColor="danger"
-                    onConfirm={this.removeAllRegions}
-                />
-                <div>
+                <div id="showZoomFactor"></div>
+                <div id="selectionDiv">
+                    <div id="editorDiv"></div>
                 </div>
-                <div className="editor-page-content-main-body">
-                    <div id="selectionDiv">
-                        <div id="editorDiv" ref={this.canvasZone}></div>
-                    </div>
-                </div>
-                {/*this.renderChildren()*/}
+                {this.renderChildren()}
+            </div>
             </>
         );
     }
@@ -567,6 +697,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         // Add regions to the canvas
         this.state.currentAsset.regions.forEach((region: IRegion) => {
+            console.log(region);
             if (this.props.context === EditingContext.EditDot || this.props.context === EditingContext.None) {
                 if (region.type === RegionType.Point || region.type === RegionType.Rectangle || region.type === RegionType.Polygon) {
                     const loadedRegionData = CanvasHelpers.getRegionData(region);
@@ -637,5 +768,43 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
           offset: itemTranslate
         });
         */
+    }
+
+    private onWheelCapture = (e: any) => {
+        if (!e.ctrlKey && !e.shiftKey && e.altKey && this.editor) {
+            const cursorPos = this.getCursorPos(e);
+            if (e.deltaY < 0) {
+                this.editor.ZM.callbacks.onZoomingIn(cursorPos);
+            } else if (e.deltaY > 0) {
+                this.editor.ZM.callbacks.onZoomingOut(cursorPos);
+            }
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }
+
+    private getCursorPos = (e: any) => {
+        const editorContainer = document.getElementsByClassName("CanvasToolsEditor")[0];
+        let containerPos, x = 0, y = 0;
+        e = e || window.event;
+        /*get the x and y positions of the container:*/
+        containerPos = editorContainer.getBoundingClientRect();
+
+        /*get the x and y positions of the image:*/
+        const editorStyles = window.getComputedStyle(editorContainer);
+        const imagePos = {
+            left: containerPos.left + parseFloat(editorStyles.paddingLeft),
+            top: containerPos.top + parseFloat(editorStyles.paddingTop)
+        };
+
+
+        /*calculate the cursor's x and y coordinates, relative to the image:*/
+        x = e.pageX - imagePos.left;
+        y = e.pageY - imagePos.top;
+        /*consider any page scrolling:*/
+        x = x - window.pageXOffset;
+        y = y - window.pageYOffset;
+        return {x : x, y : y};
     }
 }
