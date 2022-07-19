@@ -81,7 +81,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         this.setState({
             filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
-        
 
         // Init the editor with toolbar.
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
@@ -220,7 +219,10 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.onZoomEnd = function (zoom) {
             showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale*100 + " %";
             console.log(zoom.maxZoomScale);
-        }
+        };
+
+        this.setState({
+            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
@@ -288,19 +290,21 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                         confirmButtonColor="danger"
                         onConfirm={this.removeAllRegions}
                 />
-                <div id="canvasToolsDiv">
-                {/*<div id="anotherToolbarDiv" className="editor-page-content-main-header">
-                    {this.props.context !== EditingContext.None &&
-                        <EditorToolbar project={this.props.project}
-                                            items={this.state.filteredToolbarItems}
-                                            actions={this.props.actions}
-                                            onToolbarItemSelected={this.props.onToolbarItemSelected} />}
-                    </div>*/}
-                <div id="toolbarDiv">
-                </div>
-                <div id="showZoomFactor"></div>
-                <div id="selectionDiv">
-                    <div id="editorDiv"></div>
+                <div id="canvasToolsDiv" ref={this.canvasZone} className={className}
+                    onClick={(e) => e.stopPropagation()}>
+                    <div id="anotherToolbarDiv" className="editor-page-content-main-header">
+                        {this.props.context !== EditingContext.None &&
+                            <EditorToolbar project={this.props.project}
+                                                items={this.state.filteredToolbarItems}
+                                                actions={this.props.actions}
+                                                onToolbarItemSelected={this.props.onToolbarItemSelected} />}
+                        </div>
+                    <div id="toolbarDiv">
+                    </div>
+                    <div id="showZoomFactor"></div>
+                    <div id="selectionDiv" onWheel={this.onWheelCapture}
+                        onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
+                        <div id="editorDiv"></div>
                 </div>
                 {this.renderChildren()}
             </div>
@@ -748,26 +752,20 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         return type;
     }
 
-    private handleScroll = (event: any) => {
-        console.log(event);
-
-        console.log(event.pageX);
-        console.log(event.pageY);
-        /*
-        const cursorPos = getCursorPos(e);
-            console.log(cursorPos);
-            if (e.deltaY < 0) {
-                editor.ZM.callbacks.onZoomingIn(cursorPos);
-            } else if (e.deltaY > 0) {
-                editor.ZM.callbacks.onZoomingOut(cursorPos);
+    private onKeyDown = (e: any) => {
+        if (!e.ctrlKey && !e.shiftKey && e.altKey && this.editor) {
+            if (this.editor.ZM.isZoomEnabled && !this.editor.ZM.isDraggingEnabled) {
+                this.editor.ZM.callbacks.onDragActivated();
             }
-            e.stopImmediatePropagation();
-            e.stopPropagation();
-            e.preventDefault();
-        this.setState({
-          offset: itemTranslate
-        });
-        */
+        }
+    }
+
+    private onKeyUp = (e: any) => {
+        if (this.editor) {
+            if (this.editor.ZM.isZoomEnabled) {
+                this.editor.ZM.callbacks.onDragDeactivated();
+            }
+        }
     }
 
     private onWheelCapture = (e: any) => {
@@ -778,9 +776,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             } else if (e.deltaY > 0) {
                 this.editor.ZM.callbacks.onZoomingOut(cursorPos);
             }
-            e.stopImmediatePropagation();
+            e.nativeEvent.stopImmediatePropagation();
             e.stopPropagation();
-            e.preventDefault();
         }
     }
 
