@@ -47,6 +47,7 @@ export interface ICanvasState {
     offset: number;
     /** Filtered toolbar items accordning to editing context */
     filteredToolbarItems: IToolbarItemRegistration[];
+    selectedRegionIds: string[];
 }
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -67,6 +68,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         enabled: false,
         offset: 0,
         filteredToolbarItems: [],
+        selectedRegionIds: [],
     };
 
     // a flag to confirm an actual region move
@@ -144,6 +146,12 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         // Handles asset changing
         if (this.props.selectedAsset !== prevProps.selectedAsset) {
             this.setState({ currentAsset: this.props.selectedAsset });
+        }
+
+        if (this.state.selectedRegionIds && this.state.selectedRegionIds.length) {
+            if (this.editor && this.editor.RM.getSelectedRegions().map((rb) => rb.id).length === 0) {
+                this.state.selectedRegionIds.forEach((id: string) => this.editor.RM.selectRegionById(id));
+            }
         }
 
         if (this.props.context !== prevProps.context) {
@@ -266,6 +274,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             return ;
         }
         const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
+        this.setState({selectedRegionIds: selectedRegions});
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
 
