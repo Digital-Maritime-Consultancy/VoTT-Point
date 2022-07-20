@@ -430,6 +430,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         currentRegions[movedRegionIndex] = movedRegion;
         this.updateAssetRegions(currentRegions);
+        if (this.props.onSelectedRegionsChanged) {
+            this.props.onSelectedRegionsChanged([movedRegion]);
+        }
         this.isMoved = false;
     }
 
