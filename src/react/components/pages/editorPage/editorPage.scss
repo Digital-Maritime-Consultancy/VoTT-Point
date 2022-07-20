@@ -422,7 +422,7 @@ canvas {
     overflow: auto;
     width: calc(100% - 10px);
     height: calc(100% - 10px);
-    background: rgb(64,64,64);
+    background-color: #1e2024 !important;
 }
 
 #editorDiv svg {
