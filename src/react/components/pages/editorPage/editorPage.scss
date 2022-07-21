@@ -39,7 +39,6 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-
       &-header {
         flex-basis: 50px;
       }
@@ -385,4 +384,53 @@ canvas {
 }
 .Resizer.disabled:hover {
   border-color: transparent;
+}
+
+#controls div {
+    margin: 20px 0;
+}
+
+#canvasToolsDiv {        
+    display: grid;
+    flex-grow: 1;
+    grid-template-columns: 100%;
+    grid-template-rows: 50px calc(100% - 50px);
+    margin:0;
+    background: rgb(64,64,64);
+}
+
+#toolbarDiv {
+    grid-row: 1/2;
+    grid-column: 1;
+    z-index: 10;
+}
+
+#toolbarDiv svg {
+    width: 100%;
+    height: 64px;
+    margin-right:5px;
+    background: #666;
+    box-shadow: 0 0 0.5px #999, 5px 0px 10px -5px rgb(0,0,0);
+}
+
+#selectionDiv {
+    grid-row: 2/3;
+    grid-column: 1;
+    justify-self: center;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    background-color: #1e2024 !important;
+}
+
+#editorDiv svg {
+    box-shadow: 0px 0px 0.25px #999, 0px 0px 10px rgb(0,0,0);
+}
+
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
 }

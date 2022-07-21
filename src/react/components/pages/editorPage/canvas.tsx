@@ -1,7 +1,7 @@
 import React, { Fragment, ReactElement } from "react";
 import * as shortid from "shortid";
-import { CanvasTools } from "vott-ct";
-import { RegionData } from "vott-ct/lib/js/CanvasTools/Core/RegionData";
+import { CanvasTools } from "@jinkijung/vott-dot-ct";
+import { RegionData } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import {
     EditingContext,
     EditorMode, IAssetMetadata,
@@ -9,13 +9,22 @@ import {
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
 import { AssetPreview, ContentSource } from "../../common/assetPreview/assetPreview";
-import { Editor } from "vott-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { Editor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 import Clipboard from "../../../../common/clipboard";
 import Confirm from "../../common/confirm/confirm";
 import { strings } from "../../../../common/strings";
-import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
-import { Rect } from "vott-ct/lib/js/CanvasTools/Core/Rect";
+import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { Rect } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
 import { createContentBoundingBox } from "../../../../common/layout";
+import { ZoomManager, ZoomType } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { AreaSelector } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
+import { FilterPipeline } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
+import { EditorToolbar } from "./editorToolbar";
+import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
+import IProjectActions from "../../../../redux/actions/projectActions";
+import { ToolbarItem } from "../../toolbar/toolbarItem";
+import _ from "lodash";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -25,15 +34,21 @@ export interface ICanvasProps extends React.Props<Canvas> {
     lockedTags: string[];
     children?: ReactElement<AssetPreview>;
     context?: EditingContext;
+    actions?: IProjectActions;
+    selectedRegions: IRegion[];
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
     onCanvasRendered?: (canvas: HTMLCanvasElement) => void;
+    onToolbarItemSelected?: (toolbarItem: ToolbarItem) => void;
 }
 
 export interface ICanvasState {
     currentAsset: IAssetMetadata;
     contentSource: ContentSource;
     enabled: boolean;
+    offset: number;
+    /** Filtered toolbar items accordning to editing context */
+    filteredToolbarItems: IToolbarItemRegistration[];
 }
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -41,45 +56,109 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         selectionMode: SelectionMode.NONE,
         editorMode: EditorMode.Select,
         selectedAsset: null,
+        selectedRegions: [],
         project: null,
         lockedTags: [],
         context: EditingContext.None,
     };
 
-    public editor: Editor;
+    public editor: any;
 
     public state: ICanvasState = {
         currentAsset: this.props.selectedAsset,
         contentSource: null,
         enabled: false,
+        offset: 0,
+        filteredToolbarItems: [],
     };
+
+    // a flag to confirm an actual region move
+    private isMoved = false;
 
     private canvasZone: React.RefObject<HTMLDivElement> = React.createRef();
     private clearConfirm: React.RefObject<Confirm> = React.createRef();
-
+    private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private template: Rect = new Rect(20, 20);
 
-    public componentDidMount = () => {
-        const sz = document.getElementById("editor-zone") as HTMLDivElement;
-        this.editor = new CanvasTools.Editor(sz);
-        this.editor.autoResize = false;
-        this.editor.onSelectionEnd = this.onSelectionEnd;
-        this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
-        this.editor.onRegionDelete = this.onRegionDelete;
-        this.editor.onRegionSelected = this.onRegionSelected;
-        this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
-
-        window.addEventListener("resize", this.onWindowResize);
+    public render = () => {
+        const className = this.state.enabled ? "canvas-enabled" : "canvas-disabled";
+        return (
+            <>
+                <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
+                    ref={this.clearConfirm as any}
+                    message={strings.editorPage.canvas.removeAllRegions.confirmation}
+                    confirmButtonColor="danger"
+                    onConfirm={this.removeAllRegions}
+                />
+                <div id="canvasToolsDiv" ref={this.canvasZone} className={className}
+                    onClick={(e) => e.stopPropagation()}>
+                    <div id="toolbarDiv" className="editor-page-content-main-header">
+                        {this.props.context !== EditingContext.None &&
+                            <EditorToolbar project={this.props.project}
+                                                items={this.state.filteredToolbarItems}
+                                                actions={this.props.actions}
+                                                onToolbarItemSelected={this.props.onToolbarItemSelected} />}
+                        </div>
+                    <div id="showZoomFactor"></div>
+                    <div id="selectionDiv" onWheel={this.onWheelCapture}
+                        onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
+                        <div id="editorDiv"></div>
+                </div>
+                {this.renderChildren()}
+            </div>
+            </>
+        );
     }
 
-    public componentWillUnmount() {
-        window.removeEventListener("resize", this.onWindowResize);
+    public componentDidMount = () => {
+        // Get references for editor and toolbar containers
+        const editorContainer = document.getElementById("editorDiv") as HTMLDivElement;
+        const toolbarContainer = document.getElementById("toolbarDiv") as HTMLDivElement;
+
+        this.setState({
+            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
+
+        // Init the editor with toolbar.
+        this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
+            isZoomEnabled: true,
+            zoomType: 3,
+        });
+        //this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.FullToolbarSet, "./../shared/media/icons/", false);
+
+        this.editor.onSelectionEnd = this.onSelectionEnd;
+        this.editor.onRegionMove = () => this.isMoved = true;
+        this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
+        this.editor.onRegionSelected = this.onRegionSelected;
+        this.editor.onRegionDelete = this.onRegionDelete;
+
+        this.editor.ZM.setMaxZoomScale(10);
+
+        const showZoomDiv = document.getElementById("showZoomFactor");
+        this.editor.onZoomEnd = function (zoom) {
+            showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale*100 + " %";
+        };
+
+        this.setState({
+            filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>, prevState: Readonly<ICanvasState>) => {
         // Handles asset changing
         if (this.props.selectedAsset !== prevProps.selectedAsset) {
             this.setState({ currentAsset: this.props.selectedAsset });
+        }
+
+        // Handle region selection in canvas
+        if (this.editor) {
+            if (!_.isEqual(this.props.selectedRegions, prevProps.selectedRegions) ||
+                this.props.selectedRegions.length && this.editor.RM.getSelectedRegions().length === 0) {
+                    this.props.selectedRegions.forEach((r: IRegion) => this.editor.RM.selectRegionById(r.id));
+            }
+        }
+
+        if (this.props.context !== prevProps.context) {
+            this.setState({
+                filteredToolbarItems: this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0)});
         }
 
         // Handle selection mode changes
@@ -111,39 +190,17 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             if (this.state.enabled) {
                 this.refreshCanvasToolsRegions();
                 this.setContentSource(this.state.contentSource);
-                this.editor.AS.setSelectionMode(this.props.selectionMode);
+                this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
                 this.editor.AS.enable();
-
                 if (this.props.onSelectedRegionsChanged) {
                     this.props.onSelectedRegionsChanged(this.getSelectedRegions());
                 }
             } else { // When the canvas has been disabled
                 this.editor.AS.disable();
                 this.clearAllRegions();
-                this.editor.AS.setSelectionMode(SelectionMode.NONE);
+                this.editor.AS.setSelectionMode({mode: SelectionMode.NONE});
             }
         }
-    }
-
-    public render = () => {
-        const className = this.state.enabled ? "canvas-enabled" : "canvas-disabled";
-
-        return (
-            <Fragment>
-                <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
-                    ref={this.clearConfirm as any}
-                    message={strings.editorPage.canvas.removeAllRegions.confirmation}
-                    confirmButtonColor="danger"
-                    onConfirm={this.removeAllRegions}
-                />
-                <div id="ct-zone" ref={this.canvasZone} className={className} onClick={(e) => e.stopPropagation()}>
-                    <div id="selection-zone">
-                        <div id="editor-zone" className="full-size" />
-                    </div>
-                </div>
-                {this.renderChildren()}
-            </Fragment>
-        );
     }
 
     /**
@@ -217,7 +274,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.context === EditingContext.None) {
             return ;
         }
-        const selectedRegions = this.editor.RM.getSelectedRegionsBounds().map((rb) => rb.id);
+        const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
 
@@ -228,10 +285,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
             );
         }
-    }
-
-    public forceResize = (): void => {
-        this.onWindowResize();
     }
 
     private removeAllRegions = () => {
@@ -303,8 +356,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
         const id = shortid.generate();
 
-        this.editor.RM.addRegion(id, regionData, null);
-
+        this.editor.RM.addRegion(id, regionData, new CanvasTools.Core.TagsDescriptor());
         this.template = new Rect(regionData.width, regionData.height);
 
         // RegionData not serializable so need to extract data
@@ -330,6 +382,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
         }
         this.updateAssetRegions([...this.state.currentAsset.regions, newRegion]);
+
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged([newRegion]);
         }
@@ -362,7 +415,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionMoveEnd = (id: string, regionData: RegionData) => {
-        if (this.props.context === EditingContext.None) {
+        if (this.props.context === EditingContext.None || !this.isMoved) {
             return ;
         }
         const currentRegions = this.state.currentAsset.regions;
@@ -386,6 +439,10 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         currentRegions[movedRegionIndex] = movedRegion;
         this.updateAssetRegions(currentRegions);
+        if (this.props.onSelectedRegionsChanged) {
+            this.props.onSelectedRegionsChanged([movedRegion]);
+        }
+        this.isMoved = false;
     }
 
     /**
@@ -425,8 +482,9 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
         }
+
         // Gets the scaled region data
-        const selectedRegionsData = this.editor.RM.getSelectedRegionsBounds().find((region) => region.id === id);
+        const selectedRegionsData = this.editor.RM.getSelectedRegions().find((region) => region.id === id);
 
         if (selectedRegionsData) {
             this.template = new Rect(selectedRegionsData.width, selectedRegionsData.height);
@@ -462,7 +520,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      */
     private onAssetLoaded = (contentSource: ContentSource) => {
         this.setState({ contentSource });
-        this.positionCanvas(contentSource);
     }
 
     private onAssetError = () => {
@@ -502,36 +559,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         } catch (e) {
             console.warn(e);
         }
-    }
-
-    /**
-     * Positions the canvas tools drawing surface to be exactly over the asset content
-     */
-    private positionCanvas = (contentSource: ContentSource) => {
-        if (!contentSource) {
-            return;
-        }
-
-        const canvas = this.canvasZone.current;
-        if (canvas) {
-            const boundingBox = createContentBoundingBox(contentSource);
-            canvas.style.top = `${boundingBox.top}px`;
-            canvas.style.left = `${boundingBox.left}px`;
-            canvas.style.width = `${boundingBox.width}px`;
-            canvas.style.height = `${boundingBox.height}px`;
-            this.editor.resize(boundingBox.width, boundingBox.height);
-        }
-    }
-
-    /**
-     * Resizes and re-renders the canvas when the application window size changes
-     */
-    private onWindowResize = async () => {
-        if (!this.state.contentSource) {
-            return;
-        }
-
-        this.positionCanvas(this.state.contentSource);
     }
 
     /**
@@ -612,5 +639,58 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 break;
         }
         return type;
+    }
+
+    private onKeyDown = (e: any) => {
+        if (!e.ctrlKey && !e.shiftKey && e.altKey && this.editor) {
+            if (this.editor.ZM.isZoomEnabled && !this.editor.ZM.isDraggingEnabled) {
+                this.editor.ZM.callbacks.onDragActivated();
+            }
+        }
+    }
+
+    private onKeyUp = (e: any) => {
+        if (this.editor) {
+            if (this.editor.ZM.isZoomEnabled) {
+                this.editor.ZM.callbacks.onDragDeactivated();
+            }
+        }
+    }
+
+    private onWheelCapture = (e: any) => {
+        if (!e.ctrlKey && !e.shiftKey && e.altKey && this.editor) {
+            const cursorPos = this.getCursorPos(e);
+            if (e.deltaY < 0) {
+                this.editor.ZM.callbacks.onZoomingIn(cursorPos);
+            } else if (e.deltaY > 0) {
+                this.editor.ZM.callbacks.onZoomingOut(cursorPos);
+            }
+            e.nativeEvent.stopImmediatePropagation();
+            e.stopPropagation();
+        }
+    }
+
+    private getCursorPos = (e: any) => {
+        const editorContainer = document.getElementsByClassName("CanvasToolsEditor")[0];
+        let containerPos, x = 0, y = 0;
+        e = e || window.event;
+        /*get the x and y positions of the container:*/
+        containerPos = editorContainer.getBoundingClientRect();
+
+        /*get the x and y positions of the image:*/
+        const editorStyles = window.getComputedStyle(editorContainer);
+        const imagePos = {
+            left: containerPos.left + parseFloat(editorStyles.paddingLeft),
+            top: containerPos.top + parseFloat(editorStyles.paddingTop)
+        };
+
+
+        /*calculate the cursor's x and y coordinates, relative to the image:*/
+        x = e.pageX - imagePos.left;
+        y = e.pageY - imagePos.top;
+        /*consider any page scrolling:*/
+        x = x - window.pageXOffset;
+        y = y - window.pageYOffset;
+        return {x : x, y : y};
     }
 }
