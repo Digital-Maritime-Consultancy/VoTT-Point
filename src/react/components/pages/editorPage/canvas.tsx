@@ -24,6 +24,7 @@ import { EditorToolbar } from "./editorToolbar";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IProjectActions from "../../../../redux/actions/projectActions";
 import { ToolbarItem } from "../../toolbar/toolbarItem";
+import _ from "lodash";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -34,6 +35,7 @@ export interface ICanvasProps extends React.Props<Canvas> {
     children?: ReactElement<AssetPreview>;
     context?: EditingContext;
     actions?: IProjectActions;
+    selectedRegions: IRegion[];
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
     onCanvasRendered?: (canvas: HTMLCanvasElement) => void;
@@ -47,7 +49,6 @@ export interface ICanvasState {
     offset: number;
     /** Filtered toolbar items accordning to editing context */
     filteredToolbarItems: IToolbarItemRegistration[];
-    selectedRegionIds: string[];
 }
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -55,6 +56,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         selectionMode: SelectionMode.NONE,
         editorMode: EditorMode.Select,
         selectedAsset: null,
+        selectedRegions: [],
         project: null,
         lockedTags: [],
         context: EditingContext.None,
@@ -68,7 +70,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         enabled: false,
         offset: 0,
         filteredToolbarItems: [],
-        selectedRegionIds: [],
     };
 
     // a flag to confirm an actual region move
@@ -135,7 +136,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         const showZoomDiv = document.getElementById("showZoomFactor");
         this.editor.onZoomEnd = function (zoom) {
             showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale*100 + " %";
-            console.log(zoom.maxZoomScale);
         };
 
         this.setState({
@@ -148,9 +148,11 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.setState({ currentAsset: this.props.selectedAsset });
         }
 
-        if (this.state.selectedRegionIds && this.state.selectedRegionIds.length) {
-            if (this.editor && this.editor.RM.getSelectedRegions().map((rb) => rb.id).length === 0) {
-                this.state.selectedRegionIds.forEach((id: string) => this.editor.RM.selectRegionById(id));
+        // Handle region selection in canvas
+        if (this.editor) {
+            if (!_.isEqual(this.props.selectedRegions, prevProps.selectedRegions) ||
+                this.props.selectedRegions.length && this.editor.RM.getSelectedRegions().length === 0) {
+                    this.props.selectedRegions.forEach((r: IRegion) => this.editor.RM.selectRegionById(r.id));
             }
         }
 
@@ -190,7 +192,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 this.setContentSource(this.state.contentSource);
                 this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
                 this.editor.AS.enable();
-
                 if (this.props.onSelectedRegionsChanged) {
                     this.props.onSelectedRegionsChanged(this.getSelectedRegions());
                 }
@@ -274,7 +275,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             return ;
         }
         const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
-        this.setState({selectedRegionIds: selectedRegions});
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
 

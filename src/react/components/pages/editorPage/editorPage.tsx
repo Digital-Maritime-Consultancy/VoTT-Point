@@ -250,6 +250,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 onToolbarItemSelected={this.onToolbarItemSelected}
                                 editorMode={this.state.editorMode}
                                 actions={this.props.actions}
+                                selectedRegions={this.state.selectedRegions}
                                 selectionMode={
                                     this.state.context === EditingContext.None ?
                                         SelectionMode.NONE : this.state.selectionMode}

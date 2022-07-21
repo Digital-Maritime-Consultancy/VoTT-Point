@@ -394,7 +394,7 @@ canvas {
     display: grid;
     flex-grow: 1;
     grid-template-columns: 100%;
-    grid-template-rows: 64px calc(100% - 64px);
+    grid-template-rows: 50px calc(100% - 50px);
     margin:0;
     background: rgb(64,64,64);
 }
@@ -418,7 +418,8 @@ canvas {
     grid-column: 1;
     justify-self: center;
     align-self: center;
-    margin: 5px;
+    margin: 0;
+    padding: 0;
     overflow: auto;
     width: calc(100% - 10px);
     height: calc(100% - 10px);

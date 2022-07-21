@@ -751,6 +751,7 @@ export default class MockFactory {
         const canvasProps: ICanvasProps = {
             project,
             selectedAsset: this.createTestAssetMetadata(this.createTestAsset("test-asset")),
+            selectedRegions: [],
             onAssetMetadataChanged: jest.fn(),
             editorMode: EditorMode.Rectangle,
             selectionMode: SelectionMode.RECT,
