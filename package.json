@@ -1,15 +1,15 @@
 {
-    "name": "vott",
-    "version": "2.2.0",
+    "name": "vott-dot",
+    "version": "0.2.0",
     "author": {
-        "name": "Microsoft",
-        "url": "https://github.com/Microsoft/VoTT"
+        "name": "Digital Maritime Consultancy",
+        "url": "https://github.com/Digital-Maritime-Consultancy/VoTT-dot"
     },
-    "description": "Visual Object Tagging Tool (VoTT) - an annotation and labeling tool for images and video.",
-    "homepage": "https://github.com/Microsoft/VoTT",
+    "description": "A descendant of VoTT supporting point-based annotation",
+    "homepage": "https://github.com/Digital-Maritime-Consultancy/VoTT-dot",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/VoTT.git"
+        "url": "https://github.com/Digital-Maritime-Consultancy/VoTT-dot.git"
     },
     "license": "MIT",
     "private": true,
