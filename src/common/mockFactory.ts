@@ -26,11 +26,11 @@ import IApplicationActions, * as applicationActions from "../redux/actions/appli
 import { ILocalFileSystemProxyOptions } from "../providers/storage/localFileSystemProxy";
 import { generateKey } from "./crypto";
 import { AssetService } from "../services/assetService";
-import { Point2D } from "vott-ct/lib/js/CanvasTools/Core/Point2D";
-import { RegionDataType, RegionData } from "vott-ct/lib/js/CanvasTools/Core/RegionData";
+import { Point2D } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Point2D";
+import { RegionDataType, RegionData } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import { randomIntInRange, encodeFileURI } from "./utils";
 import { appInfo } from "./appInfo";
-import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { IKeyboardBindingProps } from "../react/components/common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../react/components/common/keyboardManager/keyboardManager";
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
@@ -751,11 +751,13 @@ export default class MockFactory {
         const canvasProps: ICanvasProps = {
             project,
             selectedAsset: this.createTestAssetMetadata(this.createTestAsset("test-asset")),
+            selectedRegions: [],
             onAssetMetadataChanged: jest.fn(),
             editorMode: EditorMode.Rectangle,
             selectionMode: SelectionMode.RECT,
             children: null,
             lockedTags: [],
+            actions: (projectActions as any) as IProjectActions,
         };
         return new Canvas(canvasProps);
     }
