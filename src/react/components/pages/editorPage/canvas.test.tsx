@@ -8,14 +8,14 @@ import Canvas, { ICanvasProps, ICanvasState } from "./canvas";
 import CanvasHelpers from "./canvasHelpers";
 import { appInfo } from "../../../../common/appInfo";
 
-jest.mock("vott-ct/lib/js/CanvasTools/CanvasTools.Editor");
-import { Editor } from "vott-ct/lib/js/CanvasTools/CanvasTools.Editor";
+jest.mock("@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor");
 
-jest.mock("vott-ct/lib/js/CanvasTools/Region/RegionsManager");
-import { RegionsManager } from "vott-ct/lib/js/CanvasTools/Region/RegionsManager";
+jest.mock("@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager");
 import Confirm, { IConfirmProps } from "../../common/confirm/confirm";
-import { Rect } from "vott-ct/lib/js/CanvasTools/Core/Rect";
-import { SelectionMode } from "vott-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { Editor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { Rect } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
 
 describe("Editor Canvas", () => {
     function createComponent(canvasProps?: ICanvasProps, assetPreviewProps?: IAssetPreviewProps)
@@ -48,6 +48,7 @@ describe("Editor Canvas", () => {
             onCanvasRendered: jest.fn(),
             editorMode: EditorMode.Rectangle,
             selectionMode: SelectionMode.RECT,
+            selectedRegions: [],
             project: MockFactory.createTestProject(),
             lockedTags: [],
         };
