@@ -19,9 +19,9 @@ import { KeyboardManager, KeyEventType } from "../../common/keyboardManager/keyb
 jest.mock("../../../../services/projectService");
 import ProjectService from "../../../../services/projectService";
 
-jest.mock("@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor");
+jest.mock("@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor");
 
-jest.mock("@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager");
+jest.mock("@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager");
 import Canvas from "./canvas";
 import { appInfo } from "../../../../common/appInfo";
 import SplitPane from "react-split-pane";
@@ -32,8 +32,8 @@ import { TagInput } from "../../common/tagInput/tagInput";
 import { EditorToolbar } from "./editorToolbar";
 import { ToolbarItem } from "../../toolbar/toolbarItem";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
-import { Editor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
-import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { RegionsManager } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
 
 function createComponent(store, props: IEditorPageProps): ReactWrapper<IEditorPageProps, IEditorPageState, EditorPage> {
     return mount(

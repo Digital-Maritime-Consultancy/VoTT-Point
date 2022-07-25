@@ -26,11 +26,11 @@ import IApplicationActions, * as applicationActions from "../redux/actions/appli
 import { ILocalFileSystemProxyOptions } from "../providers/storage/localFileSystemProxy";
 import { generateKey } from "./crypto";
 import { AssetService } from "../services/assetService";
-import { Point2D } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Point2D";
-import { RegionDataType, RegionData } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
+import { Point2D } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Point2D";
+import { RegionDataType, RegionData } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import { randomIntInRange, encodeFileURI } from "./utils";
 import { appInfo } from "./appInfo";
-import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { IKeyboardBindingProps } from "../react/components/common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../react/components/common/keyboardManager/keyboardManager";
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
