@@ -1,7 +1,7 @@
 import React, { Fragment, ReactElement } from "react";
 import * as shortid from "shortid";
-import { CanvasTools } from "@jinkijung/vott-dot-ct";
-import { RegionData } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
+import { CanvasTools } from "@digital-maritime-consultancy/vott-dot-ct";
+import { RegionData } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import {
     EditingContext,
     EditorMode, IAssetMetadata,
@@ -9,17 +9,17 @@ import {
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
 import { AssetPreview, ContentSource } from "../../common/assetPreview/assetPreview";
-import { Editor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 import Clipboard from "../../../../common/clipboard";
 import Confirm from "../../common/confirm/confirm";
 import { strings } from "../../../../common/strings";
-import { SelectionMode } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
-import { Rect } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
+import { Rect } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
 import { createContentBoundingBox } from "../../../../common/layout";
-import { ZoomManager, ZoomType } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
-import { RegionsManager } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
-import { AreaSelector } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
-import { FilterPipeline } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
+import { ZoomManager, ZoomType } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { RegionsManager } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
+import { AreaSelector } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
+import { FilterPipeline } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
 import { EditorToolbar } from "./editorToolbar";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IProjectActions from "../../../../redux/actions/projectActions";

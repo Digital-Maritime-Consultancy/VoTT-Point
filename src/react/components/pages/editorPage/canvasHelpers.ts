@@ -1,8 +1,8 @@
 import shortid from "shortid";
-import { Point2D } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Point2D";
-import { RegionData, RegionDataType } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
-import { Tag } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/Tag";
-import { TagsDescriptor } from "@jinkijung/vott-dot-ct/lib/js/CanvasTools/Core/TagsDescriptor";
+import { Point2D } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Point2D";
+import { RegionData, RegionDataType } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
+import { Tag } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Tag";
+import { TagsDescriptor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/TagsDescriptor";
 import Guard from "../../../../common/guard";
 import { IBoundingBox, IRegion, ITag, RegionType,
     IPoint, AppError, ErrorCode } from "../../../../models/applicationState";

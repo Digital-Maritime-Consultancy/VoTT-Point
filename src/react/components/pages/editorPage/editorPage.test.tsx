@@ -19,11 +19,9 @@ import { KeyboardManager, KeyEventType } from "../../common/keyboardManager/keyb
 jest.mock("../../../../services/projectService");
 import ProjectService from "../../../../services/projectService";
 
-jest.mock("vott-ct/lib/js/CanvasTools/CanvasTools.Editor");
-import { Editor } from "vott-ct/lib/js/CanvasTools/CanvasTools.Editor";
+jest.mock("@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor");
 
-jest.mock("vott-ct/lib/js/CanvasTools/Region/RegionsManager");
-import { RegionsManager } from "vott-ct/lib/js/CanvasTools/Region/RegionsManager";
+jest.mock("@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager");
 import Canvas from "./canvas";
 import { appInfo } from "../../../../common/appInfo";
 import SplitPane from "react-split-pane";
@@ -34,6 +32,8 @@ import { TagInput } from "../../common/tagInput/tagInput";
 import { EditorToolbar } from "./editorToolbar";
 import { ToolbarItem } from "../../toolbar/toolbarItem";
 import { ActiveLearningService } from "../../../../services/activeLearningService";
+import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { RegionsManager } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
 
 function createComponent(store, props: IEditorPageProps): ReactWrapper<IEditorPageProps, IEditorPageState, EditorPage> {
     return mount(
@@ -742,20 +742,6 @@ describe("Editor Page Component", () => {
         it("loads default thumbnail size from app settings", () => {
             const editorPage = wrapper.find(EditorPage).childAt(0);
             expect(editorPage.state().thumbnailSize).toEqual(defaultThumbnailSize);
-        });
-
-        it("resizes child components", () => {
-            const editorPage = wrapper.find(EditorPage).childAt(0);
-            const canvas = editorPage.find(Canvas).instance() as Canvas;
-            const resizeSpy = jest.spyOn(canvas, "forceResize");
-            const newThumbnailWidth = 300;
-            wrapper.find(SplitPane).props().onChange(newThumbnailWidth);
-
-            expect(resizeSpy).toBeCalled();
-            expect(editorPage.state().thumbnailSize).toEqual({
-                width: newThumbnailWidth,
-                height: newThumbnailWidth / (4 / 3),
-            });
         });
 
         it("Saves thumbnail size to app settings", () => {
