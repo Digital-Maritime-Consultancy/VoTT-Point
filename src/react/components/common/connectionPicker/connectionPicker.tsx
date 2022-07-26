@@ -54,12 +54,12 @@ export class ConnectionPicker extends React.Component<IConnectionPickerProps, IC
             <div className="input-group">
                 <select id={id} value={selectedValue} onChange={this.onChange} className="form-control">
                     <option>Select Connection</option>
-                    {connections.map((connection) =>
+                    {connections.map((connection) => connection.id &&
                         <option
-                            className="connection-option"
-                            key={connection.id}
-                            value={connection.id}>{this.getConnectionText(connection)}
-                        </option>)
+                        className="connection-option"
+                        key={connection.id}
+                        value={connection.id}>{this.getConnectionText(connection)}
+                    </option>)
                     }
                 </select>
                 <div className="input-group-append">
