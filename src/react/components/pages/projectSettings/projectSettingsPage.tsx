@@ -10,6 +10,7 @@ import IApplicationActions, * as applicationActions from "../../../../redux/acti
 import { toast } from "react-toastify";
 import "./projectSettingsPage.scss";
 import ProjectMetrics from "./projectMetrics";
+import { IRemoteStorageOptions } from "../../../../providers/storage/remoteStorage";
 
 /**
  * Properties for Project Settings Page
@@ -131,6 +132,12 @@ export default class ProjectSettingsPage extends React.Component<IProjectSetting
 
         if (project.useSecurityToken) {
             await this.props.applicationActions.ensureSecurityToken(project);
+        }
+
+        if (project.targetConnection.providerType === 'remoteStorage' &&
+            !(project.targetConnection.providerOptions as IRemoteStorageOptions).taskId ){
+                toast.error(strings.projectSettings.messages.emptyTaskId);
+                return;
         }
 
         await this.props.projectActions.saveProject(project);
