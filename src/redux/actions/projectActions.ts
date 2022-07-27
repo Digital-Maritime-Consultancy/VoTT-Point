@@ -17,6 +17,7 @@ import { IExportResults } from "../../providers/export/exportProvider";
 import { appInfo } from "../../common/appInfo";
 import { strings } from "../../common/strings";
 import { IStorageProviderRegistrationOptions } from "../../providers/storage/storageProviderFactory";
+import { IImportResults } from "../../providers/import/importProvider";
 
 /**
  * Actions to be performed in relation to projects
@@ -28,6 +29,7 @@ export default interface IProjectActions {
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
+    importProject(project: IProject): Promise<void> | Promise<IImportResults>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
     saveAssetMetadata(project: IProject, assetMetadata: IAssetMetadata): Promise<IAssetMetadata>;

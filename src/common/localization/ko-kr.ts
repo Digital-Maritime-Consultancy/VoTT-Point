@@ -112,6 +112,7 @@ export const korean: IAppStrings = {
         addConnection: "연결 추가", // Add Connection,
         messages: {
             saveSuccess: "${project.name} 프로젝트 설정을 성공적으로 저장했습니다", // Successfully saved ${project.name} project settings
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -476,6 +477,31 @@ export const korean: IAppStrings = {
         },
         messages: {
             saveSuccess: "내보내기 설정이 성공적으로 저장되었습니다", // Successfully saved export settings"
+        },
+    },
+    import: {
+        title: "Import",
+        settings: "Import Settings",
+        saveSettings: "Import Settings",
+        providers: {
+            common: {
+                properties: {
+                    testTrainSplit: {
+                        title: "Test / Train Split",
+                        description: "The test train split to use for exported data",
+                    },
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT Xml",
+            },
+        },
+        messages: {
+            saveSuccess: "Successfully imported file",
         },
     },
     activeLearning: {

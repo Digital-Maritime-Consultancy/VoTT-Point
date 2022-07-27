@@ -112,6 +112,7 @@ export const chinese: IAppStrings = {
         addConnection: "添加连接", // Add Connection
         messages: {
             saveSuccess: "成功保存${project.name}项目设置", // Successfully saved ${project.name} project settings
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -476,6 +477,31 @@ export const chinese: IAppStrings = {
         },
         messages: {
             saveSuccess: "成功保存导出设置", // Successfully saved export settings
+        },
+    },
+    import: {
+        title: "Import",
+        settings: "Import Settings",
+        saveSettings: "Import Settings",
+        providers: {
+            common: {
+                properties: {
+                    testTrainSplit: {
+                        title: "Test / Train Split",
+                        description: "The test train split to use for exported data",
+                    },
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT Xml",
+            },
+        },
+        messages: {
+            saveSuccess: "Successfully imported file",
         },
     },
     activeLearning: {

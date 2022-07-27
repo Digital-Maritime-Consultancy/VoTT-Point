@@ -66,6 +66,7 @@ export default class ImportService implements IImportService {
             sourceConnection: connection,
             targetConnection: connection,
             exportFormat: null,
+            importFormat: null,
             videoSettings: {
                 frameExtractionRate: originalProject.framerate ? Number(originalProject.framerate) : 15,
             },

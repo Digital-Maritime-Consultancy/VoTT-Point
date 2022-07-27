@@ -1,4 +1,4 @@
-import { TaskStatus, TaskType } from './../models/applicationState';
+import { IImportFormat, TaskStatus, TaskType } from './../models/applicationState';
 import shortid from "shortid";
 import {
     AssetState, AssetType, IApplicationState, IAppSettings, IAsset, IAssetMetadata,
@@ -36,6 +36,7 @@ import { KeyEventType } from "../react/components/common/keyboardManager/keyboar
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
 import { IActiveLearningPageProps } from "../react/components/pages/activeLearning/activeLearningPage";
 import { IRemoteStorageOptions } from "../providers/storage/remoteStorage";
+import { IImportProviderRegistrationOptions } from '../providers/import/importProviderFactory';
 
 export default class MockFactory {
 
@@ -289,6 +290,7 @@ export default class MockFactory {
             taskType: TaskType.Cleansing,
             taskStatus: TaskStatus.New,
             exportFormat: MockFactory.exportFormat(),
+            importFormat: MockFactory.importFormat(),
             sourceConnection: connection,
             targetConnection: connection,
             tags: MockFactory.createTestTags(tagCount),
@@ -679,6 +681,16 @@ export default class MockFactory {
     }
 
     /**
+     * Create fake IExportFormat of provider type vottJson
+     */
+     public static importFormat(): IImportFormat {
+        return {
+            providerType: "cvatXml",
+            providerOptions: undefined,
+        };
+    }
+
+    /**
      * Creates array of IExportProviderRegistrationOptions for the different providers
      * vottJson, PascalVOC, azureCustomVision, csv
      */
@@ -688,6 +700,16 @@ export default class MockFactory {
         registrations.push(MockFactory.createExportProviderRegistration("pascalVOC"));
         registrations.push(MockFactory.createExportProviderRegistration("azureCustomVision"));
         registrations.push(MockFactory.createExportProviderRegistration("csv"));
+        return registrations;
+    }
+
+    /**
+     * Creates array of IImportProviderRegistrationOptions for the different providers
+     * e.g., cvatXml
+     */
+     public static createImportProviderRegistrations(): IImportProviderRegistrationOptions[] {
+        const registrations: IImportProviderRegistrationOptions[] = [];
+        registrations.push(MockFactory.createImportProviderRegistration("cvatXml"));
         return registrations;
     }
 
@@ -723,6 +745,21 @@ export default class MockFactory {
      */
     public static createExportProviderRegistration(name: string) {
         const registration: IExportProviderRegistrationOptions = {
+            name,
+            displayName: `${name} display name`,
+            description: `${name} short description`,
+            factory: () => null,
+        };
+
+        return registration;
+    }
+
+    /**
+     *
+     * @param name
+     */
+     public static createImportProviderRegistration(name: string) {
+        const registration: IImportProviderRegistrationOptions = {
             name,
             displayName: `${name} display name`,
             description: `${name} short description`,
@@ -868,6 +905,7 @@ export default class MockFactory {
             closeProject: jest.fn(() => Promise.resolve()),
             loadAssets: jest.fn(() => Promise.resolve()),
             exportProject: jest.fn(() => Promise.resolve()),
+            importProject: jest.fn(() => Promise.resolve()),
             loadAssetMetadata: jest.fn(() => Promise.resolve()),
             saveAssetMetadata: jest.fn(() => Promise.resolve()),
             updateProjectTag: jest.fn(() => Promise.resolve()),

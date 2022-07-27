@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "title": "${strings.import.providers.cvatXml.displayName}",
+    "properties": {
+        "includeImages": {
+            "type": "boolean",
+            "default": true,
+            "title": "${strings.import.providers.common.properties.includeImages.title}",
+            "description": "${strings.import.providers.common.properties.includeImages.description}"
+        }
+    }
+}

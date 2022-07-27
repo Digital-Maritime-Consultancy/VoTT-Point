@@ -115,6 +115,7 @@ export interface IAppStrings {
         addConnection: string,
         messages: {
             saveSuccess: string;
+            emptyTaskId: string;
         },
     };
     projectMetrics: {
@@ -461,6 +462,31 @@ export interface IAppStrings {
                 displayName: string,
             },
             csv: {
+                displayName: string,
+            },
+        },
+        messages: {
+            saveSuccess: string;
+        },
+    };
+    import: {
+        title: string;
+        settings: string;
+        saveSettings: string;
+        providers: {
+            common: {
+                properties: {
+                    testTrainSplit: {
+                        title: string,
+                        description: string,
+                    },
+                    includeImages: {
+                        title: string,
+                        description: string,
+                    },
+                },
+            },
+            cvatXml: {
                 displayName: string,
             },
         },
