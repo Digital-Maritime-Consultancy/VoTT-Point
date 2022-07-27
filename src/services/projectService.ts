@@ -1,4 +1,4 @@
-import { IConnection } from './../models/applicationState';
+import { IConnection, StorageType } from './../models/applicationState';
 import _ from "lodash";
 import shortid from "shortid";
 import { StorageProviderFactory } from "../providers/storage/storageProviderFactory";
@@ -129,7 +129,14 @@ export default class ProjectService implements IProjectService {
             project.exportFormat = defaultExportOptions;
         }
 
-        project.version = packageJson.version;
+        if (!project.version) {
+            project.version = packageJson.version;
+        } else {
+            if (project.version !== packageJson.version) {
+                console.warn("Project version mismatch is found: (stored file version: "
+                    + project.version + ", running app version: " + packageJson.version + ")")
+            }
+        }
 
         const storageProvider = StorageProviderFactory.createFromConnection(project.targetConnection);
         await this.saveExportSettings(project);
@@ -158,10 +165,9 @@ export default class ProjectService implements IProjectService {
         const deleteFiles = _.values(project.assets)
             .map((asset) => storageProvider.deleteFile(`${asset.name}--${project.name}${constants.assetMetadataFileExtension}`));
 
-        await Promise.all(deleteFiles).then(async () => {
-            console.log(project.name);
+        await Promise.all(deleteFiles).then(async () =>
             await storageProvider.deleteFile(`${project.name}${constants.projectFileExtension}`)
-        });
+        );
     }
 
     /**
