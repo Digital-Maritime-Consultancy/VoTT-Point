@@ -1,4 +1,4 @@
-import { ImportProvider, ImportAssetState } from "./importProvider";
+import { ImportProvider } from "./importProvider";
 import { IProject, AssetState, IAsset } from "../../models/applicationState";
 import { ImportProviderFactory } from "./importProviderFactory";
 import MockFactory from "../../common/mockFactory";
@@ -71,7 +71,7 @@ describe("Import Provider Base", () => {
 });
 
 class TestImportProvider extends ImportProvider {
-    public export(): Promise<void> {
+    public import(): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
