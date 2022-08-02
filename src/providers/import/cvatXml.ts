@@ -40,6 +40,4 @@ export class CvatXmlImportProvider extends ImportProvider {
         const fileName = `${this.project.name.replace(/\s/g, "-")}${constants.xmlFileExtention}`;
         await this.storageProvider.writeText(fileName, JSON.stringify(exportObject, null, 4));
     }
-
-    
 }

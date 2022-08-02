@@ -26,10 +26,13 @@ export default class XmlFilePicker extends React.Component<IXmlFilePickerProps> 
     }
 
     public render() {
-        return <LocalFilePicker
-                acceptFormat={this.acceptFormat}
-                onChange={this.onXmlFileLoad}
-                onError={this.onXmlFileLoadError} />;
+        return (
+            <div>
+                <LocalFilePicker
+                    acceptFormat={this.acceptFormat}
+                    onChange={this.onXmlFileLoad}
+                    onError={this.onXmlFileLoadError} />
+            </div>);
     }
 
     private onXmlFileLoad = async (sender: SyntheticEvent, fileText: IFileInfo) => {
@@ -52,11 +55,3 @@ export default class XmlFilePicker extends React.Component<IXmlFilePickerProps> 
         throw new AppError(ErrorCode.ProjectUploadError, "Error uploading project file");
     }
 }
-
-/*
-
-                    <LocalFilePicker
-                        acceptFormat={"text/xml"}
-                        onChange={this.onProjectFileUpload}
-                        onError={this.onProjectFileUploadError}/>
-*/
