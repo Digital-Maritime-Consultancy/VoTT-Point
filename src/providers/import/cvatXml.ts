@@ -37,7 +37,9 @@ export class CvatXmlImportProvider extends ImportProvider {
         delete exportObject.targetConnection;
         delete exportObject.exportFormat;
 
-        const fileName = `${this.project.name.replace(/\s/g, "-")}${constants.exportFileExtension}`;
+        const fileName = `${this.project.name.replace(/\s/g, "-")}${constants.xmlFileExtention}`;
         await this.storageProvider.writeText(fileName, JSON.stringify(exportObject, null, 4));
     }
+
+    
 }

@@ -476,10 +476,6 @@ export interface IAppStrings {
         providers: {
             common: {
                 properties: {
-                    testTrainSplit: {
-                        title: string,
-                        description: string,
-                    },
                     includeImages: {
                         title: string,
                         description: string,
@@ -488,6 +484,10 @@ export interface IAppStrings {
             },
             cvatXml: {
                 displayName: string,
+                xmlFilePicker: {
+                    title: string,
+                    description: string,
+                },
             },
         },
         messages: {

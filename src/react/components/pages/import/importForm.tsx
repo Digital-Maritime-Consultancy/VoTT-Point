@@ -4,12 +4,10 @@ import { addLocValues, strings } from "../../../../common/strings";
 import { IImportFormat } from "../../../../models/applicationState";
 import { ImportProviderFactory } from "../../../../providers/import/importProviderFactory";
 import { CustomWidget } from "../../common/customField/customField";
-import ExternalPicker from "../../common/externalPicker/externalPicker";
 import ImportProviderPicker from "../../common/importProviderPicker/importProviderPicker";
 import { ProtectedInput } from "../../common/protectedInput/protectedInput";
-import { Slider } from "../../common/slider/slider";
-import Checkbox from "rc-checkbox";
 import CustomFieldTemplate from "../../common/customField/customFieldTemplate";
+import XmlFilePicker from "../../common/xmlFilePicker/xmlFilePicker";
 
 // tslint:disable-next-line:no-var-requires
 const formSchema = addLocValues(require("./importForm.json"));
@@ -53,14 +51,13 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
     };
 
     private widgets = {
-        externalPicker: (ExternalPicker as any) as Widget,
         importProviderPicker: (ImportProviderPicker as any) as Widget,
         protectedInput: (ProtectedInput as any) as Widget,
-        slider: (Slider as any) as Widget,
-        checkbox: CustomWidget(Checkbox, (props) => ({
+        xmlFilePicker: CustomWidget(XmlFilePicker, (props) => ({
+            /*
             checked: props.value,
             onChange: (value) => props.onChange(value.target.checked),
-            disabled: props.disabled,
+            */
         })),
     };
 

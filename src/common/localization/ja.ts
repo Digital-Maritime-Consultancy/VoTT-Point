@@ -487,10 +487,6 @@ export const japanese: IAppStrings = {
         providers: {
             common: {
                 properties: {
-                    testTrainSplit: {
-                        title: "Test / Train Split",
-                        description: "The test train split to use for exported data",
-                    },
                     includeImages: {
                         title: "Include Images",
                         description: "Whether or not to include binary image assets in target connection",
@@ -498,7 +494,11 @@ export const japanese: IAppStrings = {
                 },
             },
             cvatXml: {
-                displayName: "CVAT Xml",
+                displayName: "CVAT XML file selector",
+                xmlFilePicker: {
+                    title: "CVAT XML",
+                    description: "Please select a XML file",
+                },
             },
         },
         messages: {

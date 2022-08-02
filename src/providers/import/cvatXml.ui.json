@@ -1,5 +1,5 @@
 {
-    "includeImages": {
-        "ui:widget": "checkbox"
+    "xmlFilePicker": {
+        "ui:widget": "xmlFilePicker"
     }
 }

@@ -2,11 +2,10 @@
     "type": "object",
     "title": "${strings.import.providers.cvatXml.displayName}",
     "properties": {
-        "includeImages": {
-            "type": "boolean",
-            "default": true,
-            "title": "${strings.import.providers.common.properties.includeImages.title}",
-            "description": "${strings.import.providers.common.properties.includeImages.description}"
+        "xmlFilePicker": {
+            "title": "${strings.import.providers.cvatXml.xmlFilePicker.title}",
+            "description": "${strings.import.providers.cvatXml.xmlFilePicker.description}",
+            "type": "string"
         }
     }
 }
