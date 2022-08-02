@@ -109,6 +109,14 @@ export const chinese: IAppStrings = {
             description: "提取帧以进行标记的速率", // The rate at which frames are extracted for tagging.
             frameExtractionRate: "帧提取率（每视频每秒的帧数）", // Frame Extraction Rate (frames per a video second)
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "添加连接", // Add Connection
         messages: {
             saveSuccess: "成功保存${project.name}项目设置", // Successfully saved ${project.name} project settings

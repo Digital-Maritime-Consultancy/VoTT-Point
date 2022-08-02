@@ -112,6 +112,14 @@ export interface IAppStrings {
             description: string;
             frameExtractionRate: string;
         },
+        taskType: {
+            title: string;
+            description: string;
+        },
+        taskStatus: {
+            title: string;
+            description: string;
+        },
         addConnection: string,
         messages: {
             saveSuccess: string;

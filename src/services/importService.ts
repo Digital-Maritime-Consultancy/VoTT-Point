@@ -61,7 +61,7 @@ export default class ImportService implements IImportService {
             securityToken: `${projectInfo.file.name.split(".")[0]} Token`,
             description: "Converted V1 Project",
             tags: parsedTags,
-            taskType: TaskType.Cleansing,
+            taskType: TaskType.Annotation,
             taskStatus: TaskStatus.New,
             sourceConnection: connection,
             targetConnection: connection,

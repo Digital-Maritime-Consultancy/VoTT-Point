@@ -20,6 +20,20 @@
             "title": "${strings.common.description}",
             "type": "string"
         },
+        "taskType": {
+            "title": "${strings.projectSettings.taskType.title}",
+            "description": "${strings.projectSettings.taskType.description}",
+            "type": "string"
+        },
+        "taskStatus": {
+            "title": "${strings.projectSettings.taskStatus.title}",
+            "description": "${strings.projectSettings.taskStatus.description}",
+            "type": "string"
+        },
+        "tags": {
+            "title": "${strings.tags.title}",
+            "type": "array"
+        },
         "videoSettings": {
             "title": "${strings.projectSettings.videoSettings.title}",
             "type": "object",
@@ -35,16 +49,12 @@
             "required": [
                 "frameExtractionRate"
             ]
-        },
-        "tags": {
-            "title": "${strings.tags.title}",
-            "type": "array"
-        },
+        },        
         "useSecurityToken": {
             "title": "${strings.projectSettings.useSecurityToken.title}",
             "description": "${strings.projectSettings.useSecurityToken.description}",
             "type": "boolean",
-            "default": true
+            "default": false
         }
     },
     "dependencies": {
@@ -54,7 +64,7 @@
                     "properties": {
                         "useSecurityToken": {
                             "enum": [
-                                true
+                                false
                             ]
                         },
                         "securityToken": {

@@ -106,6 +106,14 @@ export const english: IAppStrings = {
             description: "The rate at which frames are extracted for tagging.",
             frameExtractionRate: "Frame Extraction Rate (frames per a video second)",
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "Add Connection",
         messages: {
             saveSuccess: "Successfully saved ${project.name} project settings",

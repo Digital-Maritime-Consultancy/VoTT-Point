@@ -12,6 +12,8 @@ import "vott-react/dist/css/tagsInput.css";
 import Checkbox from "rc-checkbox";
 import { IConnectionProviderPickerProps } from "../../common/connectionProviderPicker/connectionProviderPicker";
 import LocalFolderPicker from "../../common/localFolderPicker/localFolderPicker";
+import TaskTypePicker from "../../common/taskTypePicker/taskTypePicker";
+import TaskStatusPicker from "../../common/taskStatusPicker/taskTypePicker";
 
 // tslint:disable-next-line:no-var-requires
 const formSchema = addLocValues(require("./projectForm.json"));
@@ -54,6 +56,8 @@ export interface IProjectFormState {
  */
 export default class ProjectForm extends React.Component<IProjectFormProps, IProjectFormState> {
     private widgets = {
+        taskTypePicker: (TaskTypePicker as any) as Widget,
+        taskStatusPicker: (TaskStatusPicker as any) as Widget,
         localFolderPicker: (LocalFolderPicker as any) as Widget,
         checkbox: CustomWidget(Checkbox, (props) => ({
             checked: props.value,

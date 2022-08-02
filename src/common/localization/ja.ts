@@ -109,6 +109,14 @@ export const japanese: IAppStrings = {
             description: "タグ付けにおけるフレームの抽出割合",  // The rate at which frames are extracted for tagging.,
             frameExtractionRate: "フレーム抽出率（ビデオ 1 秒あたりのフレーム数）",  // Frame Extraction Rate (frames per a video second)"
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "接続を追加", // Add Connection,
         messages: {
             saveSuccess: "${project.name} プロジェクト設定を正常に保存しました", // Successfully saved ${project.name} project settings"

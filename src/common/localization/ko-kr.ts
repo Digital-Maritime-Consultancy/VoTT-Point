@@ -109,6 +109,14 @@ export const korean: IAppStrings = {
             description: "태그 지정을 위해 프레임을 추출하는 비율",  // The rate at which frames are extracted for tagging
             frameExtractionRate: "프레임 추출 속도 (비디오 초당 프레임)",  // Frame Extraction Rate (frames per a video second)
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "연결 추가", // Add Connection,
         messages: {
             saveSuccess: "${project.name} 프로젝트 설정을 성공적으로 저장했습니다", // Successfully saved ${project.name} project settings

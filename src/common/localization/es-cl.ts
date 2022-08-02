@@ -107,6 +107,14 @@ export const spanish: IAppStrings = {
             description: "La velocidad a la que se extraen los marcos para el etiquetado.",
             frameExtractionRate: "Tasa de extracción de cuadros (cuadros por segundo de video)",
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "Agregar Conexión",
         messages: {
             saveSuccess: "Guardado correctamente ${project.name} configuración del proyecto",
