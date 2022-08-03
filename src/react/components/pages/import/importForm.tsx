@@ -8,6 +8,8 @@ import ImportProviderPicker from "../../common/importProviderPicker/importProvid
 import { ProtectedInput } from "../../common/protectedInput/protectedInput";
 import CustomFieldTemplate from "../../common/customField/customFieldTemplate";
 import XmlFilePicker from "../../common/xmlFilePicker/xmlFilePicker";
+import { ICvatXmlImportProviderOptions } from "../../../../providers/import/cvatXml";
+import Alert from "../../common/alert/alert";
 
 // tslint:disable-next-line:no-var-requires
 const formSchema = addLocValues(require("./importForm.json"));
@@ -90,7 +92,7 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
                 onChange={this.onFormChange}
                 onSubmit={this.onFormSubmit}>
                 <div>
-                    <button className="btn btn-success mr-1" type="submit">{strings.import.saveSettings}</button>
+                    <button className="btn btn-success mr-1" type="submit">{strings.import.execute}</button>
                     <button className="btn btn-secondary btn-cancel"
                         type="button"
                         onClick={this.onFormCancel}>{strings.common.cancel}</button>
@@ -120,7 +122,12 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
     }
 
     private onFormSubmit = (args: ISubmitEvent<IImportFormat>): void => {
-        this.props.onSubmit(args.formData);
+        console.log(args);
+        if (!args.formData.providerOptions.imageFolderPath) {
+            alert(strings.import.providers.cvatXml.imageFolderPath.emptyError);
+            return ;
+        }
+        //this.props.onSubmit(args.formData);
     }
 
     private onFormCancel = (): void => {

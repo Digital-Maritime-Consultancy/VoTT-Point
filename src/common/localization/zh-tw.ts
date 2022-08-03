@@ -494,8 +494,8 @@ export const chinesetw: IAppStrings = {
     },
     import: {
         title: "Import",
-        settings: "Import Settings",
-        saveSettings: "Import Settings",
+        description: "Import Settings",
+        execute: "Import to current project",
         providers: {
             common: {
                 properties: {
@@ -510,6 +510,11 @@ export const chinesetw: IAppStrings = {
                 xmlFilePicker: {
                     title: "CVAT XML",
                     description: "Please select a XML file",
+                },
+                imageFolderPath: {
+                    title: "Image folder path",
+                    description: "Local or remote path storing images",
+                    emptyError: "Image folder path is not given",
                 },
             },
         },

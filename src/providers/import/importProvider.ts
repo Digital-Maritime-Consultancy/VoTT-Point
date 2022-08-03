@@ -1,7 +1,7 @@
 import Guard from "../../common/guard";
 import {
     IProject, IImportFormat, IAssetMetadata, IAsset,
-    AssetState, AssetType,
+    AssetState, AssetType, IFileInfo,
 } from "../../models/applicationState";
 import { IStorageProvider, StorageProviderFactory } from "../storage/storageProviderFactory";
 import { IAssetProvider, AssetProviderFactory } from "../storage/assetProviderFactory";
@@ -33,7 +33,7 @@ export interface IImportProvider {
     /**
      * Imports the configured project for specified import configuration
      */
-    import(): Promise<void> | Promise<IImportResults>;
+    import(fileText: IFileInfo): Promise<void> | Promise<IImportResults>;
     save?(importFormat: IImportFormat): Promise<any>;
 }
 
@@ -51,7 +51,7 @@ export abstract class ImportProvider implements IImportProvider {
         this.assetService = new AssetService(this.project);
     }
 
-    public abstract import(): Promise<void> | Promise<IImportResults>;
+    public abstract import(fileText: IFileInfo): Promise<void> | Promise<IImportResults>;
 
     /**
      * Gets the assets that are configured to be imported based on the configured asset state

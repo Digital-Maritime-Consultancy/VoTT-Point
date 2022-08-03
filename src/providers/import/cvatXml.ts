@@ -1,16 +1,17 @@
 import _ from "lodash";
-import { IProject, IProviderOptions } from "../../models/applicationState";
+import { IFileInfo, IProject, IProviderOptions } from "../../models/applicationState";
 import Guard from "../../common/guard";
 import { constants } from "../../common/constants";
 import HtmlFileReader from "../../common/htmlFileReader";
 import { ImportProvider } from "./importProvider";
 
+const XMLParser = require("react-xml-parser");
+
 /**
  * CVAT Xml Import Provider options
  */
 export interface ICvatXmlImportProviderOptions extends IProviderOptions {
-    /** Whether or not to include binary assets in target connection */
-    includeImages: boolean;
+    imageFolderPath: string;
 }
 
 /**
@@ -26,7 +27,15 @@ export class CvatXmlImportProvider extends ImportProvider {
     /**
      * Import project to VoTT JSON format
      */
-    public async import(): Promise<void> {
+    public async import(fileText: IFileInfo): Promise<void> {
+        try {
+            const xml = new XMLParser().parseFromString(fileText.content);
+            console.log(xml);
+            
+        } catch (e) {
+            throw new Error(e.message);
+        }
+        /*
         const results = await this.getAssetsForImport();
 
         const exportObject = { ...this.project };
@@ -39,5 +48,6 @@ export class CvatXmlImportProvider extends ImportProvider {
 
         const fileName = `${this.project.name.replace(/\s/g, "-")}${constants.xmlFileExtention}`;
         await this.storageProvider.writeText(fileName, JSON.stringify(exportObject, null, 4));
+        */
     }
 }

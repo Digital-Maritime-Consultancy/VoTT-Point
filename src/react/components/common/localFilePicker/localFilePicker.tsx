@@ -2,6 +2,7 @@ import React, { SyntheticEvent } from "react";
 import shortid from "shortid";
 import HtmlFileReader from "../../../../common/htmlFileReader";
 import { IFileInfo } from "../../../../models/applicationState";
+import XMLViewer from "react-xml-viewer";
 
 /**
  * Properties for Local File Picker
@@ -15,7 +16,8 @@ export interface ILocalFilePickerProps {
 }
 
 interface ILocalFilePickerState {
-    value: string;
+    fileName: string;
+    fileContent: string;
 }
 
 /**
@@ -31,19 +33,28 @@ export default class LocalFilePicker extends React.Component<ILocalFilePickerPro
         this.onFileUploaded = this.onFileUploaded.bind(this);
 
         this.state = {
-            value: "",
+            fileName: "",
+            fileContent: undefined,
         };
     }
 
     public render() {
         return (
-            <div className="input-group">
-                <input type="text" className="form-control" value={this.state.value} readOnly={true} />
-                <input type="file" style={{ "display": "none" }} ref={this.fileInput} accept={this.props.acceptFormat} onChange={this.onFileUploaded}/>
-                <div className="input-group-append">
-                    <button onClick={this.selectFile} className='btn btn-primary' type="button">
-                        <span className='ms-2' >Select File</span>
-                    </button>
+            <div>
+                <div className="input-group">
+                    <input type="text" className="form-control" value={this.state.fileName} readOnly={true} />
+                    <input type="file" style={{ "display": "none" }} ref={this.fileInput} accept={this.props.acceptFormat} onChange={this.onFileUploaded}/>
+                    <div className="input-group-append">
+                        <button onClick={this.selectFile} className="btn btn-primary" type="button">
+                            <span className="ms-2" >Select File</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="bg-white">
+                    {
+                        this.state.fileContent &&
+                        <XMLViewer xml={this.state.fileContent}></XMLViewer>
+                    }
                 </div>
             </div>
         );
@@ -59,12 +70,15 @@ export default class LocalFilePicker extends React.Component<ILocalFilePickerPro
             return ;
         }
 
-        this.setState({
-            value: e.target.files[0].name,
-        });
-
         HtmlFileReader.readAsText(e.target.files[0])
-            .then((fileInfo) => this.props.onChange(e, fileInfo))
+            .then((fileInfo) => {
+                console.log(fileInfo);
+                this.setState({
+                    fileName: fileInfo.file.name,
+                    fileContent: fileInfo.content.toString(),
+                });
+                this.props.onChange(e, fileInfo);
+            })
             .catch((err) => this.props.onError(e, err));
 
     }

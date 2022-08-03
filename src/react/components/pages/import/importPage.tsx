@@ -67,7 +67,7 @@ export default class ImportPage extends React.Component<IImportPageProps> {
                 <h3>
                     <i className="fas fa-file-import fa-1x"></i>
                     <span className="px-2">
-                        {strings.import.settings}
+                        {strings.import.description}
                     </span>
                 </h3>
                 <div className="m-3">

@@ -479,8 +479,8 @@ export interface IAppStrings {
     };
     import: {
         title: string;
-        settings: string;
-        saveSettings: string;
+        description: string;
+        execute: string;
         providers: {
             common: {
                 properties: {
@@ -495,6 +495,11 @@ export interface IAppStrings {
                 xmlFilePicker: {
                     title: string,
                     description: string,
+                },
+                imageFolderPath: {
+                    title: string,
+                    description: string,
+                    emptyError: string,
                 },
             },
         },

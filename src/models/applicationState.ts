@@ -202,6 +202,15 @@ export interface IExportFormat {
 }
 
 /**
+ * @name - Import Provider Options
+ * @description - options defining the type of asset to import
+ * @member assetState - import asset with the following state
+ */
+export interface IImportProviderOptions extends IProviderOptions {
+    imageFolderPath: string;
+}
+
+/**
  * @name - Import Format
  * @description - Defines the settings for how project data is imported into commonly used format
  * @member id - Unique identifier for import format
@@ -211,7 +220,7 @@ export interface IExportFormat {
  */
 export interface IImportFormat {
     providerType: string;
-    providerOptions: ISecureString;
+    providerOptions: IImportProviderOptions;
 }
 
 /**

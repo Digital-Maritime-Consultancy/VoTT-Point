@@ -686,7 +686,9 @@ export default class MockFactory {
      public static importFormat(): IImportFormat {
         return {
             providerType: "cvatXml",
-            providerOptions: undefined,
+            providerOptions: {
+                imageFolderPath: undefined,
+            },
         };
     }
 
