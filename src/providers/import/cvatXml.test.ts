@@ -73,30 +73,5 @@ describe("CVAT Xml Import Provider", () => {
             storageProviderMock.prototype.writeBinary.mockClear();
             storageProviderMock.mockClear();
         });
-
-        it("Imports all assets", async () => {
-            const options: ICvatXmlImportProviderOptions = {
-                includeImages: true,
-            };
-
-            const importProvider = new CvatXmlImportProvider(testProject, options);
-            await importProvider.import();
-
-            const storageProviderMock = LocalFileSystemProxy as any;
-            const importJson = storageProviderMock.mock.instances[0].writeText.mock.calls[0][1];
-            const importObject = JSON.parse(importJson) as IProject;
-
-            const importedAssets = _.values(importObject.assets);
-
-            // Ensure provider information not included in import JSON
-            expect(importObject.sourceConnection).toBeUndefined();
-            expect(importObject.targetConnection).toBeUndefined();
-            expect(importObject.importFormat).toBeUndefined();
-
-            // Verify imported assets match expectations
-            expect(importedAssets.length).toEqual(testAssets.length);
-            expect(LocalFileSystemProxy.prototype.writeText)
-                .toBeCalledWith(expectedFileName, expect.any(String));
-        });
     });
 });

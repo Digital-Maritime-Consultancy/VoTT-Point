@@ -7,6 +7,7 @@ import { IProject, IApplicationState, IImportFormat } from "../../../../models/a
 import { strings } from "../../../../common/strings";
 import { toast } from "react-toastify";
 import ImportForm from "./importForm";
+import { AnnotationImportCheckResult } from "../../../../providers/import/importProvider";
 
 /**
  * Properties for Import Page
@@ -41,7 +42,10 @@ function mapDispatchToProps(dispatch) {
 export default class ImportPage extends React.Component<IImportPageProps> {
     private emptyImportFormat: IImportFormat = {
         providerType: "",
-        providerOptions: undefined,
+        providerOptions: {
+            file: undefined,
+            imageFolderPath: undefined,
+        },
     };
     
     constructor(props, context) {
@@ -74,22 +78,45 @@ export default class ImportPage extends React.Component<IImportPageProps> {
                     <ImportForm
                         settings={importFormat}
                         onSubmit={this.onFormSubmit}
-                        onCancel={this.onFormCancel} />
+                        onCancel={this.onFormCancel}
+                        onCheck={this.onFormCheck} />
                 </div>
             </div>
         );
     }
 
-    private onFormSubmit = async (importFormat: IImportFormat) => {
-
-        // assets need to be added
+    private onFormCheck = async (importFormat: IImportFormat) => {
         const projectToUpdate: IProject = {
             ...this.props.project,
             importFormat,
         };
+        if (!importFormat.providerOptions.imageFolderPath) {
+            toast.error(strings.import.providers.cvatXml.imageFolderPath.emptyError);
+            return ;
+        }
+        const result = await this.props.actions.checkAnnotation(projectToUpdate, importFormat);
+        if (result === AnnotationImportCheckResult.Valid) {
+            toast.success(strings.import.messages.valid);
+        } else if (result === AnnotationImportCheckResult.NoImageMatched) {
+            toast.error(strings.import.messages.noImageMatched);
+        } else {
+            toast.error(strings.import.messages.invalid);
+        }
+    }
+
+    private onFormSubmit = async (importFormat: IImportFormat) => {
+        const projectToUpdate: IProject = {
+            ...this.props.project,
+            importFormat,
+        };
+        if (!importFormat.providerOptions.imageFolderPath) {
+            toast.error(strings.import.providers.cvatXml.imageFolderPath.emptyError);
+            return ;
+        }
+        await this.props.actions.importAnnotation(projectToUpdate, importFormat);
 
         await this.props.actions.saveProject(projectToUpdate);
-        toast.success(strings.import.messages.saveSuccess);
+        toast.success(strings.import.messages.importSuccess);
         this.props.history.goBack();
     }
 

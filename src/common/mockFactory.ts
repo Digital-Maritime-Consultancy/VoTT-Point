@@ -687,6 +687,7 @@ export default class MockFactory {
         return {
             providerType: "cvatXml",
             providerOptions: {
+                file: undefined,
                 imageFolderPath: undefined,
             },
         };
@@ -907,7 +908,8 @@ export default class MockFactory {
             closeProject: jest.fn(() => Promise.resolve()),
             loadAssets: jest.fn(() => Promise.resolve()),
             exportProject: jest.fn(() => Promise.resolve()),
-            importProject: jest.fn(() => Promise.resolve()),
+            importAnnotation: jest.fn(() => Promise.resolve()),
+            checkAnnotation: jest.fn(() => Promise.resolve()),
             loadAssetMetadata: jest.fn(() => Promise.resolve()),
             saveAssetMetadata: jest.fn(() => Promise.resolve()),
             updateProjectTag: jest.fn(() => Promise.resolve()),

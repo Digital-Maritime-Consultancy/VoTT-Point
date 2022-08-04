@@ -1,3 +1,5 @@
+import { IFileInfo, IImportFormat } from './../../models/applicationState';
+import { ImportProviderFactory } from './../../providers/import/importProviderFactory';
 import { Action, Dispatch } from "redux";
 import ProjectService from "../../services/projectService";
 import { ActionTypes } from "./actionTypes";
@@ -16,8 +18,7 @@ import { createAction, createPayloadAction, IPayloadAction } from "./actionCreat
 import { IExportResults } from "../../providers/export/exportProvider";
 import { appInfo } from "../../common/appInfo";
 import { strings } from "../../common/strings";
-import { IStorageProviderRegistrationOptions } from "../../providers/storage/storageProviderFactory";
-import { IImportResults } from "../../providers/import/importProvider";
+import { AnnotationImportCheckResult } from '../../providers/import/importProvider';
 
 /**
  * Actions to be performed in relation to projects
@@ -29,7 +30,8 @@ export default interface IProjectActions {
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
-    importProject(project: IProject): Promise<void> | Promise<IImportResults>;
+    importAnnotation(project: IProject, source: IImportFormat): Promise<IProject>;
+    checkAnnotation(project: IProject, source: IImportFormat): Promise<AnnotationImportCheckResult>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
     saveAssetMetadata(project: IProject, assetMetadata: IAssetMetadata): Promise<IAssetMetadata>;
@@ -277,6 +279,66 @@ export function exportProject(project: IProject): (dispatch: Dispatch) => Promis
     };
 }
 
+export function checkAnnotation(project: IProject, source: IImportFormat):
+    (dispatch: Dispatch) => Promise<AnnotationImportCheckResult> {
+    return async (dispatch: Dispatch) => {
+        if (!project.importFormat) {
+            throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
+        }
+
+        if (project.importFormat && project.importFormat.providerType) {
+            const importProvider = ImportProviderFactory.create(
+                project.importFormat.providerType,
+                project,
+                project.importFormat.providerOptions);
+            const result = await importProvider.check(project, source, this);
+            dispatch(checkAnnotationAction(project));
+            return result;
+        }
+        return AnnotationImportCheckResult.NotPerformed;
+    };
+}
+
+/**
+ * Initialize import provider, get import data and dispatch import annotation action
+ * @param project - Project to integrate
+ * @param source - File to be imported
+ */
+export function importAnnotation(project: IProject, source: IImportFormat): (dispatch: Dispatch) => Promise<IProject> {
+    return async (dispatch: Dispatch) => {
+        if (!project.importFormat) {
+            throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
+        }
+
+        if (project.importFormat && project.importFormat.providerType) {
+            const importProvider = ImportProviderFactory.create(
+                project.importFormat.providerType,
+                project,
+                project.importFormat.providerOptions);
+
+            project = await importProvider.import(project, source, this);
+            dispatch(importAnnotationAction(project));
+        }
+        return project;
+        /*
+        if (!project.exportFormat) {
+            throw new AppError(ErrorCode.ExportFormatNotFound, strings.errors.exportFormatNotFound.message);
+        }
+
+        if (project.exportFormat && project.exportFormat.providerType) {
+            const exportProvider = ExportProviderFactory.create(
+                project.exportFormat.providerType,
+                project,
+                project.exportFormat.providerOptions);
+
+            const results = await exportProvider.export();
+            dispatch(exportProjectAction(project));
+
+            return results as IExportResults;
+        }*/
+    };
+}
+
 /**
  * Load project action type
  */
@@ -334,6 +396,20 @@ export interface IExportProjectAction extends IPayloadAction<string, IProject> {
 }
 
 /**
+ * Import annotation action type
+ */
+export interface IImportAnnotationAction extends IPayloadAction<string, IProject> {
+    type: ActionTypes.IMPORT_ANNOTATION_SUCCESS;
+}
+
+/**
+ * Check annotation action type
+ */
+export interface ICheckAnnotationAction extends IPayloadAction<string, IProject> {
+    type: ActionTypes.CHECK_ANNOTATION_SUCCESS;
+}
+
+/**
  * Update Project Tag action type
  */
 export interface IUpdateProjectTagAction extends IPayloadAction<string, IProject> {
@@ -383,6 +459,16 @@ export const saveAssetMetadataAction =
  */
 export const exportProjectAction =
     createPayloadAction<IExportProjectAction>(ActionTypes.EXPORT_PROJECT_SUCCESS);
+/**
+ * Instance of Import Annotation action
+ */
+export const importAnnotationAction =
+    createPayloadAction<IImportAnnotationAction>(ActionTypes.IMPORT_ANNOTATION_SUCCESS);
+/**
+ * Instance of Import Annotation action
+ */
+export const checkAnnotationAction =
+    createPayloadAction<ICheckAnnotationAction>(ActionTypes.CHECK_ANNOTATION_SUCCESS);
 /**
  * Instance of Update project tag action
  */

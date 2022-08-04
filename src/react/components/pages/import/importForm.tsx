@@ -1,7 +1,7 @@
 import React from "react";
 import Form, { FormValidation, IChangeEvent, ISubmitEvent, Widget } from "react-jsonschema-form";
 import { addLocValues, strings } from "../../../../common/strings";
-import { IImportFormat } from "../../../../models/applicationState";
+import { IFileInfo, IImportFormat } from "../../../../models/applicationState";
 import { ImportProviderFactory } from "../../../../providers/import/importProviderFactory";
 import { CustomWidget } from "../../common/customField/customField";
 import ImportProviderPicker from "../../common/importProviderPicker/importProviderPicker";
@@ -25,6 +25,7 @@ const uiSchema = addLocValues(require("./importForm.ui.json"));
 export interface IImportFormProps{
     settings: IImportFormat;
     onSubmit: (importFormat: IImportFormat) => void;
+    onCheck: (importFormat: IImportFormat) => void;
     onCancel?: () => void;
 }
 
@@ -56,10 +57,13 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
         importProviderPicker: (ImportProviderPicker as any) as Widget,
         protectedInput: (ProtectedInput as any) as Widget,
         xmlFilePicker: CustomWidget(XmlFilePicker, (props) => ({
-            /*
-            checked: props.value,
-            onChange: (value) => props.onChange(value.target.checked),
-            */
+            onChange: (value: IFileInfo) => {
+                const currentFormData = {...this.state.formData};
+                if (value) {
+                    currentFormData.providerOptions.file = value;
+                    this.setState({ formData: currentFormData});
+                }
+            },
         })),
     };
 
@@ -92,6 +96,8 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
                 onChange={this.onFormChange}
                 onSubmit={this.onFormSubmit}>
                 <div>
+                    <button className="btn btn-primary mr-1"
+                        type="button" onClick={(e) => this.onFormCheck(this.state.formData)}>{strings.import.check}</button>
                     <button className="btn btn-success mr-1" type="submit">{strings.import.execute}</button>
                     <button className="btn btn-secondary btn-cancel"
                         type="button"
@@ -122,12 +128,15 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
     }
 
     private onFormSubmit = (args: ISubmitEvent<IImportFormat>): void => {
-        console.log(args);
         if (!args.formData.providerOptions.imageFolderPath) {
             alert(strings.import.providers.cvatXml.imageFolderPath.emptyError);
             return ;
         }
-        //this.props.onSubmit(args.formData);
+        this.props.onSubmit(args.formData);
+    }
+
+    private onFormCheck = (formData: IImportFormat): void => {
+        this.props.onCheck(formData);
     }
 
     private onFormCancel = (): void => {

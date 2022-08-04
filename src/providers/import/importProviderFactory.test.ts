@@ -1,7 +1,8 @@
 import { ImportProviderFactory } from "./importProviderFactory";
-import { ImportProvider } from "./importProvider";
-import { IProject } from "../../models/applicationState";
+import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
+import { IImportFormat, IProject } from "../../models/applicationState";
 import MockFactory from "../../common/mockFactory";
+import projectActions from "../../redux/actions/projectActions";
 
 describe("Import Provider Factory", () => {
     const testProject: IProject = MockFactory.createTestProject("TestProject");
@@ -62,9 +63,12 @@ describe("Import Provider Factory", () => {
 });
 
 class TestImportProvider extends ImportProvider {
-    public project: IProject;
-
-    public import(): Promise<void> {
+    public import(project: IProject, source: IImportFormat, actions: projectActions): Promise<IProject> {
         throw new Error("Method not implemented.");
     }
+    public check(project: IProject, source: IImportFormat): Promise<AnnotationImportCheckResult> {
+        throw new Error("Method not implemented.");
+    }
+    public project: IProject;
+
 }

@@ -496,6 +496,7 @@ export const chinesetw: IAppStrings = {
         title: "Import",
         description: "Import Settings",
         execute: "Import to current project",
+        check: "Check",
         providers: {
             common: {
                 properties: {
@@ -519,7 +520,11 @@ export const chinesetw: IAppStrings = {
             },
         },
         messages: {
-            saveSuccess: "Successfully imported file",
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Successfully validated",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported",
         },
     },
     activeLearning: {
@@ -634,6 +639,10 @@ export const chinesetw: IAppStrings = {
             title: "匯出專案時出現錯誤", // Error exporting project
             message: "專案設定中缺少匯出格式。請在匯出設定畫面中選擇一種匯出格式。",
             // Project is missing export format.  Please select an export format in the export setting page.
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an export format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "主動學習錯誤", // Active Learning Error

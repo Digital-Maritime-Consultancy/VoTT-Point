@@ -481,6 +481,7 @@ export interface IAppStrings {
         title: string;
         description: string;
         execute: string;
+        check: string;
         providers: {
             common: {
                 properties: {
@@ -504,7 +505,11 @@ export interface IAppStrings {
             },
         },
         messages: {
-            saveSuccess: string;
+            noImageMatched: string;
+            invalid: string;
+            valid: string;
+            importFailed: string;
+            importSuccess: string;
         },
     };
     activeLearning: {
@@ -574,6 +579,7 @@ export interface IAppStrings {
         importError: IErrorMetadata,
         pasteRegionTooBigError: IErrorMetadata,
         exportFormatNotFound: IErrorMetadata,
+        importFormatNotFound: IErrorMetadata,
         activeLearningPredictionError: IErrorMetadata,
     };
 }

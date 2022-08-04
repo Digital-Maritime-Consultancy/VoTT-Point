@@ -78,7 +78,7 @@ describe("Import Page", () => {
         const props = createProps(testProject.id);
 
         const saveProjectSpy = jest.spyOn(props.actions, "saveProject");
-        const importProjectSpy = jest.spyOn(props.actions, "importProject");
+        const importProjectSpy = jest.spyOn(props.actions, "importAnnotation");
 
         ImportProviderFactory.create = jest.fn(() => {
             return {

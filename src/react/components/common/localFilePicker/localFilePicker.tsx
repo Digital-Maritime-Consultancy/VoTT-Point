@@ -72,7 +72,6 @@ export default class LocalFilePicker extends React.Component<ILocalFilePickerPro
 
         HtmlFileReader.readAsText(e.target.files[0])
             .then((fileInfo) => {
-                console.log(fileInfo);
                 this.setState({
                     fileName: fileInfo.file.name,
                     fileContent: fileInfo.content.toString(),

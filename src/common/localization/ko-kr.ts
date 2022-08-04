@@ -491,6 +491,7 @@ export const korean: IAppStrings = {
         title: "Import",
         description: "Import Settings",
         execute: "Import to current project",
+        check: "Check",
         providers: {
             common: {
                 properties: {
@@ -514,7 +515,11 @@ export const korean: IAppStrings = {
             },
         },
         messages: {
-            saveSuccess: "Successfully imported file",
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Successfully validated",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported",
         },
     },
     activeLearning: {
@@ -630,6 +635,10 @@ export const korean: IAppStrings = {
             title: "프로젝트 내보내기 오류",  // Error exporting project,
             message: "프로젝트에 내보내기 형식이 없습니다. 내보내기 설정 페이지에서 내보내기 형식을 선택하십시오.",
             // Project is missing export format. Please select an export format in the export setting page."
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an export format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "Active Learning 오류",  // Active Learning Error,

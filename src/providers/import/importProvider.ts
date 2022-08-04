@@ -7,11 +7,22 @@ import { IStorageProvider, StorageProviderFactory } from "../storage/storageProv
 import { IAssetProvider, AssetProviderFactory } from "../storage/assetProviderFactory";
 import _ from "lodash";
 import { AssetService } from "../../services/assetService";
+import IProjectActions from "../../redux/actions/projectActions";
 
 export interface IImportAssetResult {
     asset: IAssetMetadata;
     success: boolean;
     error?: string;
+}
+
+/**
+ * Enum of annotation import error codes
+ */
+export enum AnnotationImportCheckResult {
+    NoImageMatched,
+    NotValid,
+    NotPerformed,
+    Valid,
 }
 
 export interface IImportResults {
@@ -33,7 +44,11 @@ export interface IImportProvider {
     /**
      * Imports the configured project for specified import configuration
      */
-    import(fileText: IFileInfo): Promise<void> | Promise<IImportResults>;
+    import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject>;
+    /**
+     * Pre-check import outcome
+     */
+    check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
     save?(importFormat: IImportFormat): Promise<any>;
 }
 
@@ -51,7 +66,9 @@ export abstract class ImportProvider implements IImportProvider {
         this.assetService = new AssetService(this.project);
     }
 
-    public abstract import(fileText: IFileInfo): Promise<void> | Promise<IImportResults>;
+    public abstract import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject>;
+
+    public abstract check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
 
     /**
      * Gets the assets that are configured to be imported based on the configured asset state

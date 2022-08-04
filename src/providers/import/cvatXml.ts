@@ -1,9 +1,14 @@
+import { AssetState } from './../../models/applicationState';
 import _ from "lodash";
-import { IFileInfo, IProject, IProviderOptions } from "../../models/applicationState";
+import { IFileInfo, IImportFormat, IProject, IProviderOptions } from "../../models/applicationState";
 import Guard from "../../common/guard";
 import { constants } from "../../common/constants";
 import HtmlFileReader from "../../common/htmlFileReader";
-import { ImportProvider } from "./importProvider";
+import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
+import { createNewAssetMetadata, fetchImageInfo, fetchTagInfo } from "./cvatXmlToAssetConverter";
+import { addRegions, createAssetMetadata } from "./projectImporter";
+import { AssetService } from "../../services/assetService";
+import IProjectActions from '../../redux/actions/projectActions';
 
 const XMLParser = require("react-xml-parser");
 
@@ -24,30 +29,74 @@ export class CvatXmlImportProvider extends ImportProvider {
         Guard.null(options);
     }
 
+    public async check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult> {
+        Guard.null(project);
+
+        if (!source.providerOptions.file.content) {
+            return AnnotationImportCheckResult.NotValid;
+        }
+        const projectAssets = await actions.loadAssets(project);
+        const xml = new XMLParser().parseFromString(source.providerOptions.file.content);
+        const assetMetadata = fetchImageInfo(xml);
+        return projectAssets.filter(asset =>
+            assetMetadata.filter(afi =>
+                decodeURIComponent(asset.name) === decodeURIComponent(afi["name"])
+                ).length).length > 0 ?
+                AnnotationImportCheckResult.Valid :
+                AnnotationImportCheckResult.NoImageMatched;
+    }
+
     /**
      * Import project to VoTT JSON format
      */
-    public async import(fileText: IFileInfo): Promise<void> {
-        try {
-            const xml = new XMLParser().parseFromString(fileText.content);
-            console.log(xml);
-            
-        } catch (e) {
-            throw new Error(e.message);
+    public async import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject> {
+        Guard.null(project);
+        const result = await this.check(project, source, actions);
+        if (result === AnnotationImportCheckResult.Valid) {
+            try {
+                const xml = new XMLParser().parseFromString(source.providerOptions.file.content);
+                const projectAssets = await actions.loadAssets(project);
+                const assetsToBeImported = createNewAssetMetadata(xml, projectAssets);
+                const originalAssets = await this.getAssetsForImport();
+
+                // insert tags to project
+                const tags = fetchTagInfo(xml);
+                tags.forEach(tag => project.tags.filter(t => t.name === tag.name).length === 0 &&
+                    project.tags.push(tag));
+
+                console.log(assetsToBeImported);
+                assetsToBeImported.forEach(asset => {
+                    let found = false;
+                    console.log(asset);
+                    // investigate the original assets to integrate imported regions into
+                    originalAssets.forEach(originalAsset => {
+                        if (asset.asset.name === originalAsset.asset.name) {
+                            originalAsset = addRegions(originalAsset, asset.regions);
+                            found = true;
+                        }
+                    });
+                    // there are cases of images without asset metadata (not stored as files)
+                    if (!found) {
+                        // in this case it should be still in the scope of the project
+                        const projectAssets = _.values(project.assets);
+                        projectAssets.forEach(async assetInProject => {
+                            if (assetInProject && assetInProject.name === asset.asset.name) {
+                                // in such case we will create a metadata with given regions
+                                const assetMetadata =
+                                    await createAssetMetadata(
+                                        assetInProject,
+                                        AssetState.TaggedRectangle,
+                                        asset.regions);
+                                await actions.saveAssetMetadata(project, assetMetadata);
+                            }
+                        });
+                    }
+                });
+            } catch (e) {
+                throw new Error(e.message);
+            }
         }
-        /*
-        const results = await this.getAssetsForImport();
 
-        const exportObject = { ...this.project };
-        exportObject.assets = _.keyBy(results, (assetMetadata) => assetMetadata.asset.id) as any;
-
-        // We don't need these fields in the export JSON
-        delete exportObject.sourceConnection;
-        delete exportObject.targetConnection;
-        delete exportObject.exportFormat;
-
-        const fileName = `${this.project.name.replace(/\s/g, "-")}${constants.xmlFileExtention}`;
-        await this.storageProvider.writeText(fileName, JSON.stringify(exportObject, null, 4));
-        */
+        return project;
     }
 }

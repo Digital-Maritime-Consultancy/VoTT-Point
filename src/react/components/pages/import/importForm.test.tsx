@@ -32,6 +32,9 @@ describe("Import Form Component", () => {
         const props: IImportFormProps = {
             settings: null,
             onSubmit: onSubmitHandler,
+            onCheck: function (importFormat: IImportFormat): void {
+                throw new Error("Function not implemented.");
+            }
         };
 
         const wrapper = createComponent(props);

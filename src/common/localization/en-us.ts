@@ -480,6 +480,7 @@ export const english: IAppStrings = {
         title: "Import",
         description: "Import Settings",
         execute: "Import to current project",
+        check: "Check",
         providers: {
             common: {
                 properties: {
@@ -503,7 +504,11 @@ export const english: IAppStrings = {
             },
         },
         messages: {
-            saveSuccess: "Successfully imported file",
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Successfully validated",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported",
         },
     },
     activeLearning: {
@@ -609,6 +614,10 @@ export const english: IAppStrings = {
         exportFormatNotFound: {
             title: "Error exporting project",
             message: "Project is missing export format.  Please select an export format in the export setting page.",
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an export format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "Active Learning Error",

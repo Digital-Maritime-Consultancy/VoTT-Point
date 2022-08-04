@@ -1,7 +1,7 @@
 import React from "react";
 import { SyntheticEvent } from "react";
-import { AppError, ErrorCode, IFileInfo } from "../../../../models/applicationState";
-import { fetchAssetInfo, fetchImageInfo, fetchTagInfo } from "../../../../providers/import/cvatXmlToAssetConverter";
+import { IChangeEvent } from "react-jsonschema-form";
+import { AppError, ErrorCode, IFileInfo, IImportFormat } from "../../../../models/applicationState";
 import LocalFilePicker from "../localFilePicker/localFilePicker";
 
 const XMLParser = require("react-xml-parser");
@@ -11,8 +11,8 @@ const XMLParser = require("react-xml-parser");
  * @member onChange - Function to call on change of file selection
  * @member onError - Function to call on file picking error
  */
- export interface IXmlFilePickerProps {
-    onChange: (sender: SyntheticEvent, xml: XMLDocument) => void;
+export interface IXmlFilePickerProps {
+    onChange: (file: IFileInfo) => void;
     onError: (sender: SyntheticEvent, error: any) => void;
 }
 
@@ -37,17 +37,7 @@ export default class XmlFilePicker extends React.Component<IXmlFilePickerProps> 
     }
 
     private onXmlFileLoad = async (sender: SyntheticEvent, fileText: IFileInfo) => {
-        if (fileText.content) {
-            try {
-                const xml = new XMLParser().parseFromString(fileText.content);
-                fetchTagInfo(xml);
-                fetchImageInfo(xml);
-                console.log(fetchAssetInfo(xml));
-                //this.props.onChange(sender, xml);
-            } catch (e) {
-                throw new Error(e.message);
-            }
-        }
+        this.props.onChange(fileText);
     }
 
     private onXmlFileLoadError = (e, error: any) => {
