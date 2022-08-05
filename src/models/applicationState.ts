@@ -207,8 +207,6 @@ export interface IExportFormat {
  * @member assetState - import asset with the following state
  */
 export interface IImportProviderOptions extends IProviderOptions {
-    file: IFileInfo;
-    imageFolderPath: string;
 }
 
 /**

@@ -6,11 +6,6 @@
             "title": "${strings.import.providers.cvatXml.xmlFilePicker.title}",
             "description": "${strings.import.providers.cvatXml.xmlFilePicker.description}",
             "type": "string"
-        },
-        "imageFolderPath": {
-            "title": "${strings.import.providers.cvatXml.imageFolderPath.title}",
-            "description": "${strings.import.providers.cvatXml.imageFolderPath.description}",
-            "type": "string"
         }
     }
 }

@@ -44,11 +44,11 @@ export interface IImportProvider {
     /**
      * Imports the configured project for specified import configuration
      */
-    import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject>;
+    import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject>;
     /**
      * Pre-check import outcome
      */
-    check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
+    check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
     save?(importFormat: IImportFormat): Promise<any>;
 }
 
@@ -66,9 +66,9 @@ export abstract class ImportProvider implements IImportProvider {
         this.assetService = new AssetService(this.project);
     }
 
-    public abstract import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject>;
+    public abstract import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject>;
 
-    public abstract check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
+    public abstract check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
 
     /**
      * Gets the assets that are configured to be imported based on the configured asset state

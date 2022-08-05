@@ -499,11 +499,6 @@ export const spanish: IAppStrings = {
                     title: "CVAT XML",
                     description: "Please select a XML file",
                 },
-                imageFolderPath: {
-                    title: "Image folder path",
-                    description: "Local or remote path storing images",
-                    emptyError: "Image folder path is not given",
-                },
             },
         },
         messages: {

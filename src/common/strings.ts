@@ -497,11 +497,6 @@ export interface IAppStrings {
                     title: string,
                     description: string,
                 },
-                imageFolderPath: {
-                    title: string,
-                    description: string,
-                    emptyError: string,
-                },
             },
         },
         messages: {

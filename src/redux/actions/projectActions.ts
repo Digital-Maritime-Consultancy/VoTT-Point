@@ -30,8 +30,8 @@ export default interface IProjectActions {
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
-    importAnnotation(project: IProject, source: IImportFormat): Promise<IProject>;
-    checkAnnotation(project: IProject, source: IImportFormat): Promise<AnnotationImportCheckResult>;
+    importAnnotation(project: IProject, file: IFileInfo): Promise<IProject>;
+    checkAnnotation(project: IProject, file: IFileInfo): Promise<AnnotationImportCheckResult>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
     saveAssetMetadata(project: IProject, assetMetadata: IAssetMetadata): Promise<IAssetMetadata>;
@@ -279,7 +279,7 @@ export function exportProject(project: IProject): (dispatch: Dispatch) => Promis
     };
 }
 
-export function checkAnnotation(project: IProject, source: IImportFormat):
+export function checkAnnotation(project: IProject, file: IFileInfo):
     (dispatch: Dispatch) => Promise<AnnotationImportCheckResult> {
     return async (dispatch: Dispatch) => {
         if (!project.importFormat) {
@@ -291,7 +291,7 @@ export function checkAnnotation(project: IProject, source: IImportFormat):
                 project.importFormat.providerType,
                 project,
                 project.importFormat.providerOptions);
-            const result = await importProvider.check(project, source, this);
+            const result = await importProvider.check(project, file, this);
             dispatch(checkAnnotationAction(project));
             return result;
         }
@@ -304,7 +304,7 @@ export function checkAnnotation(project: IProject, source: IImportFormat):
  * @param project - Project to integrate
  * @param source - File to be imported
  */
-export function importAnnotation(project: IProject, source: IImportFormat): (dispatch: Dispatch) => Promise<IProject> {
+export function importAnnotation(project: IProject, file: IFileInfo): (dispatch: Dispatch) => Promise<IProject> {
     return async (dispatch: Dispatch) => {
         if (!project.importFormat) {
             throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
@@ -316,7 +316,7 @@ export function importAnnotation(project: IProject, source: IImportFormat): (dis
                 project,
                 project.importFormat.providerOptions);
 
-            project = await importProvider.import(project, source, this);
+            project = await importProvider.import(project, file, this);
             dispatch(importAnnotationAction(project));
         }
         return project;

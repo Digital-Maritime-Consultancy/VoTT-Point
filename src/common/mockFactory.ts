@@ -687,8 +687,6 @@ export default class MockFactory {
         return {
             providerType: "cvatXml",
             providerOptions: {
-                file: undefined,
-                imageFolderPath: undefined,
             },
         };
     }

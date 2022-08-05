@@ -16,7 +16,6 @@ const XMLParser = require("react-xml-parser");
  * CVAT Xml Import Provider options
  */
 export interface ICvatXmlImportProviderOptions extends IProviderOptions {
-    imageFolderPath: string;
 }
 
 /**
@@ -29,14 +28,14 @@ export class CvatXmlImportProvider extends ImportProvider {
         Guard.null(options);
     }
 
-    public async check(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<AnnotationImportCheckResult> {
+    public async check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult> {
         Guard.null(project);
 
-        if (!source.providerOptions.file.content) {
+        if (!file) {
             return AnnotationImportCheckResult.NotValid;
         }
         const projectAssets = await actions.loadAssets(project);
-        const xml = new XMLParser().parseFromString(source.providerOptions.file.content);
+        const xml = new XMLParser().parseFromString(file.content);
         const assetMetadata = fetchImageInfo(xml);
         return projectAssets.filter(asset =>
             assetMetadata.filter(afi =>
@@ -49,12 +48,12 @@ export class CvatXmlImportProvider extends ImportProvider {
     /**
      * Import project to VoTT JSON format
      */
-    public async import(project: IProject, source: IImportFormat, actions: IProjectActions): Promise<IProject> {
+    public async import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject> {
         Guard.null(project);
-        const result = await this.check(project, source, actions);
+        const result = await this.check(project, file, actions);
         if (result === AnnotationImportCheckResult.Valid) {
             try {
-                const xml = new XMLParser().parseFromString(source.providerOptions.file.content);
+                const xml = new XMLParser().parseFromString(file.content);
                 const projectAssets = await actions.loadAssets(project);
                 const assetsToBeImported = createNewAssetMetadata(xml, projectAssets);
                 const originalAssets = await this.getAssetsForImport();
@@ -69,9 +68,10 @@ export class CvatXmlImportProvider extends ImportProvider {
                     let found = false;
                     console.log(asset);
                     // investigate the original assets to integrate imported regions into
-                    originalAssets.forEach(originalAsset => {
+                    originalAssets.forEach(async originalAsset => {
                         if (asset.asset.name === originalAsset.asset.name) {
                             originalAsset = addRegions(originalAsset, asset.regions);
+                            await actions.saveAssetMetadata(project, originalAsset);
                             found = true;
                         }
                     });

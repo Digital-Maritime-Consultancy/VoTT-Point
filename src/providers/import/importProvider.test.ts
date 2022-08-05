@@ -43,10 +43,10 @@ describe("Import Provider Base", () => {
 });
 
 class TestImportProvider extends ImportProvider {
-    public import(project: IProject, source: IImportFormat, actions: projectActions): Promise<IProject> {
+    public import(project: IProject, file: IFileInfo, actions: projectActions): Promise<IProject> {
         throw new Error("Method not implemented.");
     }
-    public check(project: IProject, source: IImportFormat): Promise<AnnotationImportCheckResult> {
+    public check(project: IProject, file: IFileInfo): Promise<AnnotationImportCheckResult> {
         throw new Error("Method not implemented.");
     }
 

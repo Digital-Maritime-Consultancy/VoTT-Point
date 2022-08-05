@@ -24,8 +24,8 @@ const uiSchema = addLocValues(require("./importForm.ui.json"));
  */
 export interface IImportFormProps{
     settings: IImportFormat;
-    onSubmit: (importFormat: IImportFormat) => void;
-    onCheck: (importFormat: IImportFormat) => void;
+    onSubmit: (file: IFileInfo) => void;
+    onCheck: (file: IFileInfo) => void;
     onCancel?: () => void;
 }
 
@@ -43,6 +43,7 @@ export interface IImportFormState {
     formSchema: any;
     uiSchema: any;
     formData: IImportFormat;
+    file: any;
 }
 export default class ImportForm extends React.Component<IImportFormProps, IImportFormState> {
     public state: IImportFormState = {
@@ -51,6 +52,7 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
         formSchema: { ...formSchema },
         uiSchema: { ...uiSchema },
         formData: this.props.settings,
+        file: undefined,
     };
 
     private widgets = {
@@ -58,10 +60,8 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
         protectedInput: (ProtectedInput as any) as Widget,
         xmlFilePicker: CustomWidget(XmlFilePicker, (props) => ({
             onChange: (value: IFileInfo) => {
-                const currentFormData = {...this.state.formData};
                 if (value) {
-                    currentFormData.providerOptions.file = value;
-                    this.setState({ formData: currentFormData});
+                    this.setState({ file: value});
                 }
             },
         })),
@@ -128,15 +128,11 @@ export default class ImportForm extends React.Component<IImportFormProps, IImpor
     }
 
     private onFormSubmit = (args: ISubmitEvent<IImportFormat>): void => {
-        if (!args.formData.providerOptions.imageFolderPath) {
-            alert(strings.import.providers.cvatXml.imageFolderPath.emptyError);
-            return ;
-        }
-        this.props.onSubmit(args.formData);
+        this.props.onSubmit(this.state.file);
     }
 
     private onFormCheck = (formData: IImportFormat): void => {
-        this.props.onCheck(formData);
+        this.props.onCheck(this.state.file);
     }
 
     private onFormCancel = (): void => {

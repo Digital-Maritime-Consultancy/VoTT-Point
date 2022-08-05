@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { RouteComponentProps } from "react-router-dom";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
-import { IProject, IApplicationState, IImportFormat } from "../../../../models/applicationState";
+import { IProject, IApplicationState, IImportFormat, IFileInfo } from "../../../../models/applicationState";
 import { strings } from "../../../../common/strings";
 import { toast } from "react-toastify";
 import ImportForm from "./importForm";
@@ -43,11 +43,9 @@ export default class ImportPage extends React.Component<IImportPageProps> {
     private emptyImportFormat: IImportFormat = {
         providerType: "",
         providerOptions: {
-            file: undefined,
-            imageFolderPath: undefined,
         },
     };
-    
+
     constructor(props, context) {
         super(props, context);
 
@@ -85,16 +83,11 @@ export default class ImportPage extends React.Component<IImportPageProps> {
         );
     }
 
-    private onFormCheck = async (importFormat: IImportFormat) => {
+    private onFormCheck = async (file: IFileInfo) => {
         const projectToUpdate: IProject = {
-            ...this.props.project,
-            importFormat,
+            ...this.props.project
         };
-        if (!importFormat.providerOptions.imageFolderPath) {
-            toast.error(strings.import.providers.cvatXml.imageFolderPath.emptyError);
-            return ;
-        }
-        const result = await this.props.actions.checkAnnotation(projectToUpdate, importFormat);
+        const result = await this.props.actions.checkAnnotation(projectToUpdate, file);
         if (result === AnnotationImportCheckResult.Valid) {
             toast.success(strings.import.messages.valid);
         } else if (result === AnnotationImportCheckResult.NoImageMatched) {
@@ -104,18 +97,10 @@ export default class ImportPage extends React.Component<IImportPageProps> {
         }
     }
 
-    private onFormSubmit = async (importFormat: IImportFormat) => {
-        const projectToUpdate: IProject = {
-            ...this.props.project,
-            importFormat,
-        };
-        if (!importFormat.providerOptions.imageFolderPath) {
-            toast.error(strings.import.providers.cvatXml.imageFolderPath.emptyError);
-            return ;
-        }
-        await this.props.actions.importAnnotation(projectToUpdate, importFormat);
+    private onFormSubmit = async (file: IFileInfo) => {
+        const updatedProject = await this.props.actions.importAnnotation(this.props.project, file);
 
-        await this.props.actions.saveProject(projectToUpdate);
+        await this.props.actions.saveProject(updatedProject);
         toast.success(strings.import.messages.importSuccess);
         this.props.history.goBack();
     }
