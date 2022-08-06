@@ -168,6 +168,7 @@ export default class ProjectSettingsPage extends React.Component<IProjectSetting
                 || (project.sourceConnection && Object.keys(project.sourceConnection).length > 0)
                 || (project.targetConnection && Object.keys(project.targetConnection).length > 0)
                 || (project.exportFormat && Object.keys(project.exportFormat).length > 0)
+                || (project.importFormat && Object.keys(project.importFormat).length > 0)
                 || (project.tags && project.tags.length > 0)
             );
     }

@@ -18,7 +18,6 @@ import { createAction, createPayloadAction, IPayloadAction } from "./actionCreat
 import { IExportResults } from "../../providers/export/exportProvider";
 import { appInfo } from "../../common/appInfo";
 import { strings } from "../../common/strings";
-import { AnnotationImportCheckResult } from '../../providers/import/importProvider';
 
 /**
  * Actions to be performed in relation to projects
@@ -31,7 +30,7 @@ export default interface IProjectActions {
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
     importAnnotation(project: IProject, file: IFileInfo): Promise<IProject>;
-    checkAnnotation(project: IProject, file: IFileInfo): Promise<AnnotationImportCheckResult>;
+    checkAnnotation(project: IProject, file: IFileInfo): Promise<number>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
     saveAssetMetadata(project: IProject, assetMetadata: IAssetMetadata): Promise<IAssetMetadata>;
@@ -280,7 +279,7 @@ export function exportProject(project: IProject): (dispatch: Dispatch) => Promis
 }
 
 export function checkAnnotation(project: IProject, file: IFileInfo):
-    (dispatch: Dispatch) => Promise<AnnotationImportCheckResult> {
+    (dispatch: Dispatch) => Promise<number> {
     return async (dispatch: Dispatch) => {
         if (!project.importFormat) {
             throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
@@ -295,7 +294,7 @@ export function checkAnnotation(project: IProject, file: IFileInfo):
             dispatch(checkAnnotationAction(project));
             return result;
         }
-        return AnnotationImportCheckResult.NotPerformed;
+        return -1;
     };
 }
 
@@ -320,22 +319,6 @@ export function importAnnotation(project: IProject, file: IFileInfo): (dispatch:
             dispatch(importAnnotationAction(project));
         }
         return project;
-        /*
-        if (!project.exportFormat) {
-            throw new AppError(ErrorCode.ExportFormatNotFound, strings.errors.exportFormatNotFound.message);
-        }
-
-        if (project.exportFormat && project.exportFormat.providerType) {
-            const exportProvider = ExportProviderFactory.create(
-                project.exportFormat.providerType,
-                project,
-                project.exportFormat.providerOptions);
-
-            const results = await exportProvider.export();
-            dispatch(exportProjectAction(project));
-
-            return results as IExportResults;
-        }*/
     };
 }
 

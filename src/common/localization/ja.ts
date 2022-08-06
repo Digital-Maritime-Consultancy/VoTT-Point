@@ -513,7 +513,7 @@ export const japanese: IAppStrings = {
         messages: {
             noImageMatched: "No image name matched",
             invalid: "Validation failed",
-            valid: "Successfully validated",
+            valid: "Total number of importable assets: ",
             importFailed: "Import failed",
             importSuccess: "Successfully imported",
         },
@@ -634,7 +634,7 @@ export const japanese: IAppStrings = {
         },
         importFormatNotFound: {
             title: "Error importing other annotation format",
-            message: "Project is missing import format.  Please select an export format in the import setting page.",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "アクティブ ラーニングのエラー",  // Active Learning Error,

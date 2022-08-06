@@ -7,7 +7,6 @@ import { IProject, IApplicationState, IImportFormat, IFileInfo } from "../../../
 import { strings } from "../../../../common/strings";
 import { toast } from "react-toastify";
 import ImportForm from "./importForm";
-import { AnnotationImportCheckResult } from "../../../../providers/import/importProvider";
 
 /**
  * Properties for Import Page
@@ -88,9 +87,9 @@ export default class ImportPage extends React.Component<IImportPageProps> {
             ...this.props.project
         };
         const result = await this.props.actions.checkAnnotation(projectToUpdate, file);
-        if (result === AnnotationImportCheckResult.Valid) {
-            toast.success(strings.import.messages.valid);
-        } else if (result === AnnotationImportCheckResult.NoImageMatched) {
+        if (result > 0) {
+            toast.success(strings.import.messages.valid + result);
+        } else if (result === 0) {
             toast.error(strings.import.messages.noImageMatched);
         } else {
             toast.error(strings.import.messages.invalid);
@@ -99,10 +98,13 @@ export default class ImportPage extends React.Component<IImportPageProps> {
 
     private onFormSubmit = async (file: IFileInfo) => {
         const updatedProject = await this.props.actions.importAnnotation(this.props.project, file);
-
-        await this.props.actions.saveProject(updatedProject);
-        toast.success(strings.import.messages.importSuccess);
-        this.props.history.goBack();
+        if (updatedProject) {
+            await this.props.actions.saveProject(updatedProject);
+            toast.success(strings.import.messages.importSuccess);
+        } else {
+            toast.error(strings.import.messages.importFailed);
+        }
+        
     }
 
     private onFormCancel() {

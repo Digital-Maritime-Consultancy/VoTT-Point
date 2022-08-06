@@ -1,4 +1,4 @@
-import { IConnection, StorageType } from './../models/applicationState';
+import { IConnection, StorageType, IImportFormat } from './../models/applicationState';
 import _ from "lodash";
 import shortid from "shortid";
 import { StorageProviderFactory } from "../providers/storage/storageProviderFactory";
@@ -40,6 +40,12 @@ const defaultExportOptions: IExportFormat = {
     },
 };
 
+const defaultImportOptions: IImportFormat = {
+    providerType: "cvatXml",
+    providerOptions: {
+    },
+};
+
 /**
  * @name - Project Service
  * @description - Functions for dealing with projects
@@ -76,6 +82,11 @@ export default class ProjectService implements IProjectService {
             // Initialize export settings if they don't exist
             if (!loadedProject.exportFormat) {
                 loadedProject.exportFormat = defaultExportOptions;
+            }
+
+            // Initialize import settings if they don't exist
+            if (!loadedProject.importFormat) {
+                loadedProject.importFormat = defaultImportOptions;
             }
 
             this.ensureBackwardsCompatibility(loadedProject);
@@ -127,6 +138,11 @@ export default class ProjectService implements IProjectService {
         // Initialize export settings if they don't exist
         if (!project.exportFormat) {
             project.exportFormat = defaultExportOptions;
+        }
+
+        // Initialize import settings if they don't exist
+        if (!project.importFormat) {
+            project.importFormat = defaultImportOptions;
         }
 
         if (!project.version) {

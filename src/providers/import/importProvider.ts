@@ -1,28 +1,19 @@
 import Guard from "../../common/guard";
 import {
     IProject, IImportFormat, IAssetMetadata, IAsset,
-    AssetState, AssetType, IFileInfo,
+    AssetState, AssetType, IFileInfo, IRegion, RegionType,
 } from "../../models/applicationState";
 import { IStorageProvider, StorageProviderFactory } from "../storage/storageProviderFactory";
 import { IAssetProvider, AssetProviderFactory } from "../storage/assetProviderFactory";
 import _ from "lodash";
 import { AssetService } from "../../services/assetService";
 import IProjectActions from "../../redux/actions/projectActions";
+import HtmlFileReader from "../../common/htmlFileReader";
 
 export interface IImportAssetResult {
     asset: IAssetMetadata;
     success: boolean;
     error?: string;
-}
-
-/**
- * Enum of annotation import error codes
- */
-export enum AnnotationImportCheckResult {
-    NoImageMatched,
-    NotValid,
-    NotPerformed,
-    Valid,
 }
 
 export interface IImportResults {
@@ -48,7 +39,7 @@ export interface IImportProvider {
     /**
      * Pre-check import outcome
      */
-    check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
+    check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number>;
     save?(importFormat: IImportFormat): Promise<any>;
 }
 
@@ -68,7 +59,7 @@ export abstract class ImportProvider implements IImportProvider {
 
     public abstract import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject>;
 
-    public abstract check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult>;
+    public abstract check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number>;
 
     /**
      * Gets the assets that are configured to be imported based on the configured asset state
@@ -95,6 +86,53 @@ export abstract class ImportProvider implements IImportProvider {
             .filter((asset) => asset.type !== AssetType.Video)
             .filter(predicate)
             .mapAsync(async (asset) => await this.assetService.getAssetMetadata(asset));
+    }
+
+    /**
+     * Generate regions based on V1 Project asset metadata
+     * @param metadata - Asset Metadata from asset created from file path
+     * @param regions - Regions
+     */
+    public addRegions(metadata: IAssetMetadata, regions: IRegion[]): IAssetMetadata {
+        regions.forEach((region) => {
+            const generatedRegion: IRegion = {
+                id: region.id,
+                type: RegionType.Rectangle,
+                tags: region.tags,
+                points: region.points,
+                boundingBox: region.boundingBox,
+            };
+            metadata.regions.push(generatedRegion);
+        });
+        return metadata;
+    }
+
+    /**
+     * Creates an asset metadata for the specified asset
+     * @param asset The converted v2 asset
+     * @param assetState The new v2 asset state
+     * @param frameRegions The v1 asset regions
+     * @param parent The v2 parent asset (Used for video assets)
+     */
+    public async createAssetMetadata(
+        asset: IAsset,
+        assetState: AssetState,
+        regions: IRegion[],
+        parent?: IAsset,
+    ): Promise<IAssetMetadata> {
+        const metadata = await this.assetService.getAssetMetadata(asset);
+        this.addRegions(metadata, regions);
+        metadata.asset.state = assetState;
+
+        if (parent) {
+            metadata.asset.parent = parent;
+        }
+
+        if (!metadata.asset.size) {
+            metadata.asset.size = await HtmlFileReader.readAssetAttributes(asset);
+        }
+
+        return metadata;
     }
 
     /**

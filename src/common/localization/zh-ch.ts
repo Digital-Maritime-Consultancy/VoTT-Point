@@ -512,7 +512,7 @@ export const chinese: IAppStrings = {
         messages: {
             noImageMatched: "No image name matched",
             invalid: "Validation failed",
-            valid: "Successfully validated",
+            valid: "Total number of importable assets: ",
             importFailed: "Import failed",
             importSuccess: "Successfully imported",
         },
@@ -632,7 +632,7 @@ export const chinese: IAppStrings = {
         },
         importFormatNotFound: {
             title: "Error importing other annotation format",
-            message: "Project is missing import format.  Please select an export format in the import setting page.",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "主动学习错误", // Active Learning Error

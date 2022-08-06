@@ -1,5 +1,5 @@
 import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
-import { IProject, AssetState, IAsset, IImportFormat } from "../../models/applicationState";
+import { IProject, AssetState, IAsset, IImportFormat, IFileInfo } from "../../models/applicationState";
 import { ImportProviderFactory } from "./importProviderFactory";
 import MockFactory from "../../common/mockFactory";
 import registerProviders from "../../registerProviders";

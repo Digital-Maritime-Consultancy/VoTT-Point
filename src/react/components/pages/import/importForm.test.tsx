@@ -1,7 +1,7 @@
 import React from "react";
 import ImportForm, { IImportFormProps, IImportFormState } from "./importForm";
 import { mount } from "enzyme";
-import { IImportFormat } from "../../../../models/applicationState";
+import { IFileInfo } from "../../../../models/applicationState";
 import MockFactory from "../../../../common/mockFactory";
 import { ImportProviderFactory } from "../../../../providers/import/importProviderFactory";
 
@@ -32,7 +32,7 @@ describe("Import Form Component", () => {
         const props: IImportFormProps = {
             settings: null,
             onSubmit: onSubmitHandler,
-            onCheck: function (importFormat: IImportFormat): void {
+            onCheck: function (file: IFileInfo): void {
                 throw new Error("Function not implemented.");
             }
         };

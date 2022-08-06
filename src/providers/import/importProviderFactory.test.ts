@@ -1,6 +1,6 @@
 import { ImportProviderFactory } from "./importProviderFactory";
 import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
-import { IImportFormat, IProject } from "../../models/applicationState";
+import { IFileInfo, IImportFormat, IProject } from "../../models/applicationState";
 import MockFactory from "../../common/mockFactory";
 import projectActions from "../../redux/actions/projectActions";
 

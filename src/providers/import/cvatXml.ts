@@ -1,13 +1,9 @@
-import { AssetState } from './../../models/applicationState';
+import { AssetState, IAsset } from './../../models/applicationState';
 import _ from "lodash";
 import { IFileInfo, IImportFormat, IProject, IProviderOptions } from "../../models/applicationState";
 import Guard from "../../common/guard";
-import { constants } from "../../common/constants";
-import HtmlFileReader from "../../common/htmlFileReader";
-import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
+import { ImportProvider } from "./importProvider";
 import { createNewAssetMetadata, fetchImageInfo, fetchTagInfo } from "./cvatXmlToAssetConverter";
-import { addRegions, createAssetMetadata } from "./projectImporter";
-import { AssetService } from "../../services/assetService";
 import IProjectActions from '../../redux/actions/projectActions';
 
 const XMLParser = require("react-xml-parser");
@@ -18,6 +14,10 @@ const XMLParser = require("react-xml-parser");
 export interface ICvatXmlImportProviderOptions extends IProviderOptions {
 }
 
+
+export function compareFileName(a: string, b: string):boolean {
+    return decodeURIComponent(a) === decodeURIComponent(b);
+}
 /**
  * @name - CVAT Xml Import Provider
  * @description - Imports annotations from a single XML file of CVAT
@@ -28,21 +28,19 @@ export class CvatXmlImportProvider extends ImportProvider {
         Guard.null(options);
     }
 
-    public async check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<AnnotationImportCheckResult> {
+    public async check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number> {
         Guard.null(project);
 
         if (!file) {
-            return AnnotationImportCheckResult.NotValid;
+            return -1;
         }
         const projectAssets = await actions.loadAssets(project);
         const xml = new XMLParser().parseFromString(file.content);
         const assetMetadata = fetchImageInfo(xml);
         return projectAssets.filter(asset =>
             assetMetadata.filter(afi =>
-                decodeURIComponent(asset.name) === decodeURIComponent(afi["name"])
-                ).length).length > 0 ?
-                AnnotationImportCheckResult.Valid :
-                AnnotationImportCheckResult.NoImageMatched;
+                compareFileName(asset.name, afi["name"])
+                ).length).length;
     }
 
     /**
@@ -50,11 +48,12 @@ export class CvatXmlImportProvider extends ImportProvider {
      */
     public async import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject> {
         Guard.null(project);
+        const projectAssets = await actions.loadAssets(project);
+        const importedAssetNames = new Set();
         const result = await this.check(project, file, actions);
-        if (result === AnnotationImportCheckResult.Valid) {
+        if (result > 0) {
             try {
                 const xml = new XMLParser().parseFromString(file.content);
-                const projectAssets = await actions.loadAssets(project);
                 const assetsToBeImported = createNewAssetMetadata(xml, projectAssets);
                 const originalAssets = await this.getAssetsForImport();
 
@@ -63,31 +62,31 @@ export class CvatXmlImportProvider extends ImportProvider {
                 tags.forEach(tag => project.tags.filter(t => t.name === tag.name).length === 0 &&
                     project.tags.push(tag));
 
-                console.log(assetsToBeImported);
                 assetsToBeImported.forEach(asset => {
                     let found = false;
-                    console.log(asset);
                     // investigate the original assets to integrate imported regions into
                     originalAssets.forEach(async originalAsset => {
-                        if (asset.asset.name === originalAsset.asset.name) {
-                            originalAsset = addRegions(originalAsset, asset.regions);
+                        if (!found && asset && asset.asset.name === originalAsset.asset.name) {
+                            originalAsset = this.addRegions(originalAsset, asset.regions);
+                            importedAssetNames.add(originalAsset.asset.name);
                             await actions.saveAssetMetadata(project, originalAsset);
                             found = true;
                         }
                     });
                     // there are cases of images without asset metadata (not stored as files)
-                    if (!found) {
+                    if (!found && asset) {
                         // in this case it should be still in the scope of the project
-                        const projectAssets = _.values(project.assets);
                         projectAssets.forEach(async assetInProject => {
                             if (assetInProject && assetInProject.name === asset.asset.name) {
                                 // in such case we will create a metadata with given regions
+                                importedAssetNames.add(asset.asset.name);
                                 const assetMetadata =
-                                    await createAssetMetadata(
+                                    await this.createAssetMetadata(
                                         assetInProject,
                                         AssetState.TaggedRectangle,
                                         asset.regions);
                                 await actions.saveAssetMetadata(project, assetMetadata);
+                                assetInProject.state = AssetState.TaggedRectangle;
                             }
                         });
                     }
@@ -95,8 +94,19 @@ export class CvatXmlImportProvider extends ImportProvider {
             } catch (e) {
                 throw new Error(e.message);
             }
+        } else {
+            return undefined;
         }
 
-        return project;
+        // update project asset's state if it has been updated
+        const updatedAssets = projectAssets.map(asset =>
+            Array.from(importedAssetNames.values()).filter
+                ((a: string) => compareFileName(a, asset.name)).length > 0 ?
+            {...asset, state: asset.state < AssetState.TaggedRectangle ?
+                AssetState.TaggedRectangle : asset.state }
+            : asset );
+        let assetsDict = {};
+        updatedAssets.forEach(asset => assetsDict[asset.id] = asset);
+        return {...project, assets: assetsDict};
     }
 }
