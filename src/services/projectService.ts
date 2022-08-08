@@ -182,7 +182,7 @@ export default class ProjectService implements IProjectService {
             .map((asset) => storageProvider.deleteFile(`${asset.name}--${
                 // we will use project ID for this case if the project name doesn't follow UUID v4
                 // which mostly for the case of local storage provider
-                project.name.match('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') ?
+                project.name.match("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$") ?
                     project.name : project.id}${constants.assetMetadataFileExtension}`));
 
         await Promise.all(deleteFiles).then(async () =>

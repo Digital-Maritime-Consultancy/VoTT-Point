@@ -36,7 +36,7 @@ import { KeyEventType } from "../react/components/common/keyboardManager/keyboar
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
 import { IActiveLearningPageProps } from "../react/components/pages/activeLearning/activeLearningPage";
 import { IRemoteStorageOptions } from "../providers/storage/remoteStorage";
-import { IImportProviderRegistrationOptions } from '../providers/import/importProviderFactory';
+import { IImportProviderRegistrationOptions } from "../providers/import/importProviderFactory";
 
 export default class MockFactory {
 

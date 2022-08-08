@@ -519,7 +519,7 @@ export const chinesetw: IAppStrings = {
             invalid: "Validation failed",
             valid: "Total number of importable assets: ",
             importFailed: "Import failed",
-            importSuccess: "Successfully imported",
+            importSuccess: "Successfully imported! Total imported assets: ",
         },
     },
     activeLearning: {

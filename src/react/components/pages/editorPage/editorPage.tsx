@@ -621,7 +621,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 toast.error(strings.dot2Rect.messages.errorConnection);
                 return;
             });
-            //toast.dismiss(toastId);
         }
     }
 
@@ -788,8 +787,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 approved: state === AssetState.Approved,
                 completed,
                 forEvaluation: this.props.project.taskType === TaskType.Evaluation,
-                taskId: this.props.project.name,
-            },
+            } as IAsset,
         } as IAssetMetadata);
     }
 

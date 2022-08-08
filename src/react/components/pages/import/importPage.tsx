@@ -97,10 +97,9 @@ export default class ImportPage extends React.Component<IImportPageProps> {
     }
 
     private onFormSubmit = async (file: IFileInfo) => {
-        const updatedProject = await this.props.actions.importAnnotation(this.props.project, file);
-        if (updatedProject) {
-            await this.props.actions.saveProject(updatedProject);
-            toast.success(strings.import.messages.importSuccess);
+        const result = await this.props.actions.importAnnotation(this.props.project, file);
+        if (result > 0) {
+            toast.success(strings.import.messages.importSuccess + result);
         } else {
             toast.error(strings.import.messages.importFailed);
         }

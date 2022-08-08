@@ -29,7 +29,7 @@ export default interface IProjectActions {
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
-    importAnnotation(project: IProject, file: IFileInfo): Promise<IProject>;
+    importAnnotation(project: IProject, file: IFileInfo): Promise<number>;
     checkAnnotation(project: IProject, file: IFileInfo): Promise<number>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
@@ -303,11 +303,13 @@ export function checkAnnotation(project: IProject, file: IFileInfo):
  * @param project - Project to integrate
  * @param source - File to be imported
  */
-export function importAnnotation(project: IProject, file: IFileInfo): (dispatch: Dispatch) => Promise<IProject> {
+export function importAnnotation(project: IProject, file: IFileInfo): (dispatch: Dispatch) => Promise<number> {
     return async (dispatch: Dispatch) => {
         if (!project.importFormat) {
             throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
         }
+
+        let result = -1;
 
         if (project.importFormat && project.importFormat.providerType) {
             const importProvider = ImportProviderFactory.create(
@@ -315,10 +317,10 @@ export function importAnnotation(project: IProject, file: IFileInfo): (dispatch:
                 project,
                 project.importFormat.providerOptions);
 
-            project = await importProvider.import(project, file, this);
+            result = await importProvider.import(project, file, this);
             dispatch(importAnnotationAction(project));
         }
-        return project;
+        return result;
     };
 }
 

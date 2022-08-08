@@ -46,7 +46,7 @@ export class CvatXmlImportProvider extends ImportProvider {
     /**
      * Import project to VoTT JSON format
      */
-    public async import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject> {
+    public async import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number> {
         Guard.null(project);
         const projectAssets = await actions.loadAssets(project);
         const importedAssetNames = new Set();
@@ -107,6 +107,6 @@ export class CvatXmlImportProvider extends ImportProvider {
             : asset );
         let assetsDict = {};
         updatedAssets.forEach(asset => assetsDict[asset.id] = asset);
-        return {...project, assets: assetsDict};
+        return updatedAssets.length;
     }
 }

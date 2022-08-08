@@ -1,4 +1,4 @@
-import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
+import { ImportProvider } from "./importProvider";
 import { IProject, AssetState, IAsset, IImportFormat, IFileInfo } from "../../models/applicationState";
 import { ImportProviderFactory } from "./importProviderFactory";
 import MockFactory from "../../common/mockFactory";
@@ -43,10 +43,10 @@ describe("Import Provider Base", () => {
 });
 
 class TestImportProvider extends ImportProvider {
-    public import(project: IProject, file: IFileInfo, actions: projectActions): Promise<IProject> {
+    public import(project: IProject, file: IFileInfo, actions: projectActions): Promise<number> {
         throw new Error("Method not implemented.");
     }
-    public check(project: IProject, file: IFileInfo): Promise<AnnotationImportCheckResult> {
+    public check(project: IProject, file: IFileInfo): Promise<number> {
         throw new Error("Method not implemented.");
     }
 

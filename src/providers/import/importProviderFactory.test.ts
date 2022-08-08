@@ -1,5 +1,5 @@
 import { ImportProviderFactory } from "./importProviderFactory";
-import { AnnotationImportCheckResult, ImportProvider } from "./importProvider";
+import { ImportProvider } from "./importProvider";
 import { IFileInfo, IImportFormat, IProject } from "../../models/applicationState";
 import MockFactory from "../../common/mockFactory";
 import projectActions from "../../redux/actions/projectActions";
@@ -63,12 +63,11 @@ describe("Import Provider Factory", () => {
 });
 
 class TestImportProvider extends ImportProvider {
-    public import(project: IProject, file: IFileInfo, actions: projectActions): Promise<IProject> {
+    public import(project: IProject, file: IFileInfo, actions: projectActions): Promise<number> {
         throw new Error("Method not implemented.");
     }
-    public check(project: IProject, file: IFileInfo): Promise<AnnotationImportCheckResult> {
+    public check(project: IProject, file: IFileInfo): Promise<number> {
         throw new Error("Method not implemented.");
     }
     public project: IProject;
-
 }

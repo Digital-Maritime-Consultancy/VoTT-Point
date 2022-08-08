@@ -30,7 +30,7 @@
             "title": "${strings.projectSettings.taskStatus.title}",
             "description": "${strings.projectSettings.taskStatus.description}",
             "type": "string",
-            "default": "New"
+            "default": "In_progress"
         },
         "tags": {
             "title": "${strings.tags.title}",

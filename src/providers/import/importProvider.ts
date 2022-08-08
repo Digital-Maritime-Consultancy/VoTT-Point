@@ -35,7 +35,7 @@ export interface IImportProvider {
     /**
      * Imports the configured project for specified import configuration
      */
-    import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject>;
+    import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number>;
     /**
      * Pre-check import outcome
      */
@@ -57,7 +57,7 @@ export abstract class ImportProvider implements IImportProvider {
         this.assetService = new AssetService(this.project);
     }
 
-    public abstract import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<IProject>;
+    public abstract import(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number>;
 
     public abstract check(project: IProject, file: IFileInfo, actions: IProjectActions): Promise<number>;
 
