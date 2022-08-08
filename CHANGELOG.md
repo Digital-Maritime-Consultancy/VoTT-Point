@@ -11,6 +11,6 @@
 
 - feat: CVAT XML format can be imported into the existing project containing corresponding images (should be identical names)
 
-# [0.2.1.1] CVAT XML import (08-08-2022)
+# [0.2.1.1] copy/cut/paste regions (08-08-2022)
 
 - Bring toolbar actions back (copy, cut and paste regions)
