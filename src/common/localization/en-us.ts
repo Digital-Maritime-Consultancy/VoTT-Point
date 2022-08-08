@@ -128,18 +128,18 @@ export const english: IAppStrings = {
         taggedAssets: "Tagged Assets (${count})",
         nonTaggedAssets: "Not Tagged Assets (${count})",
         nonVisitedAssets: "Not Visited Assets (${count})",
-        tagsSectionTitle: "Tags & Labels",
+        tagsSectionTitle: "Classes & Labels",
         totalRegionCount: "Total Tagged Regions",
-        totalTagCount: "Total Tags",
-        avgTagCountPerAsset: "Average tags per asset",
+        totalTagCount: "Total classes",
+        avgTagCountPerAsset: "Average classes per asset",
     },
     tags: {
-        title: "Tags",
-        placeholder: "Add new tag",
-        editor: "Tags Editor",
+        title: "Class",
+        placeholder: "Add new class",
+        editor: "Class Editor",
         modal: {
-            name: "Tag Name",
-            color: "Tag Color",
+            name: "Class Name",
+            color: "Class Color",
         },
         colors: {
             white: "White",
@@ -158,18 +158,18 @@ export const english: IAppStrings = {
             purple: "Purple",
         },
         warnings: {
-            existingName: "Tag name already exists. Choose another name",
-            emptyName: "Cannot have an empty tag name",
+            existingName: "Class name already exists. Choose another name",
+            emptyName: "Cannot have an empty class name",
             unknownTagName: "Unknown",
         },
         toolbar: {
-            add: "Add new tag",
-            search: "Search tags",
-            edit: "Edit tag",
-            lock: "Lock tag",
-            moveUp: "Move tag up",
-            moveDown: "Move tag down",
-            delete: "Delete tag",
+            add: "Add new class",
+            search: "Search class",
+            edit: "Edit class",
+            lock: "Lock class",
+            moveUp: "Move class up",
+            moveDown: "Move class down",
+            delete: "Delete class",
         },
     },
     connections: {
@@ -340,17 +340,17 @@ export const english: IAppStrings = {
         assetError: "Unable to load asset",
         tags: {
             hotKey: {
-                apply: "Apply Tag with Hot Key",
-                lock: "Lock Tag with Hot Key",
+                apply: "Apply Class with Hot Key",
+                lock: "Lock Class with Hot Key",
             },
             rename: {
-                title: "Rename Tag",
-                confirmation: "Are you sure you want to rename this tag? It will be renamed throughout all assets",
+                title: "Rename Class",
+                confirmation: "Are you sure you want to rename this class? It will be renamed throughout all assets",
             },
             delete: {
-                title: "Delete Tag",
-                confirmation: "Are you sure you want to delete this tag? It will be deleted throughout all assets \
-                and any regions where this is the only tag will also be deleted",
+                title: "Delete Class",
+                confirmation: "Are you sure you want to delete this class? It will be deleted throughout all assets \
+                and any regions where this is the only class will also be deleted",
             },
         },
         canvas: {
@@ -532,8 +532,8 @@ export const english: IAppStrings = {
                     description: "Load your model from a public web URL",
                 },
                 predictTag: {
-                    title: "Predict Tag",
-                    description: "Whether or not to automatically include tags in predictions",
+                    title: "Predict class",
+                    description: "Whether or not to automatically include classes in predictions",
                 },
             },
         },

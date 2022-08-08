@@ -216,15 +216,19 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             return;
         }
         let transformer: (tags: string[], tag: string) => string[];
-        if (lockedTagsEmpty) {
-            // Tag selected while region(s) selected
-            transformer = CanvasHelpers.toggleTag;
-        } else if (lockedTags.find((t) => t === tag)) {
-            // Tag added to locked tags while region(s) selected
-            transformer = CanvasHelpers.addIfMissing;
+        if (process.env.REACT_APP_SINGLE_TAG_CONSTRAINT) {
+            transformer = CanvasHelpers.toggleSingleTag;
         } else {
-            // Tag removed from locked tags while region(s) selected
-            transformer = CanvasHelpers.removeIfContained;
+            if (lockedTagsEmpty) {
+                // Tag selected while region(s) selected
+                transformer = CanvasHelpers.toggleTag;
+            } else if (lockedTags.find((t) => t === tag)) {
+                // Tag added to locked tags while region(s) selected
+                transformer = CanvasHelpers.addIfMissing;
+            } else {
+                // Tag removed from locked tags while region(s) selected
+                transformer = CanvasHelpers.removeIfContained;
+            }
         }
         for (const selectedRegion of selectedRegions) {
             selectedRegion.tags = transformer(selectedRegion.tags, tag);
