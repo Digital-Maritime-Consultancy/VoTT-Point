@@ -14,6 +14,8 @@ import { strings } from "./common/strings";
 import { HostProcessType } from "./common/hostProcess";
 import { AzureCustomVisionProvider } from "./providers/export/azureCustomVision";
 import { CntkExportProvider } from "./providers/export/cntk";
+import { ImportProviderFactory } from "./providers/import/importProviderFactory";
+import { CvatXmlImportProvider } from "./providers/import/cvatXml";
 
 /**
  * Registers storage, asset and export providers, as well as all toolbar items
@@ -75,6 +77,13 @@ export default function registerProviders() {
         name: "csv",
         displayName: strings.export.providers.csv.displayName,
         factory: (project, options) => new CsvExportProvider(project, options),
+    });
+
+    // Import Providers
+    ImportProviderFactory.register({
+        name: "cvatXml",
+        displayName: strings.import.providers.cvatXml.displayName,
+        factory: (project, options) => new CvatXmlImportProvider(project, options),
     });
 
     registerToolbar();

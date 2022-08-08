@@ -109,9 +109,18 @@ export const chinese: IAppStrings = {
             description: "提取帧以进行标记的速率", // The rate at which frames are extracted for tagging.
             frameExtractionRate: "帧提取率（每视频每秒的帧数）", // Frame Extraction Rate (frames per a video second)
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "添加连接", // Add Connection
         messages: {
             saveSuccess: "成功保存${project.name}项目设置", // Successfully saved ${project.name} project settings
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -478,6 +487,36 @@ export const chinese: IAppStrings = {
             saveSuccess: "成功保存导出设置", // Successfully saved export settings
         },
     },
+    import: {
+        title: "Import",
+        description: "Import Settings",
+        execute: "Import to current project",
+        check: "Check",
+        providers: {
+            common: {
+                properties: {
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT XML file selector",
+                xmlFilePicker: {
+                    title: "CVAT XML",
+                    description: "Please select a XML file",
+                },
+            },
+        },
+        messages: {
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Total number of importable assets: ",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported! Total imported assets: ",
+        },
+    },
     activeLearning: {
         title: "主动学习", // Active Learning
         form: {
@@ -590,6 +629,10 @@ export const chinese: IAppStrings = {
             title: "导出项目时出错", // Error exporting project
             message: "项目缺少导出格式。请在导出设置页面中选择一种导出格式。",
             // Project is missing export format.  Please select an export format in the export setting page.
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "主动学习错误", // Active Learning Error

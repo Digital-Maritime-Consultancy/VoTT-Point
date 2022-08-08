@@ -49,6 +49,7 @@ export enum ErrorCode {
     ProjectLoadError = "projectLoadError",
     SecurityTokenNotFound = "securityTokenNotFound",
     ExportFormatNotFound = "exportFormatNotFound",
+    ImportFormatNotFound = "importFormatNotFound",
     PasteRegionTooBig = "pasteRegionTooBig",
     OverloadedKeyBinding = "overloadedKeyBinding",
     ActiveLearningPredictionError = "activeLearningPredictionError",
@@ -101,6 +102,7 @@ export interface IAppSettings {
  * @member sourceConnection - Full source connection details
  * @member targetConnection - Full target connection details
  * @member exportFormat - Full export format definition
+ * @member importFormat - Full import format definition
  * @member assets - Map of assets within a project
  * @member autoSave - Whether or not the project will automatically save updates to the underlying target
  */
@@ -117,6 +119,7 @@ export interface IProject {
     sourceConnection: IConnection;
     targetConnection: IConnection;
     exportFormat: IExportFormat;
+    importFormat: IImportFormat;
     videoSettings: IProjectVideoSettings;
     activeLearningSettings: IActiveLearningSettings;
     dotToRectSettings: IDot2RectSettings;
@@ -196,6 +199,27 @@ export interface IExportProviderOptions extends IProviderOptions {
 export interface IExportFormat {
     providerType: string;
     providerOptions: IExportProviderOptions | ISecureString;
+}
+
+/**
+ * @name - Import Provider Options
+ * @description - options defining the type of asset to import
+ * @member assetState - import asset with the following state
+ */
+export interface IImportProviderOptions extends IProviderOptions {
+}
+
+/**
+ * @name - Import Format
+ * @description - Defines the settings for how project data is imported into commonly used format
+ * @member id - Unique identifier for import format
+ * @member name - Name of import format
+ * @member providerType - The import format type (CVAT)
+ * @member providerOptions - The provider specific option required to import data
+ */
+export interface IImportFormat {
+    providerType: string;
+    providerOptions: IImportProviderOptions;
 }
 
 /**

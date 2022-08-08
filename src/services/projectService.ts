@@ -1,4 +1,4 @@
-import { IConnection, StorageType } from './../models/applicationState';
+import { IConnection, StorageType, IImportFormat } from './../models/applicationState';
 import _ from "lodash";
 import shortid from "shortid";
 import { StorageProviderFactory } from "../providers/storage/storageProviderFactory";
@@ -40,6 +40,12 @@ const defaultExportOptions: IExportFormat = {
     },
 };
 
+const defaultImportOptions: IImportFormat = {
+    providerType: "cvatXml",
+    providerOptions: {
+    },
+};
+
 /**
  * @name - Project Service
  * @description - Functions for dealing with projects
@@ -76,6 +82,11 @@ export default class ProjectService implements IProjectService {
             // Initialize export settings if they don't exist
             if (!loadedProject.exportFormat) {
                 loadedProject.exportFormat = defaultExportOptions;
+            }
+
+            // Initialize import settings if they don't exist
+            if (!loadedProject.importFormat) {
+                loadedProject.importFormat = defaultImportOptions;
             }
 
             this.ensureBackwardsCompatibility(loadedProject);
@@ -129,6 +140,11 @@ export default class ProjectService implements IProjectService {
             project.exportFormat = defaultExportOptions;
         }
 
+        // Initialize import settings if they don't exist
+        if (!project.importFormat) {
+            project.importFormat = defaultImportOptions;
+        }
+
         if (!project.version) {
             project.version = packageJson.version;
         } else {
@@ -163,7 +179,11 @@ export default class ProjectService implements IProjectService {
 
         // Delete all asset metadata files created for project
         const deleteFiles = _.values(project.assets)
-            .map((asset) => storageProvider.deleteFile(`${asset.name}--${project.name}${constants.assetMetadataFileExtension}`));
+            .map((asset) => storageProvider.deleteFile(`${asset.name}--${
+                // we will use project ID for this case if the project name doesn't follow UUID v4
+                // which mostly for the case of local storage provider
+                project.name.match("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$") ?
+                    project.name : project.id}${constants.assetMetadataFileExtension}`));
 
         await Promise.all(deleteFiles).then(async () =>
             await storageProvider.deleteFile(`${project.name}${constants.projectFileExtension}`)

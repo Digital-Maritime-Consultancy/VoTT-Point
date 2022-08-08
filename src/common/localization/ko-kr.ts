@@ -109,9 +109,18 @@ export const korean: IAppStrings = {
             description: "태그 지정을 위해 프레임을 추출하는 비율",  // The rate at which frames are extracted for tagging
             frameExtractionRate: "프레임 추출 속도 (비디오 초당 프레임)",  // Frame Extraction Rate (frames per a video second)
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "연결 추가", // Add Connection,
         messages: {
             saveSuccess: "${project.name} 프로젝트 설정을 성공적으로 저장했습니다", // Successfully saved ${project.name} project settings
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -478,6 +487,36 @@ export const korean: IAppStrings = {
             saveSuccess: "내보내기 설정이 성공적으로 저장되었습니다", // Successfully saved export settings"
         },
     },
+    import: {
+        title: "Import",
+        description: "Import Settings",
+        execute: "Import to current project",
+        check: "Check",
+        providers: {
+            common: {
+                properties: {
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT XML file selector",
+                xmlFilePicker: {
+                    title: "CVAT XML",
+                    description: "Please select a XML file",
+                },
+            },
+        },
+        messages: {
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Total number of importable assets: ",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported! Total imported assets: ",
+        },
+    },
     activeLearning: {
         title: "Active Learning",  // Active Learning,
         form: {
@@ -591,6 +630,10 @@ export const korean: IAppStrings = {
             title: "프로젝트 내보내기 오류",  // Error exporting project,
             message: "프로젝트에 내보내기 형식이 없습니다. 내보내기 설정 페이지에서 내보내기 형식을 선택하십시오.",
             // Project is missing export format. Please select an export format in the export setting page."
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "Active Learning 오류",  // Active Learning Error,

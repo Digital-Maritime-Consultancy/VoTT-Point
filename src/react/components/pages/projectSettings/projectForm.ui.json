@@ -16,5 +16,11 @@
     },
     "tags": {
         "ui:field": "tagsInput"
+    },
+    "taskType": {
+        "ui:widget": "taskTypePicker"
+    },
+    "taskStatus": {
+        "ui:widget": "taskStatusPicker"
     }
 }

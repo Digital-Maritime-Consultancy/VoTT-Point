@@ -107,9 +107,18 @@ export const spanish: IAppStrings = {
             description: "La velocidad a la que se extraen los marcos para el etiquetado.",
             frameExtractionRate: "Tasa de extracción de cuadros (cuadros por segundo de video)",
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "Agregar Conexión",
         messages: {
             saveSuccess: "Guardado correctamente ${project.name} configuración del proyecto",
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -470,6 +479,36 @@ export const spanish: IAppStrings = {
             saveSuccess: "Configuración de exportación guardada correctamente",
         },
     },
+    import: {
+        title: "Import",
+        description: "Import Settings",
+        execute: "Import to current project",
+        check: "Check",
+        providers: {
+            common: {
+                properties: {
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT XML file selector",
+                xmlFilePicker: {
+                    title: "CVAT XML",
+                    description: "Please select a XML file",
+                },
+            },
+        },
+        messages: {
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Total number of importable assets: ",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported! Total imported assets: ",
+        },
+    },
     activeLearning: {
         title: "Aprendizaje Activo",
         form: {
@@ -576,6 +615,10 @@ export const spanish: IAppStrings = {
             title: "Error exportando proyecto",
             message: `Proyecto falta el formato de exportación. Seleccione un formato de exportación en la página
             de configuración de exportación.`,
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "Error de aprendizaje",

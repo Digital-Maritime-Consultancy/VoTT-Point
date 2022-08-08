@@ -1,6 +1,6 @@
 {
     "name": "vott-dot",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "author": {
         "name": "Digital Maritime Consultancy",
         "url": "https://github.com/Digital-Maritime-Consultancy/VoTT-dot"
@@ -51,6 +51,8 @@
         "react-toastify": "^4.5.2",
         "react-virtualized": "^9.21.0",
         "react-vis": "^1.11.6",
+        "react-xml-parser": "^1.1.8",
+        "react-xml-viewer": "^1.3.0",
         "reactstrap": "^6.5.0",
         "redux": "^4.0.1",
         "redux-thunk": "^2.3.0",

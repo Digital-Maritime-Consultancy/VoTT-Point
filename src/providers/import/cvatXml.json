@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "title": "${strings.import.providers.cvatXml.displayName}",
+    "properties": {
+        "xmlFilePicker": {
+            "title": "${strings.import.providers.cvatXml.xmlFilePicker.title}",
+            "description": "${strings.import.providers.cvatXml.xmlFilePicker.description}",
+            "type": "string"
+        }
+    }
+}
