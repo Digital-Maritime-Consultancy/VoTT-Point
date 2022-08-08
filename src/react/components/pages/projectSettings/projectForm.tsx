@@ -13,7 +13,7 @@ import Checkbox from "rc-checkbox";
 import { IConnectionProviderPickerProps } from "../../common/connectionProviderPicker/connectionProviderPicker";
 import LocalFolderPicker from "../../common/localFolderPicker/localFolderPicker";
 import TaskTypePicker from "../../common/taskTypePicker/taskTypePicker";
-import TaskStatusPicker from "../../common/taskStatusPicker/taskTypePicker";
+import TaskStatusPicker from "../../common/taskStatusPicker/taskStatusPicker";
 
 // tslint:disable-next-line:no-var-requires
 const formSchema = addLocValues(require("./projectForm.json"));
