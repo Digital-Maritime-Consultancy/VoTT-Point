@@ -581,6 +581,18 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.updateAssetMetadataState(AssetState.Approved,
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
+            case ToolbarItemName.CopyRegions:
+                this.canvas.current.copyRegions();
+                break;
+            case ToolbarItemName.CutRegions:
+                this.canvas.current.cutRegions();
+                break;
+            case ToolbarItemName.PasteRegions:
+                this.canvas.current.pasteRegions();
+                break;
+            case ToolbarItemName.RemoveAllRegions:
+                this.canvas.current.confirmRemoveAllRegions();
+                break;
         }
     }
 
