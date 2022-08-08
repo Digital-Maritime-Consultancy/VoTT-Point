@@ -112,9 +112,18 @@ export interface IAppStrings {
             description: string;
             frameExtractionRate: string;
         },
+        taskType: {
+            title: string;
+            description: string;
+        },
+        taskStatus: {
+            title: string;
+            description: string;
+        },
         addConnection: string,
         messages: {
             saveSuccess: string;
+            emptyTaskId: string;
         },
     };
     projectMetrics: {
@@ -468,6 +477,36 @@ export interface IAppStrings {
             saveSuccess: string;
         },
     };
+    import: {
+        title: string;
+        description: string;
+        execute: string;
+        check: string;
+        providers: {
+            common: {
+                properties: {
+                    includeImages: {
+                        title: string,
+                        description: string,
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: string,
+                xmlFilePicker: {
+                    title: string,
+                    description: string,
+                },
+            },
+        },
+        messages: {
+            noImageMatched: string;
+            invalid: string;
+            valid: string;
+            importFailed: string;
+            importSuccess: string;
+        },
+    };
     activeLearning: {
         title: string;
         form: {
@@ -535,6 +574,7 @@ export interface IAppStrings {
         importError: IErrorMetadata,
         pasteRegionTooBigError: IErrorMetadata,
         exportFormatNotFound: IErrorMetadata,
+        importFormatNotFound: IErrorMetadata,
         activeLearningPredictionError: IErrorMetadata,
     };
 }

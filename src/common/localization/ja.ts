@@ -109,9 +109,18 @@ export const japanese: IAppStrings = {
             description: "タグ付けにおけるフレームの抽出割合",  // The rate at which frames are extracted for tagging.,
             frameExtractionRate: "フレーム抽出率（ビデオ 1 秒あたりのフレーム数）",  // Frame Extraction Rate (frames per a video second)"
         },
+        taskType: {
+            title: "Task type",
+            description: "given task type from Stella",
+        },
+        taskStatus: {
+            title: "Task status",
+            description: "given task status from Stella",
+        },
         addConnection: "接続を追加", // Add Connection,
         messages: {
             saveSuccess: "${project.name} プロジェクト設定を正常に保存しました", // Successfully saved ${project.name} project settings"
+            emptyTaskId: "Task ID must be given for the target connection",
         },
     },
     projectMetrics: {
@@ -479,6 +488,36 @@ export const japanese: IAppStrings = {
             saveSuccess: "エクスポート設定を保存しました", // Successfully saved export settings"
         },
     },
+    import: {
+        title: "Import",
+        description: "Import Settings",
+        execute: "Import to current project",
+        check: "Check",
+        providers: {
+            common: {
+                properties: {
+                    includeImages: {
+                        title: "Include Images",
+                        description: "Whether or not to include binary image assets in target connection",
+                    },
+                },
+            },
+            cvatXml: {
+                displayName: "CVAT XML file selector",
+                xmlFilePicker: {
+                    title: "CVAT XML",
+                    description: "Please select a XML file",
+                },
+            },
+        },
+        messages: {
+            noImageMatched: "No image name matched",
+            invalid: "Validation failed",
+            valid: "Total number of importable assets: ",
+            importFailed: "Import failed",
+            importSuccess: "Successfully imported! Total imported assets: ",
+        },
+    },
     activeLearning: {
         title: "アクティブ ラーニング",  // Active Learning,
         form: {
@@ -592,6 +631,10 @@ export const japanese: IAppStrings = {
             title: "プロジェクトのエクスポート エラー",  // Error exporting project,
             message: "プロジェクトにエクスポート形式がありません。",
             // Project is missing export format. Please select an export format in the export setting page."
+        },
+        importFormatNotFound: {
+            title: "Error importing other annotation format",
+            message: "Project is missing import format.  Please select an import format in the import setting page.",
         },
         activeLearningPredictionError: {
             title: "アクティブ ラーニングのエラー",  // Active Learning Error,

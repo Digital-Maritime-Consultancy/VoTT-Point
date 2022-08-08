@@ -10,6 +10,7 @@ import IApplicationActions, * as applicationActions from "../../../../redux/acti
 import { toast } from "react-toastify";
 import "./projectSettingsPage.scss";
 import ProjectMetrics from "./projectMetrics";
+import { IRemoteStorageOptions } from "../../../../providers/storage/remoteStorage";
 
 /**
  * Properties for Project Settings Page
@@ -133,6 +134,12 @@ export default class ProjectSettingsPage extends React.Component<IProjectSetting
             await this.props.applicationActions.ensureSecurityToken(project);
         }
 
+        if (project.targetConnection.providerType === 'remoteStorage' &&
+            !(project.targetConnection.providerOptions as IRemoteStorageOptions).taskId ){
+                toast.error(strings.projectSettings.messages.emptyTaskId);
+                return;
+        }
+
         await this.props.projectActions.saveProject(project);
         localStorage.removeItem(projectFormKey);
 
@@ -161,6 +168,7 @@ export default class ProjectSettingsPage extends React.Component<IProjectSetting
                 || (project.sourceConnection && Object.keys(project.sourceConnection).length > 0)
                 || (project.targetConnection && Object.keys(project.targetConnection).length > 0)
                 || (project.exportFormat && Object.keys(project.exportFormat).length > 0)
+                || (project.importFormat && Object.keys(project.importFormat).length > 0)
                 || (project.tags && project.tags.length > 0)
             );
     }

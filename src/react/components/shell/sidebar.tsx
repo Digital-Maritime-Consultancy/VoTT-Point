@@ -48,6 +48,13 @@ export default function Sidebar({ project }) {
                 </li>
                 <li>
                     <ConditionalNavLink disabled={!projectId}
+                        title={strings.import.title}
+                        to={`/projects/${projectId}/import`}>
+                        <i className="fas fa-file-import"></i>
+                    </ConditionalNavLink>
+                </li>
+                <li>
+                    <ConditionalNavLink disabled={!projectId}
                         title={strings.dot2Rect.title}
                         to={`/projects/${projectId}/dot2Rect`}>
                         <i className="fas fa-server"></i>

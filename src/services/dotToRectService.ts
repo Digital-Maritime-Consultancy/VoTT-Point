@@ -1,11 +1,7 @@
-import { IAssetMetadata, ModelPathType, IActiveLearningSettings, AssetState } from "../models/applicationState";
-import { ObjectDetection } from "../providers/activeLearning/objectDetection";
+import { IAssetMetadata, AssetState } from "../models/applicationState";
 import Guard from "../common/guard";
-import { isElectron } from "../common/hostProcess";
-import { Env } from "../common/environment";
 
 import axios from 'axios';
-import { reject } from "lodash";
 
 export class DotToRectService {
     private connected: boolean = false;

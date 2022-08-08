@@ -1,3 +1,5 @@
+import { IFileInfo, IImportFormat } from './../../models/applicationState';
+import { ImportProviderFactory } from './../../providers/import/importProviderFactory';
 import { Action, Dispatch } from "redux";
 import ProjectService from "../../services/projectService";
 import { ActionTypes } from "./actionTypes";
@@ -16,7 +18,6 @@ import { createAction, createPayloadAction, IPayloadAction } from "./actionCreat
 import { IExportResults } from "../../providers/export/exportProvider";
 import { appInfo } from "../../common/appInfo";
 import { strings } from "../../common/strings";
-import { IStorageProviderRegistrationOptions } from "../../providers/storage/storageProviderFactory";
 
 /**
  * Actions to be performed in relation to projects
@@ -28,6 +29,8 @@ export default interface IProjectActions {
     deleteProject(project: IProject): Promise<void>;
     closeProject(): void;
     exportProject(project: IProject): Promise<void> | Promise<IExportResults>;
+    importAnnotation(project: IProject, file: IFileInfo): Promise<number>;
+    checkAnnotation(project: IProject, file: IFileInfo): Promise<number>;
     loadAssets(project: IProject): Promise<IAsset[]>;
     loadAssetMetadata(project: IProject, asset: IAsset): Promise<IAssetMetadata>;
     saveAssetMetadata(project: IProject, assetMetadata: IAssetMetadata): Promise<IAssetMetadata>;
@@ -275,6 +278,52 @@ export function exportProject(project: IProject): (dispatch: Dispatch) => Promis
     };
 }
 
+export function checkAnnotation(project: IProject, file: IFileInfo):
+    (dispatch: Dispatch) => Promise<number> {
+    return async (dispatch: Dispatch) => {
+        if (!project.importFormat) {
+            throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
+        }
+
+        if (project.importFormat && project.importFormat.providerType) {
+            const importProvider = ImportProviderFactory.create(
+                project.importFormat.providerType,
+                project,
+                project.importFormat.providerOptions);
+            const result = await importProvider.check(project, file, this);
+            dispatch(checkAnnotationAction(project));
+            return result;
+        }
+        return -1;
+    };
+}
+
+/**
+ * Initialize import provider, get import data and dispatch import annotation action
+ * @param project - Project to integrate
+ * @param source - File to be imported
+ */
+export function importAnnotation(project: IProject, file: IFileInfo): (dispatch: Dispatch) => Promise<number> {
+    return async (dispatch: Dispatch) => {
+        if (!project.importFormat) {
+            throw new AppError(ErrorCode.ImportFormatNotFound, strings.errors.importFormatNotFound.message);
+        }
+
+        let result = -1;
+
+        if (project.importFormat && project.importFormat.providerType) {
+            const importProvider = ImportProviderFactory.create(
+                project.importFormat.providerType,
+                project,
+                project.importFormat.providerOptions);
+
+            result = await importProvider.import(project, file, this);
+            dispatch(importAnnotationAction(project));
+        }
+        return result;
+    };
+}
+
 /**
  * Load project action type
  */
@@ -332,6 +381,20 @@ export interface IExportProjectAction extends IPayloadAction<string, IProject> {
 }
 
 /**
+ * Import annotation action type
+ */
+export interface IImportAnnotationAction extends IPayloadAction<string, IProject> {
+    type: ActionTypes.IMPORT_ANNOTATION_SUCCESS;
+}
+
+/**
+ * Check annotation action type
+ */
+export interface ICheckAnnotationAction extends IPayloadAction<string, IProject> {
+    type: ActionTypes.CHECK_ANNOTATION_SUCCESS;
+}
+
+/**
  * Update Project Tag action type
  */
 export interface IUpdateProjectTagAction extends IPayloadAction<string, IProject> {
@@ -381,6 +444,16 @@ export const saveAssetMetadataAction =
  */
 export const exportProjectAction =
     createPayloadAction<IExportProjectAction>(ActionTypes.EXPORT_PROJECT_SUCCESS);
+/**
+ * Instance of Import Annotation action
+ */
+export const importAnnotationAction =
+    createPayloadAction<IImportAnnotationAction>(ActionTypes.IMPORT_ANNOTATION_SUCCESS);
+/**
+ * Instance of Import Annotation action
+ */
+export const checkAnnotationAction =
+    createPayloadAction<ICheckAnnotationAction>(ActionTypes.CHECK_ANNOTATION_SUCCESS);
 /**
  * Instance of Update project tag action
  */

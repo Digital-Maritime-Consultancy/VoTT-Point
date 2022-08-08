@@ -3,6 +3,7 @@ import { IAsset, AssetType, StorageType } from "../../models/applicationState";
 import { AssetService } from "../../services/assetService";
 import axios from "axios";
 import connectionJson from "../../assets/defaultConnection.json";
+import Guard from "../../common/guard";
 
 const shortid = require('shortid');
 
@@ -77,6 +78,8 @@ export class RemoteStorage implements IStorageProvider {
      * @param content - Content to write to blob (string or Buffer)
      */
     public async writeText(blobName: string, content: string | Buffer) {
+        Guard.empty(this.getUrl());
+
         try {
             const config = { headers: {'Content-Type': 'application/json'} };
             const apiUrl = `${this.getUrl()}/${blobName}`;
@@ -105,11 +108,13 @@ export class RemoteStorage implements IStorageProvider {
      * @param blobName - Name of blob in container
      */
     public async deleteFile(blobName: string): Promise<void> {
+        Guard.null(blobName);
+        Guard.empty(this.getUrl());
+
         try {
             const apiUrl = `${this.getUrl()}/${blobName}`;
             await axios.delete(apiUrl).catch(() => null);
         } catch (e) {
-            console.log(e);
             if (e.statusCode === 404) {
                 alert("Data not found");
                 return;
@@ -203,6 +208,7 @@ export class RemoteStorage implements IStorageProvider {
      * Retrieves assets from Bing Image Search based on options provided
      */
      public async getAssets(): Promise<IAsset[]> {
+        Guard.null(this.options.taskId);
 
         const apiUrl = `${this.options.taskServerUrl}?uuid=${this.options.taskId}`;
 
