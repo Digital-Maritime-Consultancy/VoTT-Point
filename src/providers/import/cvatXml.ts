@@ -1,4 +1,4 @@
-import { AssetState, IAsset } from './../../models/applicationState';
+import { AssetState, IAsset, ITag } from './../../models/applicationState';
 import _ from "lodash";
 import { IFileInfo, IImportFormat, IProject, IProviderOptions } from "../../models/applicationState";
 import Guard from "../../common/guard";
@@ -51,6 +51,7 @@ export class CvatXmlImportProvider extends ImportProvider {
         const projectAssets = await actions.loadAssets(project);
         const importedAssetNames = new Set();
         const result = await this.check(project, file, actions);
+        let fetchedTags: ITag[] = [];
         if (result > 0) {
             try {
                 const xml = new XMLParser().parseFromString(file.content);
@@ -58,9 +59,7 @@ export class CvatXmlImportProvider extends ImportProvider {
                 const originalAssets = await this.getAssetsForImport();
 
                 // insert tags to project
-                const tags = fetchTagInfo(xml);
-                tags.forEach(tag => project.tags.filter(t => t.name === tag.name).length === 0 &&
-                    project.tags.push(tag));
+                fetchedTags = fetchTagInfo(xml);
 
                 assetsToBeImported.forEach(asset => {
                     let found = false;
@@ -107,6 +106,8 @@ export class CvatXmlImportProvider extends ImportProvider {
             : asset );
         let assetsDict = {};
         updatedAssets.forEach(asset => assetsDict[asset.id] = asset);
-        return updatedAssets.length;
+        const tags = [...project.tags, ...fetchedTags.filter(t => project.tags.filter(pt => pt.name === t.name).length === 0)];
+        await actions.saveProject({...project, assets: assetsDict, tags });
+        return importedAssetNames.size;
     }
 }
