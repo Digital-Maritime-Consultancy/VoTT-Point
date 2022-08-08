@@ -11,6 +11,10 @@ export enum ToolbarItemName {
     DrawPolygon = "drawPolygon",
     DrawPoint = "drawPoint",
     SubmitPoints = "submitPoints",
+    CopyRegions = "copyRegions",
+    CutRegions = "cutRegions",
+    PasteRegions = "pasteRegions",
+    RemoveAllRegions = "removeAllRegions",
     PreviousAsset = "previousAsset",
     NextAsset = "nextAsset",
     Complete = "completeRevision",
@@ -89,6 +93,46 @@ export default function registerToolbar() {
         type: ToolbarItemType.State,
         accelerators: ["D", "d"],
         context: [EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.CopyRegions,
+        tooltip: strings.editorPage.toolbar.copy,
+        icon: "fa-copy",
+        group: ToolbarItemGroup.Regions,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+C", "CmdOrCtrl+c"],
+        context: [EditingContext.EditDot, EditingContext.EditRect, EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.CutRegions,
+        tooltip: strings.editorPage.toolbar.cut,
+        icon: "fa-cut",
+        group: ToolbarItemGroup.Regions,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+X", "CmdOrCtrl+x"],
+        context: [EditingContext.EditDot, EditingContext.EditRect, EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.PasteRegions,
+        tooltip: strings.editorPage.toolbar.paste,
+        icon: "fa-paste",
+        group: ToolbarItemGroup.Regions,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+V", "CmdOrCtrl+v"],
+        context: [EditingContext.EditDot, EditingContext.EditRect, EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.RemoveAllRegions,
+        tooltip: strings.editorPage.toolbar.removeAllRegions,
+        icon: "fa-ban",
+        group: ToolbarItemGroup.Regions,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+Delete", "CmdOrCtrl+Backspace"],
+        context: [EditingContext.EditDot, EditingContext.EditRect],
     });
 
     ToolbarItemFactory.register({
