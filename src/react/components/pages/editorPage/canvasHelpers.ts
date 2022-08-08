@@ -16,6 +16,15 @@ export default class CanvasHelpers {
     public static pasteMargin = 10;
 
     /**
+     * Replace a tag to array
+     * @param tags Array of tags
+     * @param tag Tag to toggle
+     */
+     public static toggleSingleTag(tags: string[], tag: string): string[] {
+        return [tag];
+    }
+
+    /**
      * Adds tag to array if it does not contain the tag,
      * removes tag if already contained. Performs operations in place
      * @param tags Array of tags

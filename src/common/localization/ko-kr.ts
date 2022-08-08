@@ -106,7 +106,7 @@ export const korean: IAppStrings = {
         },
         videoSettings: {
             title: "비디오 설정", // Video Settings,
-            description: "태그 지정을 위해 프레임을 추출하는 비율",  // The rate at which frames are extracted for tagging
+            description: "클래스 지정을 위해 프레임을 추출하는 비율",  // The rate at which frames are extracted for tagging
             frameExtractionRate: "프레임 추출 속도 (비디오 초당 프레임)",  // Frame Extraction Rate (frames per a video second)
         },
         taskType: {
@@ -129,20 +129,20 @@ export const korean: IAppStrings = {
         totalAssetCount: "총 Asset",  // Total Assets,
         visitedAssets: "검토한 Asset (${count})", // Visited Assets (${count}),
         taggedAssets: "태그된 Asset (${count})", // Tagged Assets (${count}),
-        nonTaggedAssets: "태그가 없는 Asset (${count})", // Not Tagged Assets (${count}),
+        nonTaggedAssets: "클래스가 없는 Asset (${count})", // Not Tagged Assets (${count}),
         nonVisitedAssets: "검토하지 않은 Asset (${count})", // Not Visited Assets (${count}),
-        tagsSectionTitle: "태그", // Tags & Labels,
-        totalRegionCount: "태그된 지역 수",  // Total Tagged Regions,
-        totalTagCount: "태그 숫자",  // Total Tags,
-        avgTagCountPerAsset: "Asset 당 평균 태그 숫자", // Average tags per asset"
+        tagsSectionTitle: "클래스", // Tags & Labels,
+        totalRegionCount: "태그된 영역 수",  // Total Tagged Regions,
+        totalTagCount: "클래스 숫자",  // Total Tags,
+        avgTagCountPerAsset: "Asset 당 평균 클래스 숫자", // Average tags per asset"
     },
     tags: {
-        title: "태그", // Tags,
-        placeholder: "새 태그 추가", // Add new tag,
-        editor: "태그 편집기",  // Tags Editor,
+        title: "클래스", // Tags,
+        placeholder: "새 클래스 추가", // Add new tag,
+        editor: "클래스 편집기",  // Tags Editor,
         modal: {
-            name: "태그 이름", // Tag Name,
-            color: "태그 색상", // Tag Color"
+            name: "클래스 이름", // Tag Name,
+            color: "클래스 색상", // Tag Color"
         },
         colors: {
             white: "하얀색",  // White,
@@ -161,18 +161,18 @@ export const korean: IAppStrings = {
             purple: "보라색",  // Purple"
         },
         warnings: {
-            existingName: "태그 이름이 이미 존재합니다. 다른 이름을 입력하십시오",  // Tag name already exists. Choose another name,
-            emptyName: "빈 태그 이름을 가질 수 없습니다", // Cannot have an empty tag name,
-            unknownTagName: "알 수 없는 태그 이름",  // Unknown"
+            existingName: "클래스 이름이 이미 존재합니다. 다른 이름을 입력하십시오",  // Tag name already exists. Choose another name,
+            emptyName: "빈 클래스 이름을 가질 수 없습니다", // Cannot have an empty tag name,
+            unknownTagName: "알 수 없는 클래스 이름",  // Unknown"
         },
         toolbar: {
-            add: "새 태그 추가", // Add new tag,
+            add: "새 클래스 추가", // Add new tag,
             search: "태크 검색",  // Search tags,
-            edit: "태그 편집", // Edit tag,
-            lock: "태그 잠금",  // Lock tag,
-            moveUp: "태그를 위로 이동", // Move tag up,
-            moveDown: "태그를 아래로 이동", // Move tag down,
-            delete: "태그 삭제", // Delete tag"
+            edit: "클래스 편집", // Edit tag,
+            lock: "클래스 잠금",  // Lock tag,
+            moveUp: "클래스를 위로 이동", // Move tag up,
+            moveDown: "클래스를 아래로 이동", // Move tag down,
+            delete: "클래스 삭제", // Delete tag"
         },
     },
     connections: {
@@ -346,17 +346,17 @@ export const korean: IAppStrings = {
         assetError: "Asset을 불러올 수 없습니다", // Unable to load asset,
         tags: {
             hotKey: {
-                apply: "단축키로 태그 적용",  // Apply Tag with Hot Key,
-                lock: "단축키가 있는 태그 잠금",  // Lock Tag with Hot Key"
+                apply: "단축키로 클래스 적용",  // Apply Tag with Hot Key,
+                lock: "단축키가 있는 클래스 잠금",  // Lock Tag with Hot Key"
             },
             rename: {
-                title: "태그 이름 바꾸기", // Rename Tag,
-                confirmation: "이 태그의 이름을 바꾸시겠습니까? 모든 Asset에서 이름이 변경됩니다",
+                title: "클래스 이름 바꾸기", // Rename Tag,
+                confirmation: "이 클래스의 이름을 바꾸시겠습니까? 모든 Asset에서 이름이 변경됩니다",
                 // Are you sure you want to rename this tag? It will be renamed throughout all assets"
             },
             delete: {
-                title: "태그 삭제", // Delete Tag,
-                confirmation: "이 태그를 삭제 하시겠습니까? 모든 Asset 및 태그가 유일한 지역 인 모든 지역에서 삭제됩니다.",
+                title: "클래스 삭제", // Delete Tag,
+                confirmation: "이 클래스를 삭제 하시겠습니까? 모든 Asset 및 클래스가 유일한 지역 인 모든 지역에서 삭제됩니다.",
                 // Are you sure you want to delete this tag? It will be deleted throughout all assets
                 // and any regions where this is the only tag will also be deleted"
             },
@@ -370,7 +370,7 @@ export const korean: IAppStrings = {
         messages: {
             enforceTaggedRegions: {
                 title: "유효하지 않은 지역이 감지되었습니다.",  // Invalid region(s) detected,
-                description: "1 개 이상의 지역이 태그되어야 합니다. 다음 작업을 계속 진행하기 위해 모든 지역에 태그가 지정되어 있는지 확인하십시오.",
+                description: "1 개 이상의 지역이 태그되어야 합니다. 다음 작업을 계속 진행하기 위해 모든 지역에 클래스가 지정되어 있는지 확인하십시오.",
                 // 1 or more regions have not been tagged. Ensure all regions ar tagged before continuing to next asset"
             },
         },
@@ -433,8 +433,8 @@ export const korean: IAppStrings = {
                     classificationType: {
                         title: "분류 유형", // Classification Type,
                         options: {
-                            multiLabel: "이미지 당 여러 태그", // Multiple tags per image,
-                            multiClass: "이미지 당 단일 태그", // Single tag per image"
+                            multiLabel: "이미지 당 여러 클래스", // Multiple tags per image,
+                            multiClass: "이미지 당 단일 클래스", // Single tag per image"
                         },
                     },
                     name: {
@@ -471,8 +471,8 @@ export const korean: IAppStrings = {
             pascalVoc: {
                 displayName: "Pascal VOC",  // Pascal VOC,
                 exportUnassigned: {
-                    title: "할당되지 않은 태그 내보내기",  // Export Unassigned,
-                    description: "내보내는 데이터에 할당되지 않은 태그를 포함할지 여부",
+                    title: "할당되지 않은 클래스 내보내기",  // Export Unassigned,
+                    description: "내보내는 데이터에 할당되지 않은 클래스를 포함할지 여부",
                     // Whether or not to include unassigned tags in exported data"
                 },
             },
@@ -544,8 +544,8 @@ export const korean: IAppStrings = {
                     description: "URL에서 모델 불러오기",  // Load your model from a public web URL"
                 },
                 predictTag: {
-                    title: "태그 예측", // Predict Tag,
-                    description: "예측에 태그를 자동으로 포함할지 여부", // Whether or not to automatically include tags in predictions"
+                    title: "클래스 예측", // Predict Tag,
+                    description: "예측에 클래스를 자동으로 포함할지 여부", // Whether or not to automatically include tags in predictions"
                 },
             },
         },
