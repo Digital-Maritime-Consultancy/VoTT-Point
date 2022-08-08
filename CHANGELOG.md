@@ -14,3 +14,7 @@
 # [0.2.1.1] CVAT XML import (08-08-2022)
 
 - Bring toolbar actions back (copy, cut and paste regions)
+
+# [0.2.1.2] Single class tagging option (08-08-2022)
+
+- Introducing single class tagging constraint into environment (refer to .env file)
