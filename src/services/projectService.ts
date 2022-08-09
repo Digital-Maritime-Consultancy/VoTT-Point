@@ -148,10 +148,13 @@ export default class ProjectService implements IProjectService {
         if (!project.version) {
             project.version = packageJson.version;
         } else {
+            /*
+            // took down because of performance
             if (project.version !== packageJson.version) {
                 console.warn("Project version mismatch is found: (stored file version: "
                     + project.version + ", running app version: " + packageJson.version + ")")
             }
+            */
         }
 
         const storageProvider = StorageProviderFactory.createFromConnection(project.targetConnection);
