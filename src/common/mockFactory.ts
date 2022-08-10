@@ -843,6 +843,7 @@ export default class MockFactory {
             ],
             tags,
             type: RegionType.Rectangle,
+            attributes: {},
         };
     }
 

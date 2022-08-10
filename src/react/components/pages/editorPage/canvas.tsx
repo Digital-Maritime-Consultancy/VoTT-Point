@@ -381,6 +381,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 top: scaledRegionData.y,
             },
             points: scaledRegionData.points,
+            attributes: {},
         };
         if (lockedTags && lockedTags.length) {
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));

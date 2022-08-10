@@ -294,6 +294,7 @@ export class AssetService {
                     x: objectArray.xmaxArray[index] * objectArray.width,
                     y: objectArray.ymaxArray[index] * objectArray.height,
                 }],
+                attributes: {},
             });
         }
 

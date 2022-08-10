@@ -83,6 +83,7 @@ describe("TFRecords Json Export Provider", () => {
                     type: RegionType.Rectangle,
                     tags: [mockTag.name],
                     points: [mockStartPoint, mockEndPoint],
+                    attributes: {},
                 };
 
                 const assetMetadata: IAssetMetadata = {

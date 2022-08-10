@@ -354,6 +354,7 @@ export interface ISize {
  * @member type - Defines the type of region
  * @member tags - Defines a list of tags applied to a region
  * @member points - Defines a list of points that define a region
+ * @member attributes - Defines a set of attributes for a region
  */
 export interface IRegion {
     id: string;
@@ -361,6 +362,7 @@ export interface IRegion {
     tags: string[];
     points?: IPoint[];
     boundingBox?: IBoundingBox;
+    attributes?: { [key: string]: string; };
 }
 
 /**

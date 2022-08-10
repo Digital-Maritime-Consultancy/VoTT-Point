@@ -129,6 +129,7 @@ export default class CanvasHelpers {
             },
             points: regionData.points.map((point) => new Point2D(point.x, point.y)),
             tags: [],
+            attributes: {},
         };
     }
 

@@ -169,6 +169,7 @@ describe("Azure Custom Vision Export Provider", () => {
                             height: 100,
                             width: 100,
                         },
+                        attributes: {},
                     },
                 ];
 

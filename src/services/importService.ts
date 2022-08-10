@@ -238,6 +238,7 @@ export default class ImportService implements IImportService {
                     left: region.x1,
                     top: region.y1,
                 },
+                attributes: {},
             };
             metadata.regions.push(generatedRegion);
         });
