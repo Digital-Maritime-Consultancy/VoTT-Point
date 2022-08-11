@@ -117,6 +117,10 @@ export const japanese: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "接続を追加", // Add Connection,
         messages: {
             saveSuccess: "${project.name} プロジェクト設定を正常に保存しました", // Successfully saved ${project.name} project settings"

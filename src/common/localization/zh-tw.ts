@@ -117,6 +117,10 @@ export const chinesetw: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "新增連線", // Add Connection
         messages: {
             saveSuccess: "已成功保存${project.name}專案設定", // Successfully saved ${project.name} project settings

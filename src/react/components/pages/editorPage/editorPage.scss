@@ -28,6 +28,7 @@
   &-right-sidebar {
     display: flex;
     margin-left: auto;
+    flex-direction: column;
   }
 
   &-content {

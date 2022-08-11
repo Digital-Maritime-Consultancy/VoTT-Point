@@ -73,6 +73,7 @@ export default class ImportService implements IImportService {
             activeLearningSettings: null,
             dotToRectSettings: null,
             autoSave: true,
+            attributeKeys: [],
         };
     }
 

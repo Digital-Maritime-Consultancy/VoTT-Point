@@ -36,6 +36,20 @@
             "title": "${strings.tags.title}",
             "type": "array"
         },
+        "attributeKeys": {
+            "title": "${strings.projectSettings.attributeKeys.title}",
+            "description": "${strings.projectSettings.attributeKeys.description}",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "${strings.appSettings.securityToken.name.title}"
+                    }
+                }
+            }
+        },
         "videoSettings": {
             "title": "${strings.projectSettings.videoSettings.title}",
             "type": "object",

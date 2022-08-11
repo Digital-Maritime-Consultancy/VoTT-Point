@@ -117,6 +117,10 @@ export const korean: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "연결 추가", // Add Connection,
         messages: {
             saveSuccess: "${project.name} 프로젝트 설정을 성공적으로 저장했습니다", // Successfully saved ${project.name} project settings

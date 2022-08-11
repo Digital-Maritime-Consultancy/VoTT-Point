@@ -124,6 +124,7 @@ export interface IProject {
     activeLearningSettings: IActiveLearningSettings;
     dotToRectSettings: IDot2RectSettings;
     autoSave: boolean;
+    attributeKeys?: string[];
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
     stellaUrl?: string;

@@ -33,6 +33,7 @@ import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
 
 import connectionJson from "../../../../assets/defaultConnection.json";
+import AttributeInput from "../../common/attributeInput/attributeInput";
 
 /**
  * Properties for Editor Page
@@ -196,7 +197,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     public render() {
         const { project } = this.props;
-        const { assets, selectedAsset } = this.state;
+        const { assets, selectedAsset, selectedRegions } = this.state;
         const rootAssets = assets.filter((asset) => !asset.parent);
 
         if (!project) {
@@ -279,6 +280,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 onTagRenamed={this.confirmTagRenamed}
                                 onTagDeleted={this.confirmTagDeleted}
                             />
+                            {
+                                selectedRegions && selectedRegions.length > 0 &&
+                                <AttributeInput
+                                    chosenAttributes={this.state.selectedRegions[0].attributes}
+                                    attributeKeys={this.props.project.attributeKeys}
+                                    onChange={this.onAttributeChanged}
+                                />
+                            }
                         </div>
                         <Confirm title={strings.editorPage.tags.rename.title}
                             ref={this.renameTagConfirm}
@@ -364,6 +373,15 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             if (selectedAsset) {
                 this.setState({ selectedAsset });
             }
+        }
+    }
+
+    private onAttributeChanged = async (key: string, value: string): Promise<void> => {
+        if (this.state.selectedRegions.length) {
+            if (!this.state.selectedRegions[0].attributes) {
+                this.state.selectedRegions[0].attributes = {};
+            }
+            this.state.selectedRegions[0].attributes[key] = value;
         }
     }
 

@@ -22,5 +22,17 @@
     },
     "taskStatus": {
         "ui:widget": "taskStatusPicker"
+    },
+    "attributeKeys": {
+        "ui:options": {
+            "addable": true,
+            "orderable": false,
+            "removable": true
+        },
+        "items": {
+            "key": {
+                "ui:field": "securityToken"
+            }
+        }
     }
 }

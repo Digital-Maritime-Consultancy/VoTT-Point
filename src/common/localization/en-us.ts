@@ -114,6 +114,10 @@ export const english: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "Add Connection",
         messages: {
             saveSuccess: "Successfully saved ${project.name} project settings",

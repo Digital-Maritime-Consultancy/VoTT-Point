@@ -112,6 +112,10 @@ export interface IAppStrings {
             description: string;
             frameExtractionRate: string;
         },
+        attributeKeys: {
+            title: string;
+            description: string;
+        },
         taskType: {
             title: string;
             description: string;

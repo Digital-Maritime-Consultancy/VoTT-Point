@@ -306,6 +306,7 @@ export default class MockFactory {
                 url: "",
             },
             autoSave: true,
+            attributeKeys: [],
         };
     }
 
