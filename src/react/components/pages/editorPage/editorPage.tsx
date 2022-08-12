@@ -378,10 +378,24 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     private onAttributeChanged = async (key: string, value: string): Promise<void> => {
         if (this.state.selectedRegions.length) {
-            if (!this.state.selectedRegions[0].attributes) {
-                this.state.selectedRegions[0].attributes = {};
-            }
-            this.state.selectedRegions[0].attributes[key] = value;
+            const updatedAttributes = this.state.selectedRegions[0].attributes ?
+                this.state.selectedRegions[0].attributes : {};
+            updatedAttributes[key] = value;
+
+            const currentAsset: IAssetMetadata = {
+                ...this.state.selectedAsset,
+                regions: this.state.selectedAsset.regions.map(r =>
+                    r.id === this.state.selectedRegions[0].id ?
+                    {...r, attributes: updatedAttributes} :
+                    r
+                ),
+            };
+            
+            this.setState({
+                selectedAsset: currentAsset,
+            }, async () => {
+                await this.props.actions.saveAssetMetadata(this.props.project, currentAsset);
+            });
         }
     }
 
