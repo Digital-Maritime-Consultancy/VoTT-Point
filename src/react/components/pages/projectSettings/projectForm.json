@@ -41,11 +41,19 @@
             "description": "${strings.projectSettings.attributeKeys.description}",
             "type": "array",
             "items": {
-                "type": "string",
+                "type": "object",
+                "required": [
+                    "name",
+                    "description"
+                ],
                 "properties": {
                     "name": {
                         "type": "string",
-                        "title": "${strings.appSettings.securityToken.name.title}"
+                        "title": "${strings.attributeKeys.properties.name}"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "${strings.attributeKeys.properties.description}"
                     }
                 }
             }

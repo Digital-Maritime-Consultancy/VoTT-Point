@@ -137,6 +137,14 @@ export const english: IAppStrings = {
         totalTagCount: "Total classes",
         avgTagCountPerAsset: "Average classes per asset",
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "Class",
         placeholder: "Add new class",

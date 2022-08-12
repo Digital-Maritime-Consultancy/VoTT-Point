@@ -138,6 +138,14 @@ export const spanish: IAppStrings = {
         totalTagCount: "Total de etiquetas",
         avgTagCountPerAsset: "Recuento promedio de etiquetas por activo",
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "Etiquetas",
         placeholder: "Agregar nuevo etiqueta",

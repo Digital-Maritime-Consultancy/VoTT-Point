@@ -140,6 +140,14 @@ export const korean: IAppStrings = {
         totalTagCount: "클래스 숫자",  // Total Tags,
         avgTagCountPerAsset: "Asset 당 평균 클래스 숫자", // Average tags per asset"
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "클래스", // Tags,
         placeholder: "새 클래스 추가", // Add new tag,

@@ -143,6 +143,14 @@ export interface IAppStrings {
         totalTagCount: string;
         avgTagCountPerAsset: string;
     };
+    attributeKeys: {
+        title: string;
+        description: string;
+        properties: {
+            name: string;
+            description: string;
+        }
+    };
     tags: {
         title: string;
         placeholder: string;

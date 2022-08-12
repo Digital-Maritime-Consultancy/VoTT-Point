@@ -140,6 +140,14 @@ export const japanese: IAppStrings = {
         totalTagCount: "すべてのタグ",  // Total Tags,
         avgTagCountPerAsset: "アセットごとの平均タグ", // Average tags per asset"
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "タグ", // Tags,
         placeholder: "新しいタグを追加", // Add new tag,

@@ -15,6 +15,7 @@ import LocalFolderPicker from "../../common/localFolderPicker/localFolderPicker"
 import TaskTypePicker from "../../common/taskTypePicker/taskTypePicker";
 import TaskStatusPicker from "../../common/taskStatusPicker/taskStatusPicker";
 import { ArrayFieldTemplate } from "../../common/arrayField/arrayFieldTemplate";
+import { ObjectFieldTemplate } from "../../common/objectField/objectFieldTemplate";
 
 // tslint:disable-next-line:no-var-requires
 const formSchema = addLocValues(require("./projectForm.json"));
@@ -108,6 +109,7 @@ export default class ProjectForm extends React.Component<IProjectFormProps, IPro
                 showErrorList={false}
                 liveValidate={true}
                 noHtml5Validate={true}
+                ObjectFieldTemplate={ObjectFieldTemplate}
                 FieldTemplate={CustomFieldTemplate}
                 ArrayFieldTemplate={ArrayFieldTemplate}
                 validate={this.onFormValidate}

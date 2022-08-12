@@ -124,7 +124,7 @@ export interface IProject {
     activeLearningSettings: IActiveLearningSettings;
     dotToRectSettings: IDot2RectSettings;
     autoSave: boolean;
-    attributeKeys?: string[];
+    attributeKeys?: IAttributeKey[];
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
     stellaUrl?: string;
@@ -150,6 +150,11 @@ export interface IFileInfo {
 export interface ITag {
     name: string;
     color: string;
+}
+
+export interface IAttributeKey {
+    name: string;
+    description: string;
 }
 
 /**

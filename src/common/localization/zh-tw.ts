@@ -144,6 +144,14 @@ export const chinesetw: IAppStrings = {
         totalTagCount: "標記總數", // Total Tags
         avgTagCountPerAsset: "每個圖像數據的平均標記數", // Average tags per asset
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "標記", // Tags
         placeholder: "新增標記", // Add new tag

@@ -28,11 +28,6 @@
             "addable": true,
             "orderable": false,
             "removable": true
-        },
-        "items": {
-            "key": {
-                "ui:field": "securityToken"
-            }
         }
     }
 }

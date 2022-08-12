@@ -1,13 +1,13 @@
 import React from "react";
 import Form, { FormValidation, ISubmitEvent, IChangeEvent, Widget } from "react-jsonschema-form";
-import { IAssetMetadata, IProject, IRegion } from "../../../../models/applicationState";
+import { IAssetMetadata, IAttributeKey, IProject, IRegion } from "../../../../models/applicationState";
 import { JSONSchema6 } from "json-schema";
 import { update } from "lodash";
 import { strings } from "../../../../common/strings";
 
 export interface IAttributeInputProps{
     chosenAttributes?: {[key: string]: string; };
-    attributeKeys?: string[];
+    attributeKeys?: IAttributeKey[];
     onChange?: (key: string, value: string) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
 }
@@ -41,9 +41,6 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
         this.clearForm = this.clearForm.bind(this);
     }
 
-    public componentDidUpdate(prevProps: IAttributeInputProps) {
-    }
-
     public clearForm() {
         this.setState( { formData: undefined } );
     }
@@ -63,17 +60,18 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
                 <div className="condensed-list-body">
                     <div className="tag-input-items">
                     {
-                        this.props.attributeKeys.map(key =>
-                            <div key={key} className="tag-item row">
+                        this.props.attributeKeys.map(({name, description}) =>
+                            <div key={name} className="tag-item row">
                                 <div className="col">
-                                    <span className="p-2">{key}</span>
+                                    <span className="p-2">{name}</span>
                                 </div>
                                 <div className="col">
                                     <input
                                         type="text"
-                                        key={key}
-                                        defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[key]}
-                                        onChange={(e) => this.props.onChange!(key, e.currentTarget.value)}
+                                        key={name}
+                                        placeholder={description}
+                                        defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[name]}
+                                        onChange={(e) => this.props.onChange!(name, e.currentTarget.value)}
                                     />
                                 </div>
                             </div>

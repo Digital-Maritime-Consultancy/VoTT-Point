@@ -140,6 +140,14 @@ export const chinese: IAppStrings = {
         totalTagCount: "标签总数", // Total Tags
         avgTagCountPerAsset: "每个素材的平均标签数", // Average tags per asset
     },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
+    },
     tags: {
         title: "标签", // Tags
         placeholder: "添加标签", // Add new tag
