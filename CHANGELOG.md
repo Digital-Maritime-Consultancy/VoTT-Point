@@ -2,10 +2,6 @@
 
 <!-- cl-start -->
 
-# [0.3.1] Bug fix on region attributes
-
-- Bug on new region disappearing on attribute update has been fixed
-
 # [0.3.0] Region attributes annotation support
 
 - feat: support of region attributes
