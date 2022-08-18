@@ -281,7 +281,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 onTagDeleted={this.confirmTagDeleted}
                             />
                             {
-                                selectedRegions && selectedRegions.length > 0 &&
+                                selectedRegions &&
+                                selectedRegions.length > 0 &&
+                                selectedRegions[0].tags.length > 0 &&
                                 <AttributeInput
                                     chosenAttributes={this.state.selectedRegions[0].attributes}
                                     attributeKeys={this.props.project.attributeKeys}
@@ -382,15 +384,24 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 this.state.selectedRegions[0].attributes : {};
             updatedAttributes[key] = value;
 
+            let found = false;
+            const regions = this.state.selectedAsset.regions.map(r => {
+                if (r.id === this.state.selectedRegions[0].id) {
+                    found = true;
+                    return {...r, attributes: updatedAttributes};
+                } else {
+                    return r;
+                }
+            });
+            if (!found) {
+                regions.push(this.state.selectedRegions[0]);
+            }
+
             const currentAsset: IAssetMetadata = {
                 ...this.state.selectedAsset,
-                regions: this.state.selectedAsset.regions.map(r =>
-                    r.id === this.state.selectedRegions[0].id ?
-                    {...r, attributes: updatedAttributes} :
-                    r
-                ),
+                regions,
             };
-            
+
             this.setState({
                 selectedAsset: currentAsset,
             }, async () => {
