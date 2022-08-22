@@ -71,7 +71,7 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
                                         key={name}
                                         placeholder={description}
                                         defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[name]}
-                                        onBlur={(e) => this.props.onChange!(name, e.currentTarget.value)}
+                                        onChange={(e) => this.props.onChange!(name, e.currentTarget.value)}
                                     />
                                 </div>
                             </div>
