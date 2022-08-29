@@ -212,24 +212,24 @@ export class RemoteStorage implements IStorageProvider {
 
         const apiUrl = `${this.options.taskServerUrl}?uuid=${this.options.taskId}`;
 
-        const response = await axios.get(apiUrl, {
+        await axios.get(apiUrl, {
             headers: {
                 "Accept": "application/json",
             },
-        }).catch(() => null);
-
-        const items = [];
-        const imgServerUrl = connectionJson && connectionJson.providerOptions.imageServerUrl ?
-            connectionJson.providerOptions.imageServerUrl : this.getUrl();
-        if (response.data) {
-            for (let key in response.data.imageList) {
-                let value = response.data.imageList[key];
-                items.push(`${imgServerUrl}/${value}`);
+        }).then(response => {
+            const items = [];
+            const imgServerUrl = connectionJson && connectionJson.providerOptions.imageServerUrl ?
+                connectionJson.providerOptions.imageServerUrl : this.getUrl();
+            if (response && response.data) {
+                for (let key in response.data.imageList) {
+                    let value = response.data.imageList[key];
+                    items.push(`${imgServerUrl}/${value}`);
+                }
+                return items
+                    .map((filePath) => AssetService.createAssetFromFilePath(filePath))
+                    .filter((asset) => asset.type !== AssetType.Unknown);
             }
-            return items
-                .map((filePath) => AssetService.createAssetFromFilePath(filePath))
-                .filter((asset) => asset.type !== AssetType.Unknown);
-        }
+        }).catch(() => alert("Can't connect to Remote storage. Is it active now?"));
         return [];
     }
 
