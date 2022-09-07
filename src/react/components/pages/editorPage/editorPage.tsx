@@ -164,14 +164,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         const query = new URLSearchParams(this.props.location.search);
         const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
-        // Updating toolbar according to editing context
-        const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
-            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
-            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
-        if (this.state.context !== currentEditingContext) {
+        if (lockedTags.length &&
+            !this.state.lockedTags.every((val, index) => val === lockedTags[index])) {
             // refresh view
             this.setState({
-                context: currentEditingContext,
+                context: this.getContext(),
                 editorMode: EditorMode.Select,
                 selectionMode: SelectionMode.NONE,
                 lockedTags: lockedTags,
@@ -253,11 +250,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 actions={this.props.actions}
                                 selectedRegions={this.state.selectedRegions}
                                 selectionMode={
-                                    this.state.context === EditingContext.None ?
+                                    this.getContext() === EditingContext.None ?
                                         SelectionMode.NONE : this.state.selectionMode}
                                 project={this.props.project}
                                 lockedTags={this.state.lockedTags}
-                                context={this.state.context}>
+                                context={this.getContext()}>
                                 <AssetPreview
                                     additionalSettings={this.state.additionalSettings}
                                     autoPlay={true}
@@ -281,11 +278,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 onTagDeleted={this.confirmTagDeleted}
                             />
                             {
-                                selectedRegions &&
-                                selectedRegions.length > 0 &&
-                                selectedRegions[0].tags.length > 0 &&
+                                selectedRegions && selectedRegions.length > 0 &&
                                 <AttributeInput
-                                    chosenAttributes={this.state.selectedRegions[0].attributes}
+                                    chosenAttributes={selectedRegions[0].attributes}
                                     attributeKeys={this.props.project.attributeKeys}
                                     onChange={this.onAttributeChanged}
                                 />
@@ -330,6 +325,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 height: newWidth / (4 / 3),
             },
         }, () => {});
+    }
+
+    private getContext = (): EditingContext => {
+        // Updating toolbar according to editing context
+        return (this.props.match.params["type"] && this.props.match.params["status"]) ?
+            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
+            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
     }
 
     /**
@@ -380,6 +382,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     private onAttributeChanged = async (key: string, value: string): Promise<void> => {
         if (this.state.selectedRegions.length) {
+            this.canvas.current.applyAttribute(key, value);
+            console.log(key, value);
+            /*
             const updatedAttributes = this.state.selectedRegions[0].attributes ?
                 this.state.selectedRegions[0].attributes : {};
             updatedAttributes[key] = value;
@@ -407,6 +412,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             }, async () => {
                 await this.props.actions.saveAssetMetadata(this.props.project, currentAsset);
             });
+            */
         }
     }
 
@@ -467,7 +473,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     private handleTagHotKey = (event: KeyboardEvent): void => {
         const tag = this.getTagFromKeyboardEvent(event);
         if (tag) {
-            this.onTagClicked(tag);
+            if (this.state.selectedRegions.length === 0 && this.state.selectionMode === SelectionMode.POINT) {
+                this.onLockedTagsChanged([tag.name]);
+            } else {
+                this.onTagClicked(tag);
+            }
         }
     }
 

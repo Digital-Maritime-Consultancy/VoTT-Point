@@ -1,4 +1,4 @@
-import React, { Fragment, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import * as shortid from "shortid";
 import { CanvasTools } from "@digital-maritime-consultancy/vott-dot-ct";
 import { RegionData } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
@@ -9,17 +9,11 @@ import {
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
 import { AssetPreview, ContentSource } from "../../common/assetPreview/assetPreview";
-import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 import Clipboard from "../../../../common/clipboard";
 import Confirm from "../../common/confirm/confirm";
 import { strings } from "../../../../common/strings";
 import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { Rect } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Rect";
-import { createContentBoundingBox } from "../../../../common/layout";
-import { ZoomManager, ZoomType } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
-import { RegionsManager } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/RegionsManager";
-import { AreaSelector } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Selection/AreaSelector";
-import { FilterPipeline } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Filter";
 import { EditorToolbar } from "./editorToolbar";
 import { IToolbarItemRegistration, ToolbarItemFactory } from "../../../../providers/toolbar/toolbarItemFactory";
 import IProjectActions from "../../../../redux/actions/projectActions";
@@ -72,9 +66,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         filteredToolbarItems: [],
     };
 
-    // a flag to confirm an actual region move
-    private isMoved = false;
-
     private canvasZone: React.RefObject<HTMLDivElement> = React.createRef();
     private clearConfirm: React.RefObject<Confirm> = React.createRef();
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
@@ -123,19 +114,16 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             isZoomEnabled: true,
             zoomType: 3,
         });
-        //this.editor.addToolbar(toolbarContainer, CanvasTools.Editor.FullToolbarSet, "./../shared/media/icons/", false);
-
         this.editor.onSelectionEnd = this.onSelectionEnd;
-        this.editor.onRegionMove = () => this.isMoved = true;
         this.editor.onRegionMoveEnd = this.onRegionMoveEnd;
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.onRegionDelete = this.onRegionDelete;
-
+        this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
         this.editor.ZM.setMaxZoomScale(10);
 
         const showZoomDiv = document.getElementById("showZoomFactor");
         this.editor.onZoomEnd = function (zoom) {
-            showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale*100 + " %";
+            showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale * 100 + " %";
         };
 
         this.setState({
@@ -149,12 +137,13 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
 
         // Handle region selection in canvas
+        /*
         if (this.editor) {
             if (!_.isEqual(this.props.selectedRegions, prevProps.selectedRegions) ||
                 this.props.selectedRegions.length && this.editor.RM.getSelectedRegions().length === 0) {
                     this.props.selectedRegions.forEach((r: IRegion) => this.editor.RM.selectRegionById(r.id));
             }
-        }
+        }//*/
 
         if (this.props.context !== prevProps.context) {
             this.setState({
@@ -203,6 +192,10 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
     }
 
+    public getAllRegions(): IRegion[] {
+        return this.editor.RM.getAllRegions();
+    }
+
     /**
      * Toggles tag on all selected regions
      * @param selectedTag Tag name
@@ -236,6 +229,17 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.updateRegions(selectedRegions);
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
+        }
+    }
+
+    public applyAttribute = (key: string, value: string) => {
+        const regions = this.getSelectedRegions();
+        for (const region of regions) {
+            const safekey =
+                CanvasHelpers.getAttributeForProject(this.props.project.attributeKeys.map(e => e.name), key);
+            if (safekey) {
+                this.editor.RM.updateAttributeById(region.id, safekey, value);
+            }
         }
     }
 
@@ -420,7 +424,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionMoveEnd = (id: string, regionData: RegionData) => {
-        if (this.props.context === EditingContext.None || !this.isMoved) {
+        if (this.props.context === EditingContext.None) {
             return ;
         }
         const currentRegions = this.state.currentAsset.regions;
@@ -443,11 +447,14 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
 
         currentRegions[movedRegionIndex] = movedRegion;
-        this.updateAssetRegions(currentRegions);
+        //this.updateAssetRegions(currentRegions);
         if (this.props.onSelectedRegionsChanged) {
-            this.props.onSelectedRegionsChanged([movedRegion]);
+            if (this.editor.RM.getSelectedRegions().length) {
+                this.props.onSelectedRegionsChanged(this.getSelectedRegions());
+            } else {
+                this.props.onSelectedRegionsChanged([]);
+            }
         }
-        this.isMoved = false;
     }
 
     /**
@@ -489,7 +496,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
 
         // Gets the scaled region data
-        const selectedRegionsData = this.editor.RM.getSelectedRegions().find((region) => region.id === id);
+        const selectedRegionsData = this.editor.RM.getAllRegions().find((region) => region.id === id);
 
         if (selectedRegionsData) {
             this.template = new Rect(selectedRegionsData.width, selectedRegionsData.height);
@@ -575,6 +582,15 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         const updatedRegions = CanvasHelpers.updateRegions(this.state.currentAsset.regions, updates);
         for (const update of updates) {
             this.editor.RM.updateTagsById(update.id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, update));
+
+            // update attributes for regions
+            Object.keys(update.attributes).forEach(key => {
+                const result = CanvasHelpers.getAttributeForProject(this.props.project.attributeKeys.map(e => e.name), key);
+                if (result) {
+                    const value = update.attributes[key];
+                    this.editor.RM.updateAttributeById(update.id, key, value);
+                }
+              });
         }
         this.updateAssetRegions(updatedRegions);
         this.updateCanvasToolsRegionTags();
@@ -606,7 +622,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                             this.state.currentAsset.asset.size.width,
                             this.state.currentAsset.asset.size.height,
                         ),
-                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
+                        region.attributes);
                 }
             } else if (this.props.context === EditingContext.EditRect) {
                 if (region.type === RegionType.Rectangle || region.type === RegionType.Polygon) {
@@ -618,7 +635,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                             this.state.currentAsset.asset.size.width,
                             this.state.currentAsset.asset.size.height,
                         ),
-                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region));
+                        CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
+                        region.attributes);
                 }
             }
         });

@@ -157,6 +157,15 @@ export default class CanvasHelpers {
         return new TagsDescriptor(tags);
     }
 
+    public static getAttributeForProject(projectAttributKeys: string[], key: string): string | undefined {
+        if (!projectAttributKeys || !projectAttributKeys.length) {
+            return undefined;
+        }
+        Guard.null(key);
+
+        return projectAttributKeys.indexOf(key) < 0 ? undefined : key;
+    }
+
     /**
      * Gets RegionDataType (CanvasTools) from RegionType
      */
