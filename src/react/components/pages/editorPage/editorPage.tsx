@@ -164,6 +164,16 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         const query = new URLSearchParams(this.props.location.search);
         const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
+
+        // fetch file name from search parameter to select asset
+        const fileName = query.get('fileName');
+        if (!this.state.selectedAsset && fileName) {
+            const assetFromParam = this.state.assets.filter(a => a.name === fileName);
+            if (assetFromParam.length) {
+                this.selectAsset(assetFromParam.pop());
+            }
+        }
+
         // Updating toolbar according to editing context
         const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
             getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
