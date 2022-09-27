@@ -163,10 +163,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const query = new URLSearchParams(this.props.location.search);
-        const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
+        const lockedTags = query.has("tags") && query.get("tags").length ? query.get("tags").split(",") : [];
 
         // fetch file name from search parameter to select asset
-        const fileName = query.get('fileName');
+        const fileName = query.get("fileName");
         if (!this.state.selectedAsset && fileName) {
             const assetFromParam = this.state.assets.filter(a => a.name === fileName);
             if (assetFromParam.length) {
@@ -175,18 +175,38 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         // Updating toolbar according to editing context
-        const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
+        // we will check first whether this is view mode or edit mode
+        if (this.props.match.path.endsWith("view") &&
+            !this.props.match.params["type"] &&
+            !this.props.match.params["status"])
+        {
+            const currentEditingContext = EditingContext.None;
+            if (this.state.context !== currentEditingContext) {
+                // refresh view
+                this.setState({
+                    context: currentEditingContext,
+                    editorMode: EditorMode.Select,
+                    selectionMode: SelectionMode.NONE,
+                    lockedTags: lockedTags,
+                });
+            }
+        } else if (this.props.match.params["type"] &&
+            this.props.match.params["status"])
+        {
+            const currentEditingContext = (this.props.match.params["type"] && this.props.match.params["status"]) ?
             getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
             getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
-        if (this.state.context !== currentEditingContext) {
-            // refresh view
-            this.setState({
-                context: currentEditingContext,
-                editorMode: EditorMode.Select,
-                selectionMode: SelectionMode.NONE,
-                lockedTags: lockedTags,
-            });
+            if (this.state.context !== currentEditingContext) {
+                // refresh view
+                this.setState({
+                    context: currentEditingContext,
+                    editorMode: EditorMode.Select,
+                    selectionMode: SelectionMode.NONE,
+                    lockedTags: lockedTags,
+                });
+            }
         }
+        
 
         // Navigating directly to the page via URL (ie, http://vott/projects/a1b2c3dEf/edit) sets the default state
         // before props has been set, this updates the project and additional settings to be valid once props are

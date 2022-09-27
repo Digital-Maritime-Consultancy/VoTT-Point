@@ -92,13 +92,15 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 />
                 <div id="canvasToolsDiv" ref={this.canvasZone} className={className}
                     onClick={(e) => e.stopPropagation()}>
-                    <div id="toolbarDiv" className="editor-page-content-main-header">
-                        {this.props.context !== EditingContext.None &&
+                    {
+                        this.props.context !== EditingContext.None &&
+                        <div id="toolbarDiv" className="editor-page-content-main-header">
                             <EditorToolbar project={this.props.project}
-                                                items={this.state.filteredToolbarItems}
-                                                actions={this.props.actions}
-                                                onToolbarItemSelected={this.props.onToolbarItemSelected} />}
+                                items={this.state.filteredToolbarItems}
+                                actions={this.props.actions}
+                                onToolbarItemSelected={this.props.onToolbarItemSelected} />
                         </div>
+                    }
                     <div id="showZoomFactor"></div>
                     <div id="selectionDiv" onWheel={this.onWheelCapture}
                         onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
@@ -275,10 +277,12 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     public getSelectedRegions = (): IRegion[] => {
-        if (this.props.context === EditingContext.None) {
-            return ;
-        }
         const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
+        return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
+    }
+
+    public getSelectedRegionsById = (id: string): IRegion[] => {
+        const selectedRegions = this.editor.RM.getAllRegions().filter(r => r.id === id).map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
 
@@ -481,6 +485,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      */
     private onRegionSelected = (id: string, multiSelect: boolean) => {
         if (this.props.context === EditingContext.None) {
+            //this.props.onSelectedRegionsChanged(this.getSelectedRegionsById(id));
             return ;
         }
         const selectedRegions = this.getSelectedRegions();
