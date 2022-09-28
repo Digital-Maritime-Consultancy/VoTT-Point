@@ -279,9 +279,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     }
 
     public getSelectedRegions = (): IRegion[] => {
-        if (this.props.context === EditingContext.None) {
-            return ;
-        }
         const selectedRegions = this.editor.RM.getSelectedRegions().map((rb) => rb.id);
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
@@ -367,26 +364,16 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.RM.addRegion(id, regionData, new CanvasTools.Core.TagsDescriptor());
         this.template = new Rect(regionData.width, regionData.height);
 
-        // RegionData not serializable so need to extract data
-        const scaledRegionData = this.editor.scaleRegionToSourceSize(
-            regionData,
+        const lockedTags = this.props.lockedTags;
+
+        const newRegion = CanvasHelpers.fromRegionDataToIRegion(
+            this.editor, id,
             this.state.currentAsset.asset.size.width,
             this.state.currentAsset.asset.size.height,
+            regionData,
+            lockedTags,
         );
-        const lockedTags = this.props.lockedTags;
-        const newRegion = {
-            id,
-            type: this.editorModeToType(this.props.editorMode),
-            tags: lockedTags || [],
-            boundingBox: {
-                height: scaledRegionData.height,
-                width: scaledRegionData.width,
-                left: scaledRegionData.x,
-                top: scaledRegionData.y,
-            },
-            points: scaledRegionData.points,
-            attributes: {},
-        };
+
         if (lockedTags && lockedTags.length) {
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
         }
@@ -640,28 +627,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                 }
             }
         });
-    }
-
-    private editorModeToType = (editorMode: EditorMode) => {
-        let type;
-        switch (editorMode) {
-            case EditorMode.CopyRect:
-            case EditorMode.Rectangle:
-                type = RegionType.Rectangle;
-                break;
-            case EditorMode.Polygon:
-                type = RegionType.Polygon;
-                break;
-            case EditorMode.Point:
-                type = RegionType.Point;
-                break;
-            case EditorMode.Polyline:
-                type = RegionType.Polyline;
-                break;
-            default:
-                break;
-        }
-        return type;
     }
 
     private onKeyDown = (e: any) => {

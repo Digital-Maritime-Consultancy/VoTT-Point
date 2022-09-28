@@ -2,7 +2,7 @@ import React, { KeyboardEvent, RefObject } from "react";
 import ReactDOM from "react-dom";
 import Align from "rc-align";
 import { randomIntInRange } from "../../../../common/utils";
-import { IRegion, ITag } from "../../../../models/applicationState";
+import { EditingContext, IRegion, ITag } from "../../../../models/applicationState";
 import { ColorPicker } from "../colorPicker";
 import "./tagInput.scss";
 import "../condensedList/condensedList.scss";
@@ -18,6 +18,8 @@ export interface ITagInputProps {
     tags: ITag[];
     /** Function called on tags change */
     onChange: (tags: ITag[]) => void;
+    /** Editing context */
+    editingContext: EditingContext;
     /** Currently selected regions in canvas */
     selectedRegions?: IRegion[];
     /** Tags that are currently locked for editing experience */
@@ -329,8 +331,8 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                 isBeingEdited: this.state.editingTag && this.state.editingTag.name === tag.name,
                 isSelected: this.state.selectedTag && this.state.selectedTag.name === tag.name,
                 appliedToSelectedRegions: selectedRegionTagSet.has(tag.name),
-                onClick: this.handleClick,
-                onChange: this.updateTag,
+                onClick: this.props.editingContext === EditingContext.None ? () => {} : this.handleClick,
+                onChange: this.props.editingContext === EditingContext.None ? () => {} : this.updateTag,
             } as ITagInputItemProps
         ));
     }

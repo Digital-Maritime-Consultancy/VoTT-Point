@@ -7,6 +7,7 @@ import Guard from "../../../../common/guard";
 import { IBoundingBox, IRegion, ITag, RegionType,
     IPoint, AppError, ErrorCode } from "../../../../models/applicationState";
 import { strings } from "../../../../common/strings";
+import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 
 /**
  * Static functions to assist in operations within Canvas component
@@ -129,6 +130,43 @@ export default class CanvasHelpers {
             },
             points: regionData.points.map((point) => new Point2D(point.x, point.y)),
             tags: [],
+            attributes: {},
+        };
+    }
+
+    public static fromRegionDataTypeToRegionType(type: string) {
+        switch(type) {
+            case "rect":
+                return RegionType.Rectangle;
+            case "polygon":
+                return RegionType.Polygon;
+            case "point":
+                return RegionType.Point;
+            case "polyline":
+                return RegionType.Polyline;
+            default:
+                return RegionType.Square;
+        }
+    }
+
+    public static fromRegionDataToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, lockedTags?: string[]): IRegion {
+        // RegionData not serializable so need to extract data
+        const scaledRegionData = editor.scaleRegionToSourceSize(
+            regionData,
+            assetWidth,
+            assetHeight,
+        );
+        return {
+            id,
+            type: CanvasHelpers.fromRegionDataTypeToRegionType(regionData.type),
+            tags: lockedTags || [],
+            boundingBox: {
+                height: scaledRegionData.height,
+                width: scaledRegionData.width,
+                left: scaledRegionData.x,
+                top: scaledRegionData.y,
+            },
+            points: scaledRegionData.points,
             attributes: {},
         };
     }

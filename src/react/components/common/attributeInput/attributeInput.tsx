@@ -50,36 +50,40 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
 
     public render() {
         return (
-            this.props.attributeKeys && this.props.attributeKeys.length > 0 &&
-            <div className="condensed-list" onClick={(e) => e.stopPropagation()}>
-                <div className="condensed-list-header p-2">
-                    <span className="condensed-list-title">
-                        {strings.projectSettings.attributeKeys.title}
-                    </span>
-                </div>
-                <div className="condensed-list-body">
-                    <div className="tag-input-items">
-                    {
-                        this.props.attributeKeys.map(({name, description}) =>
-                            <div key={name} className="tag-item row">
-                                <div className="col">
-                                    <span className="p-2">{name}</span>
+            <>
+            {
+                this.props.attributeKeys && this.props.attributeKeys.length > 0 &&
+                <div className="condensed-list" onClick={(e) => e.stopPropagation()}>
+                    <div className="condensed-list-header p-2">
+                        <span className="condensed-list-title">
+                            {strings.projectSettings.attributeKeys.title}
+                        </span>
+                    </div>
+                    <div className="condensed-list-body">
+                        <div className="tag-input-items">
+                        {
+                            this.props.attributeKeys.map(({name, description}) =>
+                                <div key={name} className="tag-item row">
+                                    <div className="col">
+                                        <span className="p-2">{name}</span>
+                                    </div>
+                                    <div className="col">
+                                        <input
+                                            type="text"
+                                            key={name}
+                                            placeholder={description}
+                                            defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[name]}
+                                            onChange={(e) => this.props.onChange!(name, e.currentTarget.value)}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <input
-                                        type="text"
-                                        key={name}
-                                        placeholder={description}
-                                        defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[name]}
-                                        onChange={(e) => this.props.onChange!(name, e.currentTarget.value)}
-                                    />
-                                </div>
-                            </div>
-                        )
-                    }
+                            )
+                        }
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            </>
         );
     }
 }
