@@ -23,6 +23,7 @@ import { TagInput } from "../../common/tagInput/tagInput";
 import AttributeInput from "../../common/attributeInput/attributeInput";
 import { KeyboardBinding } from "../../common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../../common/keyboardManager/keyboardManager";
+import { Color } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Colors/Color";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -201,7 +202,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 this.props.selectedAsset.asset.size.height,
                 r.regionData,
                 r.attributes,
-                this.props.lockedTags));
+                CanvasHelpers.getTagsString(this.props.project.tags, r.tags)));
     }
 
     /**
@@ -294,7 +295,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     this.props.selectedAsset.asset.size.height,
                     r.regionData,
                     r.attributes,
-                    this.props.lockedTags));
+                    CanvasHelpers.getTagsString(this.props.project.tags, r.tags)));
         } else {
             return [];
         }
@@ -315,12 +316,9 @@ export default class Canvas extends React.Component<ICanvasProps> {
      */
     public onTagClicked = (tag: ITag): void => {
         this.applyTag(tag.name);
-        /*
-        this.setState({
-            selectedTag: tag.name,
-            lockedTags: [],
-        }, () => this.canvas.current.applyTag(tag.name));
-        */
+        if (this.tagInput.current) {
+            this.tagInput.current.setSelectedTag(tag.name);
+        }
     }
 
     public onCtrlTagClicked = (tag: ITag): void => {
@@ -404,7 +402,13 @@ export default class Canvas extends React.Component<ICanvasProps> {
         }
         const id = shortid.generate();
 
-        this.editor.RM.addRegion(id, regionData, new CanvasTools.Core.TagsDescriptor());
+        let selectedTag;
+        if (this.tagInput.current) {
+            selectedTag = this.tagInput.current.getSelectedTag();
+        }
+        this.editor.RM.addRegion(id, regionData, new CanvasTools.Core.TagsDescriptor(
+            selectedTag ? [new CanvasTools.Core.Tag(selectedTag.name, new Color(selectedTag.color))] : []
+        ));
         this.template = new Rect(regionData.width, regionData.height);
 
         const lockedTags = this.props.lockedTags;
@@ -414,7 +418,8 @@ export default class Canvas extends React.Component<ICanvasProps> {
             this.props.selectedAsset.asset.size.width,
             this.props.selectedAsset.asset.size.height,
             regionData,
-            lockedTags,
+            {},
+            selectedTag ? selectedTag : [],
         );
 
         if (lockedTags && lockedTags.length) {
@@ -540,8 +545,12 @@ export default class Canvas extends React.Component<ICanvasProps> {
         }
 
         if (this.tagInput.current) {
-            for (const selectedRegion of selectedRegions) {
-                this.tagInput.current.setSelectedTag(selectedRegion.tags.pop());
+            if (selectedRegions.length) {
+                for (const selectedRegion of selectedRegions) {
+                    this.tagInput.current.setSelectedTag(selectedRegion.tags.pop());
+                }
+            } else {
+                this.tagInput.current.setSelectedTag("");
             }
         }
 

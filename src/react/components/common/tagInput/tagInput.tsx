@@ -155,6 +155,10 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
         this.setState({ selectedTag: this.props.tags.filter(t => t.name === selectedTag).pop() });
     }
 
+    public getSelectedTag = (): ITag => {
+        return this.state.selectedTag;
+    }
+
     private getTagNode = (tag: ITag): Element => {
         const itemRef = tag ? this.tagItemRefs.get(tag.name) : null;
         return (itemRef ? ReactDOM.findDOMNode(itemRef) : defaultDOMNode()) as Element;

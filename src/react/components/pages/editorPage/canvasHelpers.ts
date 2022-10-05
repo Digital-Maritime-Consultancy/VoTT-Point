@@ -8,6 +8,7 @@ import { IBoundingBox, IRegion, ITag, RegionType,
     IPoint, AppError, ErrorCode } from "../../../../models/applicationState";
 import { strings } from "../../../../common/strings";
 import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { Region } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/Region";
 
 /**
  * Static functions to assist in operations within Canvas component
@@ -149,7 +150,7 @@ export default class CanvasHelpers {
         }
     }
 
-    public static fromRegionToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, attributes: {}, lockedTags?: string[]): IRegion {
+    public static fromRegionToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, attributes: {}, tags: string[]): IRegion {
         // RegionData not serializable so need to extract data
         const scaledRegionData = editor.scaleRegionToSourceSize(
             regionData,
@@ -159,7 +160,7 @@ export default class CanvasHelpers {
         return {
             id,
             type: CanvasHelpers.fromRegionDataTypeToRegionType(regionData.type),
-            tags: lockedTags || [],
+            tags,
             boundingBox: {
                 height: scaledRegionData.height,
                 width: scaledRegionData.width,
@@ -193,6 +194,19 @@ export default class CanvasHelpers {
             .filter((tag) => tag !== null);
 
         return new TagsDescriptor(tags);
+    }
+
+    /**
+     * Create TagsDescriptor (CanvasTools) from IRegion
+     * @param region IRegion from Canvas
+     */
+     public static getTagsString(projectTags: ITag[], tags: TagsDescriptor): string[] {
+        if (!projectTags || !projectTags.length) {
+            return [];
+        }
+        Guard.null(tags);
+
+        return tags.all.map((t: any) => t.tagName);
     }
 
     public static getAttributeForProject(projectAttributKeys: string[], key: string): string | undefined {
