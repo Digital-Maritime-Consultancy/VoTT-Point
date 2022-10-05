@@ -793,7 +793,6 @@ export default class MockFactory {
             selectedRegions: [],
             onAssetMetadataChanged: jest.fn(),
             editorMode: EditorMode.Rectangle,
-            selectionMode: SelectionMode.RECT,
             children: null,
             lockedTags: [],
             actions: (projectActions as any) as IProjectActions,

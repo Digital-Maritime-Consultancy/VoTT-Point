@@ -149,7 +149,7 @@ export default class CanvasHelpers {
         }
     }
 
-    public static fromRegionDataToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, lockedTags?: string[]): IRegion {
+    public static fromRegionToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, attributes: {}, lockedTags?: string[]): IRegion {
         // RegionData not serializable so need to extract data
         const scaledRegionData = editor.scaleRegionToSourceSize(
             regionData,
@@ -167,7 +167,7 @@ export default class CanvasHelpers {
                 top: scaledRegionData.y,
             },
             points: scaledRegionData.points,
-            attributes: {},
+            attributes: attributes ? attributes : {},
         };
     }
 

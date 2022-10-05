@@ -21,7 +21,7 @@ export interface ITagInputProps {
     /** Editing context */
     editingContext: EditingContext;
     /** Currently selected regions in canvas */
-    selectedRegions?: IRegion[];
+    onGetSelectedRegions?: () => IRegion[];
     /** Tags that are currently locked for editing experience */
     lockedTags?: string[];
     /** Updates to locked tags */
@@ -79,7 +79,7 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
 
     public render() {
         return (
-            <div className="tag-input condensed-list">
+            <div className="tag-input condensed-list"  onClick={(e) => e.stopPropagation()}>
                 <h6 className="condensed-list-header tag-input-header bg-darker-2 p-2">
                     <span className="condensed-list-title tag-input-title">{strings.tags.title}</span>
                     <TagInputToolbar
@@ -149,12 +149,10 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                 tags: this.props.tags,
             });
         }
+    }
 
-        if (prevProps.selectedRegions !== this.props.selectedRegions && this.props.selectedRegions.length > 0) {
-            this.setState({
-                selectedTag: null,
-            });
-        }
+    public setSelectedTag = (selectedTag: string) => {
+        this.setState({ selectedTag: this.props.tags.filter(t => t.name === selectedTag).pop() });
     }
 
     private getTagNode = (tag: ITag): Element => {
@@ -339,8 +337,8 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
 
     private getSelectedRegionTagSet = (): Set<string> => {
         const result = new Set<string>();
-        if (this.props.selectedRegions) {
-            for (const region of this.props.selectedRegions) {
+        if (this.props.onGetSelectedRegions && this.props.onGetSelectedRegions()) {
+            for (const region of this.props.onGetSelectedRegions()) {
                 for (const tag of region.tags) {
                     result.add(tag);
                 }
@@ -374,17 +372,18 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
             const alreadySelected = selectedTag && selectedTag.name === tag.name;
             const newEditingTag = inEditMode ? null : editingTag;
 
+            //*
             this.setState({
                 editingTag: newEditingTag,
                 editingTagNode: this.getTagNode(newEditingTag),
                 selectedTag: (alreadySelected && !inEditMode) ? null : tag,
                 clickedColor: props.clickedColor,
                 showColorPicker: false,
-            });
+            });//*/
 
             // Only fire click event if a region is selected
-            if (this.props.selectedRegions &&
-                this.props.selectedRegions.length > 0 &&
+            if (this.props.onGetSelectedRegions &&
+                this.props.onGetSelectedRegions().length > 0 &&
                 this.props.onTagClick &&
                 !inEditMode) {
                 this.props.onTagClick(tag);

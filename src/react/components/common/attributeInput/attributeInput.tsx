@@ -1,51 +1,38 @@
 import React from "react";
-import Form, { FormValidation, ISubmitEvent, IChangeEvent, Widget } from "react-jsonschema-form";
 import { IAssetMetadata, IAttributeKey, IProject, IRegion } from "../../../../models/applicationState";
-import { JSONSchema6 } from "json-schema";
-import { update } from "lodash";
 import { strings } from "../../../../common/strings";
+import AttributeInputItem from "./attributeInputItem";
 
 export interface IAttributeInputProps{
-    chosenAttributes?: {[key: string]: string; };
+    onGetSelectedRegions?: () => IRegion[];
     attributeKeys?: IAttributeKey[];
     onChange?: (key: string, value: string) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
-}
-
-export interface IAttributeInputState {
-    iscrowd: boolean;
-    formSchema: object;
-    formData: object;
+    onAttributesUpdated: (key: string, value) => void;
 }
 
 /**
  * @name - Attribute input
  * @description - Input for attributes of region, which is a dictionary
  */
-export default class AttributeInput extends React.Component<IAttributeInputProps, IAttributeInputState> {
+export default class AttributeInput extends React.Component<IAttributeInputProps> {
     public static defaultProps: IAttributeInputProps = {
-        chosenAttributes: {},
-        onSelectedRegionsChanged: undefined,
+        onGetSelectedRegions: undefined,
+        attributeKeys: [],
         onChange: undefined,
-    };
-
-    public state: IAttributeInputState = {
-        iscrowd: false,
-        formSchema: undefined,
-        formData: undefined,
+        onSelectedRegionsChanged: undefined,
+        onAttributesUpdated: undefined,
     };
 
     constructor(props) {
         super(props);
-        this.updateForm = this.updateForm.bind(this);
-        this.clearForm = this.clearForm.bind(this);
     }
 
-    public clearForm() {
-        this.setState( { formData: undefined } );
-    }
-
-    public updateForm(regions: IRegion[], formSchema: object) {
+    public setSelectedAttributes(attributes: { [key: string]: string; }) {
+        this.props.attributeKeys.forEach(({name}) => {
+            let input = document.getElementById(`attr-input-${name}`) as HTMLInputElement;
+            input.value = attributes[name] ? attributes[name] : "";
+        });
     }
 
     public render() {
@@ -63,20 +50,12 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
                         <div className="tag-input-items">
                         {
                             this.props.attributeKeys.map(({name, description}) =>
-                                <div key={name} className="tag-item row">
-                                    <div className="col">
-                                        <span className="p-2">{name}</span>
-                                    </div>
-                                    <div className="col">
-                                        <input
-                                            type="text"
-                                            key={name}
-                                            placeholder={description}
-                                            defaultValue={this.props.chosenAttributes && this.props.chosenAttributes[name]}
-                                            onChange={(e) => this.props.onChange!(name, e.currentTarget.value)}
-                                        />
-                                    </div>
-                                </div>
+                                <AttributeInputItem
+                                    key={name}
+                                    name={name} 
+                                    description={description}
+                                    onAttributesUpdated={this.props.onAttributesUpdated}
+                                />
                             )
                         }
                         </div>
