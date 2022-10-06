@@ -200,7 +200,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
         return (
             <div className="editor-page">
-                
                 <SplitPane split="vertical"
                     defaultSize={this.state.thumbnailSize.width}
                     minSize={100}
@@ -228,7 +227,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                 onSelectedRegionsChanged={this.onSelectedRegionsChanged}
                                 confirmTagDeleted={this.confirmTagDeleted}
                                 confirmTagRenamed={this.confirmTagRenamed}
-                                editorMode={this.state.editorMode}
                                 actions={this.props.actions}
                                 project={this.props.project}
                                 lockedTags={this.state.lockedTags}
@@ -439,6 +437,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private onToolbarItemSelected = async (toolbarItem: ToolbarItem): Promise<void> => {
+        console.log(toolbarItem.props.name);
         switch (toolbarItem.props.name) {
             case ToolbarItemName.DrawRectangle:
                 this.canvas.current.setSelectionMode(SelectionMode.RECT);
@@ -695,9 +694,5 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 forEvaluation: this.props.project.taskType === TaskType.Evaluation,
             } as IAsset,
         } as IAssetMetadata);
-    }
-
-    private getSelectedRegions = (): IRegion[] => {
-        return this.canvas.current ? this.canvas.current.getSelectedRegions() : [];
     }
 }

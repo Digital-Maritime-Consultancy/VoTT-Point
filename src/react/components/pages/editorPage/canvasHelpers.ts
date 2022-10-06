@@ -9,6 +9,8 @@ import { IBoundingBox, IRegion, ITag, RegionType,
 import { strings } from "../../../../common/strings";
 import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
 import { Region } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/Region";
+import { ToolbarItemName } from "../../../../registerToolbar";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 
 /**
  * Static functions to assist in operations within Canvas component
@@ -170,6 +172,21 @@ export default class CanvasHelpers {
             points: scaledRegionData.points,
             attributes: attributes ? attributes : {},
         };
+    }
+
+    public static fromToolbarItemNameToSelectionMode(name: ToolbarItemName) {
+        switch(name) {
+            case ToolbarItemName.SelectCanvas:
+                return SelectionMode.NONE;
+            case ToolbarItemName.DrawRectangle:
+                return SelectionMode.RECT;
+            case ToolbarItemName.DrawPolygon:
+                return SelectionMode.POLYGON;
+            case ToolbarItemName.DrawPoint:
+                return SelectionMode.POINT;
+            default:
+                return SelectionMode.NONE;
+        }
     }
 
     public static isEmpty(regionData: RegionData): boolean {

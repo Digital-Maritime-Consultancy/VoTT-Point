@@ -81,7 +81,7 @@ export abstract class ToolbarItem extends React.Component<IToolbarItemProps> {
                         accelerators={accelerators}
                         handler={this.onClick}
                         icon={this.props.icon}
-                        keyEventType={KeyEventType.KeyDown}
+                        keyEventType={KeyEventType.KeyUp}
                     />
                 }
                 <button type="button"

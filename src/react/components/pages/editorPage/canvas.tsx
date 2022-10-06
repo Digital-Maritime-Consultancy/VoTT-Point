@@ -4,7 +4,8 @@ import { CanvasTools } from "@digital-maritime-consultancy/vott-dot-ct";
 import { RegionData } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import {
     EditingContext,
-    EditorMode, IAssetMetadata,
+    EditorMode,
+    IAssetMetadata,
     IProject, IRegion, ITag, RegionType,
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
@@ -56,6 +57,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     private canvasZone: React.RefObject<HTMLDivElement> = React.createRef();
     private clearConfirm: React.RefObject<Confirm> = React.createRef();
+    private toolBar: React.RefObject<EditorToolbar> = React.createRef();
     private tagInput: React.RefObject<TagInput> = React.createRef();
     private attributeInput: React.RefObject<AttributeInput> = React.createRef();
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
@@ -92,10 +94,12 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     onClick={(e) => e.stopPropagation()}>
                     { this.props.context !== EditingContext.None &&
                     <div id="toolbarDiv" className="editor-page-content-main-header">
-                        <EditorToolbar project={this.props.project}
-                                            items={this.getFilteredToolbarItems()}
-                                            actions={this.props.actions}
-                                            onToolbarItemSelected={this.props.onToolbarItemSelected} />
+                        <EditorToolbar
+                            ref={this.toolBar}
+                            project={this.props.project}
+                            items={this.getFilteredToolbarItems()}
+                            actions={this.props.actions}
+                            onToolbarItemSelected={this.props.onToolbarItemSelected} />
                     </div>
                     }
                     <div id="showZoomFactor"></div>
@@ -191,6 +195,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     public setSelectionMode = (mode: SelectionMode) => {
         const options = (mode === SelectionMode.COPYRECT) ? this.template : null;
+        console.log(mode);
         this.editor.AS.setSelectionMode({ mode, template: options });
     }
 
@@ -319,6 +324,10 @@ export default class Canvas extends React.Component<ICanvasProps> {
         if (this.tagInput.current) {
             this.tagInput.current.setSelectedTag(tag.name);
         }
+        this.editor.AS.setSelectionMode({ mode:
+            this.toolBar.current ?
+            CanvasHelpers.fromToolbarItemNameToSelectionMode(this.toolBar.current.getToolbarItemName()) :
+            SelectionMode.NONE });
     }
 
     public onCtrlTagClicked = (tag: ITag): void => {
@@ -631,7 +640,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
               });
         }
         //this.updateAssetRegions(updatedRegions);
-        this.updateCanvasToolsRegionTags();
     }
 
     /**
