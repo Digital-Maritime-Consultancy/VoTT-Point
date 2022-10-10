@@ -266,7 +266,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     private needToSave = () => {
         if (this.canvas.current) {
             const regionsInCanvas = this.canvas.current.getAllRegions();
-
             return this.state.selectedAsset.regions.length !== regionsInCanvas.length ||
                 this.state.selectedAsset.regions.filter(
                     r => regionsInCanvas.filter(ric => r.id === ric.id).length > 0).length > 0;

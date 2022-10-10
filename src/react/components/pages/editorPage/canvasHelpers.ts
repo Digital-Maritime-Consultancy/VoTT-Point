@@ -154,6 +154,7 @@ export default class CanvasHelpers {
 
     public static fromRegionToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, attributes: {}, tags: string[]): IRegion {
         // RegionData not serializable so need to extract data
+        const currentScale = editor.ZM.getZoomData().currentZoomScale;
         const scaledRegionData = editor.scaleRegionToSourceSize(
             regionData,
             assetWidth,
@@ -164,12 +165,12 @@ export default class CanvasHelpers {
             type: CanvasHelpers.fromRegionDataTypeToRegionType(regionData.type),
             tags,
             boundingBox: {
-                height: scaledRegionData.height,
-                width: scaledRegionData.width,
-                left: scaledRegionData.x,
-                top: scaledRegionData.y,
+                height: scaledRegionData.height * currentScale,
+                width: scaledRegionData.width * currentScale,
+                left: scaledRegionData.x * currentScale,
+                top: scaledRegionData.y * currentScale,
             },
-            points: scaledRegionData.points,
+            points: scaledRegionData.points.map(t => new Point2D(t.x * currentScale, t.y * currentScale)),
             attributes: attributes ? attributes : {},
         };
     }
