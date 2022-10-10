@@ -125,7 +125,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     />
                     <AttributeInput
                         ref={this.attributeInput}
-                        onGetSelectedRegions={this.getSelectedRegions}
                         attributeKeys={this.props.project.attributeKeys}
                         onChange={this.onAttributeChanged}
                         onAttributesUpdated={this.applyAttribute}
@@ -331,11 +330,14 @@ export default class Canvas extends React.Component<ICanvasProps> {
     }
 
     public onCtrlTagClicked = (tag: ITag): void => {
+        this.onTagClicked(tag);
+        /*
         const locked = this.props.lockedTags;
         this.setState({
             selectedTag: tag.name,
             lockedTags: CanvasHelpers.toggleTag(locked, tag.name),
         }, () => this.applyTag(tag.name));
+        */
     }
 
     private removeAllRegions = () => {

@@ -4,7 +4,6 @@ import { strings } from "../../../../common/strings";
 import AttributeInputItem from "./attributeInputItem";
 
 export interface IAttributeInputProps{
-    onGetSelectedRegions?: () => IRegion[];
     attributeKeys?: IAttributeKey[];
     onChange?: (key: string, value: string) => void;
     onSelectedRegionsChanged?: (regions: IRegion[]) => void;
@@ -17,7 +16,6 @@ export interface IAttributeInputProps{
  */
 export default class AttributeInput extends React.Component<IAttributeInputProps> {
     public static defaultProps: IAttributeInputProps = {
-        onGetSelectedRegions: undefined,
         attributeKeys: [],
         onChange: undefined,
         onSelectedRegionsChanged: undefined,
@@ -39,7 +37,7 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
         return (
             <>
             {
-                this.props.attributeKeys && this.props.attributeKeys.length > 0 &&
+                this.props.attributeKeys && this.props.attributeKeys.length > 0 ?
                 <div className="condensed-list" onClick={(e) => e.stopPropagation()}>
                     <div className="condensed-list-header p-2">
                         <span className="condensed-list-title">
@@ -60,7 +58,8 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
                         }
                         </div>
                     </div>
-                </div>
+                </div> :
+                <div></div>
             }
             </>
         );
