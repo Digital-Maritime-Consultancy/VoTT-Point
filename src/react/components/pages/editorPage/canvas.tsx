@@ -70,7 +70,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     return (<KeyboardBinding
                         displayName={strings.editorPage.tags.hotKey.apply}
                         key={index}
-                        keyEventType={KeyEventType.KeyDown}
+                        keyEventType={KeyEventType.KeyUp}
                         accelerators={[`${index}`]}
                         icon={"fa-tag"}
                         handler={this.handleTagHotKey} />);
@@ -79,7 +79,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     return (<KeyboardBinding
                         displayName={strings.editorPage.tags.hotKey.lock}
                         key={index}
-                        keyEventType={KeyEventType.KeyDown}
+                        keyEventType={KeyEventType.KeyUp}
                         accelerators={[`CmdOrCtrl+${index}`]}
                         icon={"fa-lock"}
                         handler={this.handleCtrlTagHotKey} />);
