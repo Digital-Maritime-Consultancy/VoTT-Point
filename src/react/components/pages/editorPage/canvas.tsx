@@ -6,7 +6,9 @@ import {
     EditingContext,
     EditorMode,
     IAssetMetadata,
-    IProject, IRegion, ITag, RegionType,
+    ICanvasWorkData,
+    IPoint,
+    IProject, IRegion, IScreenPos, ITag, RegionType,
 } from "../../../../models/applicationState";
 import CanvasHelpers from "./canvasHelpers";
 import { AssetPreview, ContentSource } from "../../common/assetPreview/assetPreview";
@@ -25,6 +27,7 @@ import AttributeInput from "../../common/attributeInput/attributeInput";
 import { KeyboardBinding } from "../../common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../../common/keyboardManager/keyboardManager";
 import { Color } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Colors/Color";
+import { ZoomDirection } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -35,6 +38,7 @@ export interface ICanvasProps extends React.Props<Canvas> {
     context?: EditingContext;
     actions?: IProjectActions;
     selectedRegions: IRegion[];
+    initialWorkData: ICanvasWorkData;
     confirmTagDeleted?: (tagName: string) => void;
     confirmTagRenamed?: (tagName: string, newTagName: string) => void;
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;
@@ -50,6 +54,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
         selectedRegions: [],
         project: null,
         lockedTags: [],
+        initialWorkData: {zoomScale: 1.0, screenPos: {left: 0, top: 0}},
         context: EditingContext.None,
     };
 
@@ -172,6 +177,10 @@ export default class Canvas extends React.Component<ICanvasProps> {
             //this.setContentSource(this.state.contentSource);
             //this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
             this.editor.AS.enable();
+        }
+
+        if (this.props.initialWorkData.zoomScale !== prevProps.initialWorkData.zoomScale) {
+            this.applyInitialWorkData();
         }
 
         const assetIdChanged = this.props.selectedAsset.asset.id !== prevProps.selectedAsset.asset.id;
@@ -311,6 +320,35 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 region.id,
                 CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
             );
+        }
+    }
+
+    public getCurrentScale = (): number => {
+        if (this.editor) {
+            return this.editor.ZM.getZoomData().currentZoomScale;
+        } else {
+            return 1.0;
+        }
+    }
+
+    public getScreenPos = (): IScreenPos => {
+        if (this.editor) {
+            return this.editor.ZM.getZoomData().screenPos;
+        } else {
+            return {left: 0, top: 0};
+        }
+    }
+
+    public applyInitialWorkData = () => {
+        if (this.editor) {
+            this.editor.ZM.callbacks.setZoomLevel(this.props.initialWorkData.zoomScale);
+            if (this.props.initialWorkData.screenPos) {
+                this.editor.ZM.callbacks.onApplyScreenPos(
+                    this.props.initialWorkData.screenPos.left,
+                    this.props.initialWorkData.screenPos.top,
+                );
+            }
+            //this.editor.ZM.updateZoomScale(ZoomDirection.In, this.props.initialScale);
         }
     }
 
@@ -489,16 +527,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
         currentRegions[movedRegionIndex] = movedRegion;
 
         this.onRegionSelected(id, false);
-        //this.updateAssetRegions(currentRegions);
-        /*
-        if (this.props.onSelectedRegionsChanged) {
-            if (this.editor.RM.getSelectedRegions().length) {
-                this.props.onSelectedRegionsChanged(this.getSelectedRegions());
-            } else {
-                this.props.onSelectedRegionsChanged([]);
-            }
-        }
-        */
     }
 
     /**
@@ -707,14 +735,24 @@ export default class Canvas extends React.Component<ICanvasProps> {
     }
 
     private onWheelCapture = (e: any) => {
-        if (!e.ctrlKey && !e.shiftKey && e.altKey && this.editor) {
-            const cursorPos = this.getCursorPos(e);
-            if (e.deltaY < 0) {
-                this.editor.ZM.callbacks.onZoomingIn(cursorPos);
-            } else if (e.deltaY > 0) {
-                this.editor.ZM.callbacks.onZoomingOut(cursorPos);
+        if (!e.ctrlKey && !e.shiftKey && e.altKey) {
+            if (this.editor) {
+                const cursorPos = this.getCursorPos(e);
+                if (e.deltaY < 0) {
+                    this.editor.ZM.callbacks.onZoomingIn(cursorPos);
+                } else if (e.deltaY > 0) {
+                    this.editor.ZM.callbacks.onZoomingOut(cursorPos);
+                }
+                e.nativeEvent.stopImmediatePropagation();
+                e.stopPropagation();
+                e.preventDefault();
             }
-            e.nativeEvent.stopImmediatePropagation();
+        } else {
+            if (this.editor) {
+                this.editor.ZM.setScreenPos(
+                    document.getElementsByClassName("CanvasToolsContainer")[0].scrollLeft,
+                    document.getElementsByClassName("CanvasToolsContainer")[0].scrollTop);
+            }
             e.stopPropagation();
         }
     }

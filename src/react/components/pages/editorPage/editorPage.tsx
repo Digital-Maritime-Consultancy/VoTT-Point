@@ -10,19 +10,15 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, ITag, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType,
+    ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkData,
 } from "../../../../models/applicationState";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
 import { ToolbarItemName } from "../../../../registerToolbar";
 import { AssetService } from "../../../../services/assetService";
 import { AssetPreview } from "../../common/assetPreview/assetPreview";
-import { KeyboardBinding } from "../../common/keyboardBinding/keyboardBinding";
-import { KeyEventType } from "../../common/keyboardManager/keyboardManager";
-import { TagInput } from "../../common/tagInput/tagInput";
 import { ToolbarItem } from "../../toolbar/toolbarItem";
 import Canvas from "./canvas";
-import CanvasHelpers from "./canvasHelpers";
 import "./editorPage.scss";
 import EditorSideBar from "./editorSideBar";
 import Alert from "../../common/alert/alert";
@@ -33,7 +29,6 @@ import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
 
 import connectionJson from "../../../../assets/defaultConnection.json";
-import AttributeInput from "../../common/attributeInput/attributeInput";
 
 /**
  * Properties for Editor Page
@@ -81,6 +76,8 @@ export interface IEditorPageState {
     isValid: boolean;
     /** Whether the show invalid region warning alert should display */
     showInvalidRegionWarning: boolean;
+
+    canvasWorkData: ICanvasWorkData;
 }
 
 function mapStateToProps(state: IApplicationState) {
@@ -119,6 +116,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         thumbnailSize: this.props.appSettings.thumbnailSize || { width: 175, height: 155 },
         isValid: true,
         showInvalidRegionWarning: false,
+        canvasWorkData: {zoomScale: 1.0, screenPos: {left: 0, top: 0}},
     };
 
     private activeLearningService: ActiveLearningService = null;
@@ -157,6 +155,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
         if (this.props.project && this.state.assets.length === 0) {
             await this.loadProjectAssets();
+        }
+
+        if (this.canvas.current) {
+            this.canvas.current.applyInitialWorkData();
         }
 
         const query = new URLSearchParams(this.props.location.search);
@@ -220,6 +222,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         {selectedAsset &&
                             <Canvas
                                 ref={this.canvas}
+                                initialWorkData={this.state.canvasWorkData}
                                 selectedAsset={this.state.selectedAsset}
                                 onAssetMetadataChanged={this.onAssetMetadataChanged}
                                 onCanvasRendered={this.onCanvasRendered}
@@ -263,21 +266,12 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         );
     }
 
-    private needToSave = () => {
-        if (this.canvas.current) {
-            const regionsInCanvas = this.canvas.current.getAllRegions();
-            return this.state.selectedAsset.regions.length !== regionsInCanvas.length ||
-                this.state.selectedAsset.regions.filter(
-                    r => regionsInCanvas.filter(ric => r.id === ric.id).length > 0).length > 0;
-        }
-        return false;
-    }
-
     /**
      * Called when the asset side bar is resized
      * @param newWidth The new sidebar width
      */
     private onSideBarResize = (newWidth: number) => {
+        console.log(newWidth);
         this.setState({
             thumbnailSize: {
                 width: newWidth,
@@ -369,16 +363,40 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         return asset.type !== AssetType.Unknown && asset.type !== AssetType.Video;
     }
 
+    private storeAssetMetadata = async (refresh: boolean = true) => {
+        if (this.canvas.current) {
+
+            console.log(this.canvas.current.getAllRegions());
+            const updatedAsset = {...this.state.selectedAsset,
+                regions: this.canvas.current.getAllRegions(),
+                workData: {
+                    zoomScale: this.canvas.current.getCurrentScale(),
+                    screenPos: this.canvas.current.getScreenPos()},
+            };
+            await this.onAssetMetadataChanged(updatedAsset);
+            if (refresh) {
+                this.setState({
+                    selectedAsset: updatedAsset,
+                    canvasWorkData:
+                        updatedAsset.workData});
+            }
+        }
+    }
+
     /**
      * Raised when the selected asset has been changed.
      * This can either be a parent or child asset
      */
     private onAssetMetadataChanged = async (assetMetadata: IAssetMetadata): Promise<void> => {
         // If the asset contains any regions without tags, don't proceed.
-        const regionsWithoutTags = assetMetadata.regions.filter((region) => region.tags.length === 0);
+        //const regionsWithoutTags = assetMetadata.regions.filter((region) => region.tags.length === 0);
+        if (!this.canvas.current) {
+            return;
+        }
+        const regionsWithoutTags = this.canvas.current.getAllRegions().filter((region) => region.tags.length === 0);
 
         if (regionsWithoutTags.length > 0) {
-            this.setState({ isValid: false });
+            alert(strings.editorPage.messages.enforceTaggedRegions.description);
             return;
         }
 
@@ -436,7 +454,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private onToolbarItemSelected = async (toolbarItem: ToolbarItem): Promise<void> => {
-        console.log(toolbarItem.props.name);
         switch (toolbarItem.props.name) {
             case ToolbarItemName.DrawRectangle:
                 this.canvas.current.setSelectionMode(SelectionMode.RECT);
@@ -481,6 +498,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 break;
             case ToolbarItemName.RemoveAllRegions:
                 this.canvas.current.confirmRemoveAllRegions();
+                break;
+            case ToolbarItemName.SaveProject:
+                await this.storeAssetMetadata();
                 break;
         }
     }
@@ -588,12 +608,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             return;
         }
 
-        //if (!this.state.isValid) {
-        if (this.needToSave()) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
-            //this.setState({ showInvalidRegionWarning: true });
-            return;
-        }
+        this.storeAssetMetadata(false);
+
         const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, asset);
         try {
             if (!assetMetadata.asset.size) {
@@ -610,6 +626,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
         this.setState({
             selectedAsset: assetMetadata,
+            canvasWorkData: {
+                zoomScale: assetMetadata.workData ? assetMetadata.workData.zoomScale : 1.0,
+                screenPos: assetMetadata.workData ? assetMetadata.workData.screenPos : {left: 0, top: 0},
+            },
         }, async () => {
             await this.onAssetMetadataChanged(assetMetadata);
         });
