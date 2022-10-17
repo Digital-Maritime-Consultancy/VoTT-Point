@@ -25,6 +25,7 @@ export default function MainContentRouter() {
                 <Route path="/connections" exact component={ConnectionPage} />
                 <Route path="/task/:taskId" component={TaskPage} />
                 <Route path="/projects/:projectId/edit/:type/:status" component={EditorPage} />
+                <Route path="/projects/:projectId/view" component={EditorPage} />
                 <Route path="/projects/create" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/settings" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/export" component={ExportPage} />

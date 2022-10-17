@@ -153,7 +153,7 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,
         accelerators: ["`"],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+        context: [EditingContext.None, EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({

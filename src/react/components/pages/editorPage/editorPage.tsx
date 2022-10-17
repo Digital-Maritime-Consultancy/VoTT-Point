@@ -281,9 +281,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     private getContext = (): EditingContext => {
         // Updating toolbar according to editing context
-        return (this.props.match.params["type"] && this.props.match.params["status"]) ?
+        // we will check first whether this is view mode or edit mode
+        if (this.props.match.path.endsWith("view")) {
+            return EditingContext.None;
+        } else {
+            return (this.props.match.params["type"] && this.props.match.params["status"]) ?
             getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
             getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
+        }
     }
 
     private onUnload = async () => {
@@ -367,6 +372,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private storeAssetMetadata = async (refresh: boolean = true, workData?: ICanvasWorkData) => {
+        if (this.getContext() === EditingContext.None) {
+            return ;
+        }
         if (this.canvas.current) {
             if (this.isThereSomethingUntagged()) {
                 alert(strings.editorPage.messages.enforceTaggedRegions.description);
@@ -654,8 +662,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         this.setState({
             selectedAsset: assetMetadata,
             canvasWorkData: {
-                zoomScale: assetMetadata.workData ? assetMetadata.workData.zoomScale : 1.0,
-                screenPos: assetMetadata.workData ? assetMetadata.workData.screenPos : {left: 0, top: 0},
+                zoomScale: this.getContext() !== EditingContext.None && assetMetadata.workData ?
+                    assetMetadata.workData.zoomScale : 1.0,
+                screenPos: this.getContext() !== EditingContext.None && assetMetadata.workData ?
+                    assetMetadata.workData.screenPos : {left: 0, top: 0},
             },
         }, async () => {
             await this.onAssetMetadataChanged(assetMetadata);

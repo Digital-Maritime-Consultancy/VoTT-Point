@@ -100,7 +100,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 />
                 <div id="canvasToolsDiv" ref={this.canvasZone} className="canvas-enabled"
                     onClick={(e) => e.stopPropagation()}>
-                    { this.props.context !== EditingContext.None &&
                     <div id="toolbarDiv" className="editor-page-content-main-header">
                         <EditorToolbar
                             ref={this.toolBar}
@@ -109,7 +108,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
                             actions={this.props.actions}
                             onToolbarItemSelected={this.props.onToolbarItemSelected} />
                     </div>
-                    }
                     <div id="showZoomFactor"></div>
                     <div id="selectionDiv" onWheel={this.onWheelCapture}
                         onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
@@ -145,7 +143,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
     public componentDidMount = () => {
         // Get references for editor and toolbar containers
         const editorContainer = document.getElementById("editorDiv") as HTMLDivElement;
-        const toolbarContainer = document.getElementById("toolbarDiv") as HTMLDivElement;;
 
         // Init the editor with toolbar.
         this.editor = new CanvasTools.Editor(editorContainer, undefined, undefined, undefined, {
@@ -226,6 +223,9 @@ export default class Canvas extends React.Component<ICanvasProps> {
      * @param selectedTag Tag name
      */
     public applyTag = (tag: string) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const selectedRegions = this.getSelectedRegions();
         const lockedTags = this.props.lockedTags;
         const lockedTagsEmpty = !lockedTags || !lockedTags.length;
@@ -255,6 +255,9 @@ export default class Canvas extends React.Component<ICanvasProps> {
     }
 
     public applyAttribute = (key: string, value: string) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
         const regions = this.getSelectedRegions();
         for (const region of regions) {
             const safekey =
@@ -348,14 +351,15 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     public applyInitialWorkData = () => {
         if (this.editor) {
-            this.editor.ZM.callbacks.setZoomLevel(this.props.initialWorkData.zoomScale);
-            if (this.props.initialWorkData.screenPos) {
-                this.editor.ZM.callbacks.onApplyScreenPos(
-                    this.props.initialWorkData.screenPos.left,
-                    this.props.initialWorkData.screenPos.top,
-                );
-            }
-            //this.editor.ZM.updateZoomScale(ZoomDirection.In, this.props.initialScale);
+            const zoomScale = this.props.context !== EditingContext.None ?
+                this.props.initialWorkData.zoomScale : 1.0;
+            const screenPos = this.props.context !== EditingContext.None && this.props.initialWorkData.screenPos ?
+                this.props.initialWorkData.screenPos : {left: 0, top: 0};
+            this.editor.ZM.callbacks.setZoomLevel(zoomScale);
+            this.editor.ZM.callbacks.onApplyScreenPos(
+                screenPos.left,
+                screenPos.top,
+            );
         }
     }
 
@@ -788,7 +792,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 }
                 e.nativeEvent.stopImmediatePropagation();
                 e.stopPropagation();
-                e.preventDefault();
             }
         } else {
             if (this.editor) {
