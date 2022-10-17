@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkData,
+    ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkData, IScreenPos,
 } from "../../../../models/applicationState";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
@@ -150,6 +150,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 this.props.project.dotToRectSettings.url : connectionJson.providerOptions.dotToRectUrl ?
                 connectionJson.providerOptions.dotToRectUrl : "");
         }
+        window.addEventListener("beforeunload", this.onUnload);
+    }
+
+    public componentWillUnmount() {
+        window.removeEventListener("beforeunload", this.onUnload);
     }
 
     public async componentDidUpdate(prevProps: Readonly<IEditorPageProps>) {
@@ -281,6 +286,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
     }
 
+    private onUnload = async () => {
+        await this.storeAssetMetadata();
+     }
+
     private onSelectedRegionsChanged = (selectedRegions: IRegion[]) => {
         
     }
@@ -357,7 +366,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         return asset.type !== AssetType.Unknown && asset.type !== AssetType.Video;
     }
 
-    private storeAssetMetadata = async (refresh: boolean = true) => {
+    private storeAssetMetadata = async (refresh: boolean = true, workData?: ICanvasWorkData) => {
         if (this.canvas.current) {
             if (this.isThereSomethingUntagged()) {
                 alert(strings.editorPage.messages.enforceTaggedRegions.description);
@@ -366,7 +375,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
             const updatedAsset = {...this.state.selectedAsset,
                 regions: this.canvas.current.getAllRegions(),
-                workData: {
+                workData: workData ? workData :
+                {
                     zoomScale: this.canvas.current.getCurrentScale(),
                     screenPos: this.canvas.current.getScreenPos()},
             };
@@ -500,6 +510,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 break;
             case ToolbarItemName.SaveProject:
                 await this.storeAssetMetadata();
+                break;
+            case ToolbarItemName.ResetZoom:
+                this.resetZoom();
                 break;
         }
     }
@@ -731,5 +744,9 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 forEvaluation: this.props.project.taskType === TaskType.Evaluation,
             } as IAsset,
         } as IAssetMetadata);
+    }
+
+    private resetZoom = () => {
+        this.storeAssetMetadata(true, {zoomScale: 1.0, screenPos: {left: 0, top: 0}});
     }
 }

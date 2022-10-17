@@ -340,6 +340,7 @@ export const chinesetw: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

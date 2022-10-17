@@ -336,6 +336,7 @@ export const korean: IAppStrings = {
             reject: "검수결과-기각",
             approve: "검수결과-승인",
             comment: "의견개제",
+            resetZoom: "줌 초기화",
         },
         videoPlayer: {
             previousTaggedFrame: {

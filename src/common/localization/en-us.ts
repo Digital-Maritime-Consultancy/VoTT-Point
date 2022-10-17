@@ -330,6 +330,7 @@ export const english: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

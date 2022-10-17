@@ -333,6 +333,7 @@ export interface IAppStrings {
             reject: string;
             approve: string;
             comment: string;
+            resetZoom: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

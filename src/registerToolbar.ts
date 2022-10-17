@@ -22,6 +22,7 @@ export enum ToolbarItemName {
     Disable = "disable",
     Approve = "approve",
     Comment = "comment",
+    ResetZoom = "resetZoom",
 }
 
 export enum ToolbarItemGroup {
@@ -143,6 +144,16 @@ export default function registerToolbar() {
         type: ToolbarItemType.State,
         accelerators: ["A", "a"],
         context: [EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.ResetZoom,
+        tooltip: strings.editorPage.toolbar.resetZoom,
+        icon: "fas fa-eye",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["`"],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
     ToolbarItemFactory.register({
