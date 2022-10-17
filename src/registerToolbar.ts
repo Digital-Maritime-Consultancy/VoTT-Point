@@ -151,7 +151,7 @@ export default function registerToolbar() {
         icon: "fas fa-arrow-circle-up",
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
-        accelerators: ["ArrowUp", "W", "w"],
+        accelerators: [","],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
@@ -161,7 +161,7 @@ export default function registerToolbar() {
         icon: "fas fa-arrow-circle-down",
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
-        accelerators: ["ArrowDown", "S", "s"],
+        accelerators: ["."],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
@@ -183,7 +183,7 @@ export default function registerToolbar() {
         icon: "fa-check-circle",
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
+        accelerators: ["S", "s"],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     }, SaveProject);
 }
