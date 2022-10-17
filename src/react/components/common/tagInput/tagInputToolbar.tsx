@@ -64,6 +64,7 @@ export default class TagInputToolbar extends React.Component<ITagInputToolbarPro
                 icon: "fa-search",
                 handler: this.handleSearch,
             },
+            /*
             {
                 displayName: strings.tags.toolbar.lock,
                 className: "lock",
@@ -94,6 +95,7 @@ export default class TagInputToolbar extends React.Component<ITagInputToolbarPro
                 icon: "fa-trash",
                 handler: this.handleDelete,
             },
+            */
         ];
     }
 
