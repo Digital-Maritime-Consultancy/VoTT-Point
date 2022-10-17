@@ -1,6 +1,12 @@
 # VoTT-dot Changelog
 
 <!-- cl-start -->
+# [0.4.0] Performance improvement through new canvas
+
+- feat: view mode support
+- feat: label (tag) preselect 
+- feat: zoom and screen position save
+- keyboard shortcut change
 
 # [0.3.0] Region attributes annotation support
 
