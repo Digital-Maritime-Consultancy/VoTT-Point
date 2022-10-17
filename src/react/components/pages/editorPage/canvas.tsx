@@ -28,6 +28,7 @@ import { KeyboardBinding } from "../../common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../../common/keyboardManager/keyboardManager";
 import { Color } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Colors/Color";
 import { ZoomDirection } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
+import { createContentBoundingBox } from "../../../../common/layout";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -67,6 +68,8 @@ export default class Canvas extends React.Component<ICanvasProps> {
     private attributeInput: React.RefObject<AttributeInput> = React.createRef();
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private template: Rect = new Rect(20, 20);
+    private contentSourceElmId = "contentSource";
+    private loading = false;
 
     public render = () => {
         return (
@@ -160,6 +163,11 @@ export default class Canvas extends React.Component<ICanvasProps> {
         this.editor.onZoomEnd = function (zoom) {
             showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale * 100 + " %";
         };
+        window.addEventListener("resize", this.onWindowResize);
+    }
+
+    public componentWillUnmount() {
+        window.removeEventListener("resize", this.onWindowResize);
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>) => {
@@ -177,10 +185,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
             //this.setContentSource(this.state.contentSource);
             //this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
             this.editor.AS.enable();
-        }
-
-        if (this.props.initialWorkData.zoomScale !== prevProps.initialWorkData.zoomScale) {
-            this.applyInitialWorkData();
         }
 
         const assetIdChanged = this.props.selectedAsset.asset.id !== prevProps.selectedAsset.asset.id;
@@ -203,7 +207,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     public setSelectionMode = (mode: SelectionMode) => {
         const options = (mode === SelectionMode.COPYRECT) ? this.template : null;
-        console.log(mode);
         this.editor.AS.setSelectionMode({ mode, template: options });
     }
 
@@ -339,6 +342,10 @@ export default class Canvas extends React.Component<ICanvasProps> {
         }
     }
 
+    public setLoading = (value: boolean) => {
+        this.loading = value;
+    }
+
     public applyInitialWorkData = () => {
         if (this.editor) {
             this.editor.ZM.callbacks.setZoomLevel(this.props.initialWorkData.zoomScale);
@@ -350,6 +357,10 @@ export default class Canvas extends React.Component<ICanvasProps> {
             }
             //this.editor.ZM.updateZoomScale(ZoomDirection.In, this.props.initialScale);
         }
+    }
+
+    public forceResize = (): void => {
+        this.onWindowResize();
     }
 
     /**
@@ -378,7 +389,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
         */
     }
 
-    private removeAllRegions = () => {
+    public removeAllRegions = () => {
         if (this.props.context === EditingContext.None) {
             return ;
         }
@@ -391,13 +402,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     private addRegions = (regions: IRegion[]) => {
         this.addRegionsToCanvasTools(regions);
-        this.addRegionsToAsset(regions);
-    }
-
-    private addRegionsToAsset = (regions: IRegion[]) => {
-        this.updateAssetRegions(
-            this.props.selectedAsset.regions.concat(regions),
-        );
     }
 
     private addRegionsToCanvasTools = (regions: IRegion[]) => {
@@ -420,7 +424,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
             return ;
         }
         this.deleteRegionsFromCanvasTools(regions);
-        this.deleteRegionsFromAsset(regions);
     }
 
     private deleteRegionsFromAsset = (regions: IRegion[]) => {
@@ -619,36 +622,76 @@ export default class Canvas extends React.Component<ICanvasProps> {
     }
 
     /**
+     * Set the loaded asset content source into the canvas tools canvas
+     */
+     private setContentSource = async (contentSource: ContentSource) => {
+        try {
+            await this.editor.addContentSource(contentSource as any);
+
+            if (this.props.onCanvasRendered) {
+                const canvas = this.canvasZone.current.querySelector("canvas");
+                this.props.onCanvasRendered(canvas);
+            }
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
+    /**
+     * Positions the canvas tools drawing surface to be exactly over the asset content
+     */
+    private positionCanvas = (contentSource: ContentSource) => {
+        if (!contentSource) {
+            return;
+        }
+
+        const canvas = this.canvasZone.current;
+        if (canvas) {
+            const boundingBox = createContentBoundingBox(contentSource);
+            canvas.style.top = `${boundingBox.top}px`;
+            canvas.style.left = `${boundingBox.left}px`;
+            canvas.style.width = `${boundingBox.width}px`;
+            canvas.style.height = `${boundingBox.height}px`;
+            this.editor.resize(boundingBox.width, boundingBox.height);
+        }
+    }
+
+    /**
+     * Resizes and re-renders the canvas when the application window size changes
+     */
+    private onWindowResize = async () => {
+        const contentSource = document.getElementById(this.contentSourceElmId);
+        if (contentSource) {
+            this.positionCanvas(contentSource as ContentSource);
+        }
+    }
+
+    /**
      * Raised when the asset bound to the asset preview has changed
      */
-     private onAssetChanged = () => {
+     private onAssetChanged = () => {}
 
-    }
     /**
      * Raised when the underlying asset has completed loading
      */
     private onAssetLoaded = (contentSource: ContentSource) => {
         this.refreshCanvasToolsRegions();
-        this.editor.addContentSource(contentSource);
+        (contentSource as HTMLElement).setAttribute("id", this.contentSourceElmId);
+        this.setContentSource(contentSource);
         this.editor.AS.enable();
     }
-    private onAssetError = () => {
 
-    }
+    private onAssetError = () => {}
 
     /**
      * Raised when the asset is taking control over the rendering
      */
-     private onAssetActivated = () => {
-        
-    }
+     private onAssetActivated = () => {}
 
     /**
      * Raise when the asset is handing off control of rendering
      */
-     private onAssetDeactivated = (contentSource: ContentSource) => {
-        
-    }
+     private onAssetDeactivated = (contentSource: ContentSource) => {}
 
     /**
      * Updates regions in both Canvas Tools and the asset data store

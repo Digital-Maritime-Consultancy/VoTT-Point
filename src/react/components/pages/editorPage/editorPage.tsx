@@ -271,13 +271,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
      * @param newWidth The new sidebar width
      */
     private onSideBarResize = (newWidth: number) => {
-        console.log(newWidth);
-        this.setState({
-            thumbnailSize: {
-                width: newWidth,
-                height: newWidth / (4 / 3),
-            },
-        }, () => {});
+        //this.canvas.current.forceResize();
     }
 
     private getContext = (): EditingContext => {
@@ -365,8 +359,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
 
     private storeAssetMetadata = async (refresh: boolean = true) => {
         if (this.canvas.current) {
+            if (this.isThereSomethingUntagged()) {
+                alert(strings.editorPage.messages.enforceTaggedRegions.description);
+                return;
+            }
 
-            console.log(this.canvas.current.getAllRegions());
             const updatedAsset = {...this.state.selectedAsset,
                 regions: this.canvas.current.getAllRegions(),
                 workData: {
@@ -383,6 +380,14 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
     }
 
+    private isThereSomethingUntagged = (): boolean => {
+        if (!this.canvas.current) {
+            return false;
+        }
+        const regionsWithoutTags = this.canvas.current.getAllRegions().filter((region) => region.tags.length === 0);
+        return regionsWithoutTags.length > 0;
+    }
+
     /**
      * Raised when the selected asset has been changed.
      * This can either be a parent or child asset
@@ -391,12 +396,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         // If the asset contains any regions without tags, don't proceed.
         //const regionsWithoutTags = assetMetadata.regions.filter((region) => region.tags.length === 0);
         if (!this.canvas.current) {
-            return;
-        }
-        const regionsWithoutTags = this.canvas.current.getAllRegions().filter((region) => region.tags.length === 0);
-
-        if (regionsWithoutTags.length > 0) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
             return;
         }
 
@@ -506,6 +505,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private processPoint2Rect = async () => {
+        if (this.isThereSomethingUntagged()) {
+            alert(strings.editorPage.messages.enforceTaggedRegions.description);
+            return;
+        }
         if (!this.onBeforeAssetSelected()) {
             return;
         } else {
@@ -550,6 +553,13 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (!canvas) {
             return;
         }
+
+        if (this.isThereSomethingUntagged()) {
+            alert(strings.editorPage.messages.enforceTaggedRegions.description);
+            return;
+        }
+
+        await this.storeAssetMetadata(false);
 
         // Load the configured ML model
         if (!this.activeLearningService.isModelLoaded()) {
@@ -603,12 +613,16 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private selectAsset = async (asset: IAsset): Promise<void> => {
+        if (this.isThereSomethingUntagged()) {
+            alert(strings.editorPage.messages.enforceTaggedRegions.description);
+            return;
+        }
         // Nothing to do if we are already on the same asset.
         if (this.state.selectedAsset && this.state.selectedAsset.asset.id === asset.id) {
             return;
         }
 
-        this.storeAssetMetadata(false);
+        await this.storeAssetMetadata(false);
 
         const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, asset);
         try {
@@ -701,7 +715,11 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     private updateAssetMetadataState = async (state: AssetState, completed: boolean = false) => {
-        this.onAssetMetadataChanged(
+        if (this.isThereSomethingUntagged()) {
+            alert(strings.editorPage.messages.enforceTaggedRegions.description);
+            return;
+        }
+        await this.onAssetMetadataChanged(
             {
             ...this.state.selectedAsset,
             asset: {
