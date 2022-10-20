@@ -110,6 +110,7 @@ export default class CanvasHelpers {
             region.boundingBox.width,
             region.boundingBox.height,
             region.points.map((point) =>
+                !point.x ? new Point2D(region.boundingBox.left, region.boundingBox.top) :
                 new Point2D(point.x, point.y)),
             this.regionTypeToType(region.type));
     }
