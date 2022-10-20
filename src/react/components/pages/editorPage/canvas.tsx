@@ -428,6 +428,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 region.id,
                 scaledRegionData,
                 CanvasHelpers.getTagsDescriptor(this.props.project.tags, region),
+                region.attributes,
             );
         }
     }
@@ -466,14 +467,14 @@ export default class Canvas extends React.Component<ICanvasProps> {
             return;
         }
         const id = shortid.generate();
-
+        const defaultAttributes = this.appendAttributeKeys({});
         let selectedTag;
         if (this.tagInput.current) {
             selectedTag = this.tagInput.current.getSelectedTag();
         }
         this.editor.RM.addRegion(id, regionData, new CanvasTools.Core.TagsDescriptor(
-            selectedTag ? [new CanvasTools.Core.Tag(selectedTag.name, new Color(selectedTag.color))] : []
-        ));
+            selectedTag ? [new CanvasTools.Core.Tag(selectedTag.name, new Color(selectedTag.color))] : []),
+            defaultAttributes);
         this.template = new Rect(regionData.width, regionData.height);
 
         const lockedTags = this.props.lockedTags;
@@ -483,7 +484,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
             this.props.selectedAsset.asset.size.width,
             this.props.selectedAsset.asset.size.height,
             regionData,
-            this.appendAttributeKeys({}),
+            defaultAttributes,
             selectedTag ? selectedTag : [],
         );
 
@@ -492,9 +493,8 @@ export default class Canvas extends React.Component<ICanvasProps> {
         }
 
         this.updateAttribute(newRegion);
-
+        // select the created region
         this.editor.RM.selectRegionById(id);
-        //this.updateAssetRegions([...this.props.selectedAsset.regions, newRegion]);
     }
 
     /**
