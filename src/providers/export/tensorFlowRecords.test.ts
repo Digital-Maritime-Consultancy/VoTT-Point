@@ -90,6 +90,7 @@ describe("TFRecords Json Export Provider", () => {
                     asset,
                     regions: [mockRegion],
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
 
                 return Promise.resolve(assetMetadata);

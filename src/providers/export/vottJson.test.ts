@@ -77,6 +77,7 @@ describe("VoTT Json Export Provider", () => {
                     asset,
                     regions: [],
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
 
                 return Promise.resolve(assetMetadata);

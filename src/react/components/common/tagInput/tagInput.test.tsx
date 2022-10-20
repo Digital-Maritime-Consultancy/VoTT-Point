@@ -2,7 +2,7 @@ import React from "react";
 import { ReactWrapper, mount } from "enzyme";
 import { TagInput, ITagInputProps, ITagInputState } from "./tagInput";
 import MockFactory from "../../../../common/mockFactory";
-import { ITag } from "../../../../models/applicationState";
+import { EditingContext, ITag } from "../../../../models/applicationState";
 import TagInputItem, { ITagInputItemProps } from "./tagInputItem";
 import { ColorPicker } from "../colorPicker";
 
@@ -17,7 +17,8 @@ describe("Tag Input Component", () => {
         return {
             tags: tags || MockFactory.createTestTags(),
             lockedTags: [],
-            selectedRegions: [MockFactory.createTestRegion()],
+            editingContext: EditingContext.EditRect,
+            onGetSelectedRegions: jest.fn(),
             onChange: onChange || jest.fn(),
             onLockedTagsChange: jest.fn(),
             onTagClick: jest.fn(),
@@ -399,10 +400,6 @@ describe("Tag Input Component", () => {
 
         const selectedRegion = MockFactory.createTestRegion();
         selectedRegion.tags = [tags[0].name, tags[1].name];
-
-        wrapper.setProps({
-            selectedRegions: [selectedRegion],
-        });
 
         const selectedTags = wrapper
             .findWhere((el: ReactWrapper<ITagInputItemProps>) => {

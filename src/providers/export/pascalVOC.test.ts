@@ -79,6 +79,7 @@ describe("PascalVOC Json Export Provider", () => {
                     asset,
                     regions: [mockRegion1, mockRegion2],
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
 
                 return Promise.resolve(assetMetadata);
