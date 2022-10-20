@@ -214,7 +214,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 this.props.selectedAsset.asset.size.width,
                 this.props.selectedAsset.asset.size.height,
                 r.regionData,
-                r.attributes,
+                this.appendAttributeKeys((r.attributes)),
                 CanvasHelpers.getTagsString(this.props.project.tags, r.tags)));
     }
 
@@ -404,6 +404,15 @@ export default class Canvas extends React.Component<ICanvasProps> {
         this.deleteRegionsFromAsset(this.props.selectedAsset.regions);
     }
 
+    public appendAttributeKeys = (attributes: { [key: string]: string; }): { [key: string]: string; } => {
+        this.props.project.attributeKeys.forEach(key => {
+            if (!(key.name in attributes)) {
+                attributes[key.name] = "";
+            }
+        })
+        return attributes;
+    }
+
     private addRegions = (regions: IRegion[]) => {
         this.addRegionsToCanvasTools(regions);
     }
@@ -474,13 +483,15 @@ export default class Canvas extends React.Component<ICanvasProps> {
             this.props.selectedAsset.asset.size.width,
             this.props.selectedAsset.asset.size.height,
             regionData,
-            {},
+            this.appendAttributeKeys({}),
             selectedTag ? selectedTag : [],
         );
 
         if (lockedTags && lockedTags.length) {
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
         }
+
+        this.updateAttribute(newRegion);
 
         this.editor.RM.selectRegionById(id);
         //this.updateAssetRegions([...this.props.selectedAsset.regions, newRegion]);
@@ -703,20 +714,22 @@ export default class Canvas extends React.Component<ICanvasProps> {
      * @param updatedSelectedRegions Selected regions with any changes already applied
      */
     private updateRegions = (updates: IRegion[]) => {
-        const updatedRegions = CanvasHelpers.updateRegions(this.props.selectedAsset.regions, updates);
         for (const update of updates) {
             this.editor.RM.updateTagsById(update.id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, update));
 
             // update attributes for regions
-            Object.keys(update.attributes).forEach(key => {
-                const result = CanvasHelpers.getAttributeForProject(this.props.project.attributeKeys.map(e => e.name), key);
-                if (result) {
-                    const value = update.attributes[key];
-                    this.editor.RM.updateAttributeById(update.id, key, value);
-                }
-              });
+            this.updateAttribute(update);
         }
-        //this.updateAssetRegions(updatedRegions);
+    }
+
+    private updateAttribute = (region: IRegion) => {
+        Object.keys(region.attributes).forEach(key => {
+            const result = CanvasHelpers.getAttributeForProject(this.props.project.attributeKeys.map(e => e.name), key);
+            if (result) {
+                const value = region.attributes[key];
+                this.editor.RM.updateAttributeById(region.id, key, value);
+            }
+          });
     }
 
     /**
