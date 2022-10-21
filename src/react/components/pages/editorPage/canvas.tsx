@@ -6,7 +6,7 @@ import {
     EditingContext,
     EditorMode,
     IAssetMetadata,
-    ICanvasWorkData,
+    ICanvasWorkViewData,
     IPoint,
     IProject, IRegion, IScreenPos, ITag, RegionType,
 } from "../../../../models/applicationState";
@@ -40,7 +40,7 @@ export interface ICanvasProps extends React.Props<Canvas> {
     context?: EditingContext;
     actions?: IProjectActions;
     selectedRegions: IRegion[];
-    initialWorkData: ICanvasWorkData;
+    initialWorkData: ICanvasWorkViewData;
     confirmTagDeleted?: (tagName: string) => void;
     confirmTagRenamed?: (tagName: string, newTagName: string) => void;
     onAssetMetadataChanged?: (assetMetadata: IAssetMetadata) => void;

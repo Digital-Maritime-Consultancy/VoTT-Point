@@ -98,7 +98,7 @@ describe("Editor Page Component", () => {
                 asset: { ...asset },
                 regions: [],
                 version: appInfo.version,
-                workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+                workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
             };
 
             return Promise.resolve(assetMetadata);
@@ -242,7 +242,7 @@ describe("Editor Page Component", () => {
             asset: defaultAsset,
             regions: [newRegion],
             version: appInfo.version,
-            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+            workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         saveAssetMetadataSpy.mockClear();
@@ -291,7 +291,7 @@ describe("Editor Page Component", () => {
             asset: defaultAsset,
             regions: [newRegion],
             version: appInfo.version,
-            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+            workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         saveAssetMetadataSpy.mockClear();
@@ -365,7 +365,7 @@ describe("Editor Page Component", () => {
             asset: imageAsset,
             regions: [MockFactory.createTestRegion("editedImageAsset", ["test"])],
             version: appInfo.version,
-            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+            workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         const saveMock = assetServiceMock.prototype.save as jest.Mock;
@@ -433,7 +433,7 @@ describe("Editor Page Component", () => {
                 asset: videoFrames[0],
                 regions: [MockFactory.createTestRegion("region1", ["test"])],
                 version: appInfo.version,
-                workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+                workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
             };
 
             const saveMock = assetServiceMock.prototype.save as jest.Mock;
@@ -451,7 +451,7 @@ describe("Editor Page Component", () => {
                 },
                 regions: [],
                 version: appInfo.version,
-                workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+                workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
             };
 
             // Called 2 times, once for root and once for child.

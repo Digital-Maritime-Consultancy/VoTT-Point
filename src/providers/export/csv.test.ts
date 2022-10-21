@@ -92,7 +92,7 @@ describe("CSV Format Export Provider", () => {
                         },
                     ],
                     version: appInfo.version,
-                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+                    workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
 
                 return Promise.resolve(assetMetadata);

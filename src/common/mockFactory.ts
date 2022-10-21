@@ -255,7 +255,7 @@ export default class MockFactory {
             asset: asset || MockFactory.createTestAsset(),
             regions: regions || [],
             version: appInfo.version,
-            workData: undefined,
+            workViewData: undefined,
         };
     }
 

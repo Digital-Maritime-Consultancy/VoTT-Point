@@ -332,7 +332,7 @@ export interface IAsset {
 
 export interface IScreenPos { left: number; top: number; }
 
-export interface ICanvasWorkData {
+export interface ICanvasWorkViewData {
     zoomScale: number;
     screenPos: IScreenPos;
 }
@@ -342,12 +342,12 @@ export interface ICanvasWorkData {
  * @description - Format to store asset metadata for each asset within a project
  * @member asset - References an asset within the project
  * @member regions - The list of regions drawn on the asset
- * @member workData - Editing context of canvas
+ * @member workViewData - Editing context of canvas
  */
 export interface IAssetMetadata {
     asset: IAsset;
     regions: IRegion[];
-    workData: ICanvasWorkData;
+    workViewData: ICanvasWorkViewData;
     version: string;
 }
 
