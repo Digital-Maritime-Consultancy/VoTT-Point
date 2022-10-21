@@ -463,7 +463,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
      * @returns {void}
      */
     private onSelectionEnd = (regionData: RegionData) => {
-        if (CanvasHelpers.isEmpty(regionData)) {
+        if (CanvasHelpers.isEmpty(regionData) || CanvasHelpers.isEmptyRegion(regionData)) {
             return;
         }
         const id = shortid.generate();

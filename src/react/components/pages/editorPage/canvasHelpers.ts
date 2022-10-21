@@ -195,6 +195,10 @@ export default class CanvasHelpers {
         return regionData.area === 0 && regionData.x === 0 && regionData.y === 0;
     }
 
+    public static isEmptyRegion(regionData: RegionData): boolean {
+        return (regionData.type === RegionDataType.Rect || regionData.type === RegionDataType.Polygon) && regionData.area === 0;
+    }
+
     /**
      * Create TagsDescriptor (CanvasTools) from IRegion
      * @param region IRegion from Canvas
