@@ -115,6 +115,10 @@ export const spanish: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "Agregar Conexión",
         messages: {
             saveSuccess: "Guardado correctamente ${project.name} configuración del proyecto",
@@ -133,6 +137,14 @@ export const spanish: IAppStrings = {
         totalRegionCount: "Total de regiones",
         totalTagCount: "Total de etiquetas",
         avgTagCountPerAsset: "Recuento promedio de etiquetas por activo",
+    },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
     },
     tags: {
         title: "Etiquetas",
@@ -320,6 +332,7 @@ export const spanish: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

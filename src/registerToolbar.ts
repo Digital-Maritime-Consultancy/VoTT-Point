@@ -22,6 +22,7 @@ export enum ToolbarItemName {
     Disable = "disable",
     Approve = "approve",
     Comment = "comment",
+    ResetZoom = "resetZoom",
 }
 
 export enum ToolbarItemGroup {
@@ -146,12 +147,22 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
+        name: ToolbarItemName.ResetZoom,
+        tooltip: strings.editorPage.toolbar.resetZoom,
+        icon: "fas fa-eye",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["`"],
+        context: [EditingContext.None, EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+    });
+
+    ToolbarItemFactory.register({
         name: ToolbarItemName.PreviousAsset,
         tooltip: strings.editorPage.toolbar.previousAsset,
         icon: "fas fa-arrow-circle-up",
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
-        accelerators: ["ArrowUp", "W", "w"],
+        accelerators: [","],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
@@ -161,7 +172,7 @@ export default function registerToolbar() {
         icon: "fas fa-arrow-circle-down",
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
-        accelerators: ["ArrowDown", "S", "s"],
+        accelerators: ["."],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     });
 
@@ -183,7 +194,7 @@ export default function registerToolbar() {
         icon: "fa-check-circle",
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
-        accelerators: ["CmdOrCtrl+S", "CmdOrCtrl+s"],
+        accelerators: ["S", "s"],
         context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
     }, SaveProject);
 }

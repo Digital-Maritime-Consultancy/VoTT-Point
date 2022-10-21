@@ -124,6 +124,7 @@ export interface IProject {
     activeLearningSettings: IActiveLearningSettings;
     dotToRectSettings: IDot2RectSettings;
     autoSave: boolean;
+    attributeKeys?: IAttributeKey[];
     assets?: { [index: string]: IAsset };
     lastVisitedAssetId?: string;
     stellaUrl?: string;
@@ -149,6 +150,11 @@ export interface IFileInfo {
 export interface ITag {
     name: string;
     color: string;
+}
+
+export interface IAttributeKey {
+    name: string;
+    description: string;
 }
 
 /**
@@ -324,15 +330,24 @@ export interface IAsset {
     comment?: string;
 }
 
+export interface IScreenPos { left: number; top: number; }
+
+export interface ICanvasWorkData {
+    zoomScale: number;
+    screenPos: IScreenPos;
+}
+
 /**
  * @name - Asset Metadata
  * @description - Format to store asset metadata for each asset within a project
  * @member asset - References an asset within the project
  * @member regions - The list of regions drawn on the asset
+ * @member workData - Editing context of canvas
  */
 export interface IAssetMetadata {
     asset: IAsset;
     regions: IRegion[];
+    workData: ICanvasWorkData;
     version: string;
 }
 
@@ -354,6 +369,7 @@ export interface ISize {
  * @member type - Defines the type of region
  * @member tags - Defines a list of tags applied to a region
  * @member points - Defines a list of points that define a region
+ * @member attributes - Defines a set of attributes for a region
  */
 export interface IRegion {
     id: string;
@@ -361,6 +377,7 @@ export interface IRegion {
     tags: string[];
     points?: IPoint[];
     boundingBox?: IBoundingBox;
+    attributes?: { [key: string]: string; };
 }
 
 /**

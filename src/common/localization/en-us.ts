@@ -114,6 +114,10 @@ export const english: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "Add Connection",
         messages: {
             saveSuccess: "Successfully saved ${project.name} project settings",
@@ -132,6 +136,14 @@ export const english: IAppStrings = {
         totalRegionCount: "Total Tagged Regions",
         totalTagCount: "Total classes",
         avgTagCountPerAsset: "Average classes per asset",
+    },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
     },
     tags: {
         title: "Class",
@@ -318,6 +330,7 @@ export const english: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

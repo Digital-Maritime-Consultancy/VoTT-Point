@@ -117,6 +117,10 @@ export const japanese: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "接続を追加", // Add Connection,
         messages: {
             saveSuccess: "${project.name} プロジェクト設定を正常に保存しました", // Successfully saved ${project.name} project settings"
@@ -135,6 +139,14 @@ export const japanese: IAppStrings = {
         totalRegionCount: "タグ付けされたすべての領域",  // Total Tagged Regions,
         totalTagCount: "すべてのタグ",  // Total Tags,
         avgTagCountPerAsset: "アセットごとの平均タグ", // Average tags per asset"
+    },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
     },
     tags: {
         title: "タグ", // Tags,
@@ -325,6 +337,7 @@ export const japanese: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

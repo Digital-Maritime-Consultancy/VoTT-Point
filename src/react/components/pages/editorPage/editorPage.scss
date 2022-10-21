@@ -28,6 +28,7 @@
   &-right-sidebar {
     display: flex;
     margin-left: auto;
+    flex-direction: column;
   }
 
   &-content {
@@ -432,5 +433,5 @@ canvas {
 
 ::-webkit-scrollbar {
   height: 5px;
-  width: 5px;
+  width: 10px;
 }

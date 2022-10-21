@@ -6,6 +6,7 @@ import { IProject } from "../../../../models/applicationState";
 import { IToolbarItemProps, ToolbarItem, ToolbarItemType } from "../../toolbar/toolbarItem";
 import "./editorToolbar.scss";
 import { ToolbarItemName } from "../../../../registerToolbar";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 
 /**
  * Properties for Editor Toolbar
@@ -64,6 +65,10 @@ export class EditorToolbar extends React.Component<IEditorToolbarProps, IEditorT
                 )}
             </div>
         );
+    }
+
+    public getToolbarItemName = (): ToolbarItemName => {
+        return this.state.selectedItem;
     }
 
     private onToolbarItemSelected = (toolbarItem: ToolbarItem) => {

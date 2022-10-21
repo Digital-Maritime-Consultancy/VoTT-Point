@@ -169,6 +169,7 @@ describe("Azure Custom Vision Export Provider", () => {
                             height: 100,
                             width: 100,
                         },
+                        attributes: {},
                     },
                 ];
 
@@ -176,6 +177,7 @@ describe("Azure Custom Vision Export Provider", () => {
                     asset,
                     regions: asset.state === AssetState.TaggedDot ? regions : [],
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 });
             });
 

@@ -73,5 +73,6 @@ export function fetchAnnotationInfo(tagElement: Element): IRegion {
             left: xtl,
             top: ytl,
         },
+        attributes: {},
     };
 }

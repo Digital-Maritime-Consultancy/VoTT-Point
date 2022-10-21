@@ -2,7 +2,7 @@ import React, { KeyboardEvent, RefObject } from "react";
 import ReactDOM from "react-dom";
 import Align from "rc-align";
 import { randomIntInRange } from "../../../../common/utils";
-import { IRegion, ITag } from "../../../../models/applicationState";
+import { EditingContext, IRegion, ITag } from "../../../../models/applicationState";
 import { ColorPicker } from "../colorPicker";
 import "./tagInput.scss";
 import "../condensedList/condensedList.scss";
@@ -18,8 +18,10 @@ export interface ITagInputProps {
     tags: ITag[];
     /** Function called on tags change */
     onChange: (tags: ITag[]) => void;
+    /** Editing context */
+    editingContext: EditingContext;
     /** Currently selected regions in canvas */
-    selectedRegions?: IRegion[];
+    onGetSelectedRegions?: () => IRegion[];
     /** Tags that are currently locked for editing experience */
     lockedTags?: string[];
     /** Updates to locked tags */
@@ -77,7 +79,7 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
 
     public render() {
         return (
-            <div className="tag-input condensed-list">
+            <div className="tag-input condensed-list"  onClick={(e) => e.stopPropagation()}>
                 <h6 className="condensed-list-header tag-input-header bg-darker-2 p-2">
                     <span className="condensed-list-title tag-input-title">{strings.tags.title}</span>
                     <TagInputToolbar
@@ -147,12 +149,14 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                 tags: this.props.tags,
             });
         }
+    }
 
-        if (prevProps.selectedRegions !== this.props.selectedRegions && this.props.selectedRegions.length > 0) {
-            this.setState({
-                selectedTag: null,
-            });
-        }
+    public setSelectedTag = (selectedTag: string) => {
+        this.setState({ selectedTag: this.props.tags.filter(t => t.name === selectedTag).pop() });
+    }
+
+    public getSelectedTag = (): ITag => {
+        return this.state.selectedTag;
     }
 
     private getTagNode = (tag: ITag): Element => {
@@ -329,16 +333,16 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                 isBeingEdited: this.state.editingTag && this.state.editingTag.name === tag.name,
                 isSelected: this.state.selectedTag && this.state.selectedTag.name === tag.name,
                 appliedToSelectedRegions: selectedRegionTagSet.has(tag.name),
-                onClick: this.handleClick,
-                onChange: this.updateTag,
+                onClick: this.props.editingContext === EditingContext.None ? () => {} : this.handleClick,
+                onChange: this.props.editingContext === EditingContext.None ? () => {} : this.updateTag,
             } as ITagInputItemProps
         ));
     }
 
     private getSelectedRegionTagSet = (): Set<string> => {
         const result = new Set<string>();
-        if (this.props.selectedRegions) {
-            for (const region of this.props.selectedRegions) {
+        if (this.props.onGetSelectedRegions && this.props.onGetSelectedRegions()) {
+            for (const region of this.props.onGetSelectedRegions()) {
                 for (const tag of region.tags) {
                     result.add(tag);
                 }
@@ -372,17 +376,18 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
             const alreadySelected = selectedTag && selectedTag.name === tag.name;
             const newEditingTag = inEditMode ? null : editingTag;
 
+            //*
             this.setState({
                 editingTag: newEditingTag,
                 editingTagNode: this.getTagNode(newEditingTag),
                 selectedTag: (alreadySelected && !inEditMode) ? null : tag,
                 clickedColor: props.clickedColor,
                 showColorPicker: false,
-            });
+            });//*/
 
             // Only fire click event if a region is selected
-            if (this.props.selectedRegions &&
-                this.props.selectedRegions.length > 0 &&
+            if (this.props.onGetSelectedRegions &&
+                this.props.onGetSelectedRegions().length > 0 &&
                 this.props.onTagClick &&
                 !inEditMode) {
                 this.props.onTagClick(tag);

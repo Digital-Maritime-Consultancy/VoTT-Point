@@ -126,6 +126,7 @@ describe("Asset Service", () => {
                         asset: testAssets[0],
                         regions: [],
                         version: "",
+                        workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                     };
 
                     return JSON.stringify(assetMetadata, null, 4);
@@ -172,6 +173,7 @@ describe("Asset Service", () => {
                 },
                 regions: [],
                 version: "",
+                workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
             };
 
             const result = await assetService.save(assetMetadata);
@@ -191,6 +193,7 @@ describe("Asset Service", () => {
                 },
                 regions: [],
                 version: "",
+                workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
             };
 
             const result = await assetService.save(assetMetadata);
@@ -249,6 +252,7 @@ describe("Asset Service", () => {
                         asset: testAssets[0],
                         regions: [],
                         version: "",
+                        workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                     };
 
                     return JSON.stringify(assetMetadata, null, 4);

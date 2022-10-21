@@ -117,6 +117,10 @@ export const korean: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "연결 추가", // Add Connection,
         messages: {
             saveSuccess: "${project.name} 프로젝트 설정을 성공적으로 저장했습니다", // Successfully saved ${project.name} project settings
@@ -135,6 +139,14 @@ export const korean: IAppStrings = {
         totalRegionCount: "태그된 영역 수",  // Total Tagged Regions,
         totalTagCount: "클래스 숫자",  // Total Tags,
         avgTagCountPerAsset: "Asset 당 평균 클래스 숫자", // Average tags per asset"
+    },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
     },
     tags: {
         title: "클래스", // Tags,
@@ -324,6 +336,7 @@ export const korean: IAppStrings = {
             reject: "검수결과-기각",
             approve: "검수결과-승인",
             comment: "의견개제",
+            resetZoom: "줌 초기화",
         },
         videoPlayer: {
             previousTaggedFrame: {

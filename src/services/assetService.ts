@@ -193,12 +193,14 @@ export class AssetService {
                     asset: { ...asset },
                     regions: await this.getRegionsFromTFRecord(asset),
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
             } else {
                 return {
                     asset: { ...asset },
                     regions: [],
                     version: appInfo.version,
+                    workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
                 };
             }
         }
@@ -294,6 +296,7 @@ export class AssetService {
                     x: objectArray.xmaxArray[index] * objectArray.width,
                     y: objectArray.ymaxArray[index] * objectArray.height,
                 }],
+                attributes: {},
             });
         }
 

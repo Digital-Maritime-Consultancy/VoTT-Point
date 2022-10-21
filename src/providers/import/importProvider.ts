@@ -101,6 +101,7 @@ export abstract class ImportProvider implements IImportProvider {
                 tags: region.tags,
                 points: region.points,
                 boundingBox: region.boundingBox,
+                attributes: region.attributes,
             };
             metadata.regions.push(generatedRegion);
         });

@@ -112,6 +112,10 @@ export interface IAppStrings {
             description: string;
             frameExtractionRate: string;
         },
+        attributeKeys: {
+            title: string;
+            description: string;
+        },
         taskType: {
             title: string;
             description: string;
@@ -138,6 +142,14 @@ export interface IAppStrings {
         totalRegionCount: string;
         totalTagCount: string;
         avgTagCountPerAsset: string;
+    };
+    attributeKeys: {
+        title: string;
+        description: string;
+        properties: {
+            name: string;
+            description: string;
+        }
     };
     tags: {
         title: string;
@@ -321,6 +333,7 @@ export interface IAppStrings {
             reject: string;
             approve: string;
             comment: string;
+            resetZoom: string;
         }
         videoPlayer: {
             nextTaggedFrame: {

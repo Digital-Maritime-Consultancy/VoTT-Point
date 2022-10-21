@@ -30,7 +30,6 @@ import { Point2D } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/Canvas
 import { RegionDataType, RegionData } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/RegionData";
 import { randomIntInRange, encodeFileURI } from "./utils";
 import { appInfo } from "./appInfo";
-import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 import { IKeyboardBindingProps } from "../react/components/common/keyboardBinding/keyboardBinding";
 import { KeyEventType } from "../react/components/common/keyboardManager/keyboardManager";
 import { IKeyboardRegistrations } from "../react/components/common/keyboardManager/keyboardRegistrationManager";
@@ -256,6 +255,7 @@ export default class MockFactory {
             asset: asset || MockFactory.createTestAsset(),
             regions: regions || [],
             version: appInfo.version,
+            workData: undefined,
         };
     }
 
@@ -306,6 +306,7 @@ export default class MockFactory {
                 url: "",
             },
             autoSave: true,
+            attributeKeys: [],
         };
     }
 
@@ -788,11 +789,11 @@ export default class MockFactory {
     public static createTestCanvas(project: IProject = null) {
         const canvasProps: ICanvasProps = {
             project,
+            initialWorkData: {zoomScale: 1.0, screenPos: {left: 0, top: 0}},
             selectedAsset: this.createTestAssetMetadata(this.createTestAsset("test-asset")),
             selectedRegions: [],
             onAssetMetadataChanged: jest.fn(),
             editorMode: EditorMode.Rectangle,
-            selectionMode: SelectionMode.RECT,
             children: null,
             lockedTags: [],
             actions: (projectActions as any) as IProjectActions,
@@ -843,6 +844,7 @@ export default class MockFactory {
             ],
             tags,
             type: RegionType.Rectangle,
+            attributes: {},
         };
     }
 

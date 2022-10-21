@@ -7,6 +7,10 @@ import Guard from "../../../../common/guard";
 import { IBoundingBox, IRegion, ITag, RegionType,
     IPoint, AppError, ErrorCode } from "../../../../models/applicationState";
 import { strings } from "../../../../common/strings";
+import { Editor } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/CanvasTools.Editor";
+import { Region } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Region/Region";
+import { ToolbarItemName } from "../../../../registerToolbar";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 
 /**
  * Static functions to assist in operations within Canvas component
@@ -106,6 +110,7 @@ export default class CanvasHelpers {
             region.boundingBox.width,
             region.boundingBox.height,
             region.points.map((point) =>
+                !point.x ? new Point2D(region.boundingBox.left, region.boundingBox.top) :
                 new Point2D(point.x, point.y)),
             this.regionTypeToType(region.type));
     }
@@ -129,11 +134,69 @@ export default class CanvasHelpers {
             },
             points: regionData.points.map((point) => new Point2D(point.x, point.y)),
             tags: [],
+            attributes: {},
         };
+    }
+
+    public static fromRegionDataTypeToRegionType(type: string) {
+        switch(type) {
+            case "rect":
+                return RegionType.Rectangle;
+            case "polygon":
+                return RegionType.Polygon;
+            case "point":
+                return RegionType.Point;
+            case "polyline":
+                return RegionType.Polyline;
+            default:
+                return RegionType.Square;
+        }
+    }
+
+    public static fromRegionToIRegion(editor: Editor, id: string, assetWidth: number, assetHeight: number, regionData: RegionData, attributes: {}, tags: string[]): IRegion {
+        // RegionData not serializable so need to extract data
+        const currentScale = editor.ZM.getZoomData().currentZoomScale;
+        const scaledRegionData = editor.scaleRegionToSourceSize(
+            regionData,
+            assetWidth,
+            assetHeight,
+        );
+        return {
+            id,
+            type: CanvasHelpers.fromRegionDataTypeToRegionType(regionData.type),
+            tags,
+            boundingBox: {
+                height: scaledRegionData.height * currentScale,
+                width: scaledRegionData.width * currentScale,
+                left: scaledRegionData.x * currentScale,
+                top: scaledRegionData.y * currentScale,
+            },
+            points: scaledRegionData.points.map(t => new Point2D(t.x * currentScale, t.y * currentScale)),
+            attributes: attributes ? attributes : {},
+        };
+    }
+
+    public static fromToolbarItemNameToSelectionMode(name: ToolbarItemName) {
+        switch(name) {
+            case ToolbarItemName.SelectCanvas:
+                return SelectionMode.NONE;
+            case ToolbarItemName.DrawRectangle:
+                return SelectionMode.RECT;
+            case ToolbarItemName.DrawPolygon:
+                return SelectionMode.POLYGON;
+            case ToolbarItemName.DrawPoint:
+                return SelectionMode.POINT;
+            default:
+                return SelectionMode.NONE;
+        }
     }
 
     public static isEmpty(regionData: RegionData): boolean {
         return regionData.area === 0 && regionData.x === 0 && regionData.y === 0;
+    }
+
+    public static isEmptyRegion(regionData: RegionData): boolean {
+        return (regionData.type === RegionDataType.Rect || regionData.type === RegionDataType.Polygon) && regionData.area === 0;
     }
 
     /**
@@ -154,6 +217,28 @@ export default class CanvasHelpers {
             .filter((tag) => tag !== null);
 
         return new TagsDescriptor(tags);
+    }
+
+    /**
+     * Create TagsDescriptor (CanvasTools) from IRegion
+     * @param region IRegion from Canvas
+     */
+     public static getTagsString(projectTags: ITag[], tags: TagsDescriptor): string[] {
+        if (!projectTags || !projectTags.length) {
+            return [];
+        }
+        Guard.null(tags);
+
+        return tags.all.map((t: any) => t.tagName);
+    }
+
+    public static getAttributeForProject(projectAttributKeys: string[], key: string): string | undefined {
+        if (!projectAttributKeys || !projectAttributKeys.length) {
+            return undefined;
+        }
+        Guard.null(key);
+
+        return projectAttributKeys.indexOf(key) < 0 ? undefined : key;
     }
 
     /**

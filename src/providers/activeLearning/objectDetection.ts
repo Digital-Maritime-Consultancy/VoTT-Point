@@ -113,6 +113,7 @@ export class ObjectDetection {
                     x: left,
                     y: top + height,
                 }],
+                attributes: {},
             });
         });
 

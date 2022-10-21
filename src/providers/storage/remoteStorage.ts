@@ -52,7 +52,7 @@ export class RemoteStorage implements IStorageProvider {
         try {
             const apiUrl = `${this.getUrl()}/${blobName}`;
             const response = await axios.get(apiUrl);
-            if (response.status === 200) {
+            if (response && response.status === 200) {
                 return JSON.stringify(response.data);
             }
         } catch (e) {
@@ -142,7 +142,7 @@ export class RemoteStorage implements IStorageProvider {
             const apiUrl = this.getUrl().includes('task') ? `${this.getUrl()}/all` : `${this.getUrl()}`;
             const config = { headers: {"Access-Control-Allow-Origin": "*"} };
             return await axios.get(apiUrl, config)
-                .then(response => response.data.map(d => d.uuid ? d.uuid : d.id)).catch(e => []);
+                .then(response => response ? response.data.map(d => d.uuid ? d.uuid : d.id) : []).catch(e => []);
         } catch (e) {
             if (e.statusCode === 409) {
                 alert("Error reaching to the server");
@@ -221,7 +221,7 @@ export class RemoteStorage implements IStorageProvider {
         const items = [];
         const imgServerUrl = connectionJson && connectionJson.providerOptions.imageServerUrl ?
             connectionJson.providerOptions.imageServerUrl : this.getUrl();
-        if (response.data) {
+        if (response && response.status === 200 && response.data) {
             for (let key in response.data.imageList) {
                 let value = response.data.imageList[key];
                 items.push(`${imgServerUrl}/${value}`);

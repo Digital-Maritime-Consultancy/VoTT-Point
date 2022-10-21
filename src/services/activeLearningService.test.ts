@@ -45,6 +45,7 @@ describe("Active Learning Service", () => {
             },
             regions: [],
             version: appInfo.version,
+            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         const updatedAssetMetadata = await activeLearningService.predictRegions(canvas, assetMetadata);
@@ -77,6 +78,7 @@ describe("Active Learning Service", () => {
                 expectedRegions[1],
             ],
             version: appInfo.version,
+            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         const updatedAssetMetadata = await activeLearningService.predictRegions(canvas, assetMetadata);
@@ -100,6 +102,7 @@ describe("Active Learning Service", () => {
             asset: MockFactory.createTestAsset("TestAsset", AssetState.Visited),
             regions: [],
             version: appInfo.version,
+            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         await activeLearningService.predictRegions(canvas, assetMetadata);

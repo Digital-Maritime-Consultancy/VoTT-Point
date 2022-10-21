@@ -36,6 +36,28 @@
             "title": "${strings.tags.title}",
             "type": "array"
         },
+        "attributeKeys": {
+            "title": "${strings.projectSettings.attributeKeys.title}",
+            "description": "${strings.projectSettings.attributeKeys.description}",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "${strings.attributeKeys.properties.name}"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "${strings.attributeKeys.properties.description}"
+                    }
+                }
+            }
+        },
         "videoSettings": {
             "title": "${strings.projectSettings.videoSettings.title}",
             "type": "object",

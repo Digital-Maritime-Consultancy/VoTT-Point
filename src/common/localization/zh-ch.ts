@@ -117,6 +117,10 @@ export const chinese: IAppStrings = {
             title: "Task status",
             description: "given task status from Stella",
         },
+        attributeKeys: {
+            title: "Attribute keys",
+            description: "Which used for annotating additional attributes of an object in this project",
+        },
         addConnection: "添加连接", // Add Connection
         messages: {
             saveSuccess: "成功保存${project.name}项目设置", // Successfully saved ${project.name} project settings
@@ -135,6 +139,14 @@ export const chinese: IAppStrings = {
         totalRegionCount: "标记区域总数", // Total Tagged Regions
         totalTagCount: "标签总数", // Total Tags
         avgTagCountPerAsset: "每个素材的平均标签数", // Average tags per asset
+    },
+    attributeKeys: {
+        title: "Region attribute keys",
+        description: "Which used for annotating additional attributes of an object in this project",
+        properties: {
+            name: "Name",
+            description: "Description",
+        },
     },
     tags: {
         title: "标签", // Tags
@@ -325,6 +337,7 @@ export const chinese: IAppStrings = {
             reject: "Reject",
             approve: "Approve",
             comment: "Comment",
+            resetZoom: "Reset Zoom",
         },
         videoPlayer: {
             previousTaggedFrame: {

@@ -53,6 +53,6 @@ export const getIconNameFromTaskType = (taskContext: TaskContext): string => {
         case TaskContext.Audit:
             return "fa-eye";
         default:
-            return "fa-eye";
+            return "fa-hand-pointer";
     }
 }

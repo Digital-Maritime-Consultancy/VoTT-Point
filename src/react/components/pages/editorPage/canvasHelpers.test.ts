@@ -64,6 +64,7 @@ describe("Canvas Helpers", () => {
             ],
             type: RegionType.Polygon,
             tags: [],
+            attributes: {},
         };
         expect(CanvasHelpers.getRegionData(region)).toEqual(expected);
     });
