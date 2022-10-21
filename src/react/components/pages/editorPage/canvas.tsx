@@ -29,6 +29,7 @@ import { KeyEventType } from "../../common/keyboardManager/keyboardManager";
 import { Color } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/Colors/Color";
 import { ZoomDirection } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Core/ZoomManager";
 import { createContentBoundingBox } from "../../../../common/layout";
+import SplitPane from "react-split-pane";
 
 export interface ICanvasProps extends React.Props<Canvas> {
     selectedAsset: IAssetMetadata;
@@ -116,25 +117,35 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     {this.renderChildren()}
                 </div>
                 <div className="editor-page-right-sidebar">
-                    <TagInput
-                        ref={this.tagInput}
-                        tags={this.props.project.tags}
-                        editingContext={this.props.context}
-                        lockedTags={this.props.lockedTags}
-                        onGetSelectedRegions={this.getSelectedRegions}
-                        onChange={() => {}}
-                        onLockedTagsChange={() => {}}
-                        onTagClick={this.onTagClicked}
-                        onCtrlTagClick={this.onCtrlTagClicked}
-                        onTagRenamed={this.props.confirmTagRenamed}
-                        onTagDeleted={this.props.confirmTagDeleted}
-                    />
-                    <AttributeInput
-                        ref={this.attributeInput}
-                        attributeKeys={this.props.project.attributeKeys}
-                        onChange={this.onAttributeChanged}
-                        onAttributesUpdated={this.applyAttribute}
-                    />
+                    <div className="canvas-sidebar">
+                    <SplitPane split="horizontal"
+                        defaultSize={"50%"}
+                        minSize={100}
+                        maxSize={1000}
+                        paneStyle={{ display: "flex", overflow: "auto" }}
+                        onChange={()=>{}}
+                        onDragFinished={()=>{}}>
+                            <TagInput
+                                ref={this.tagInput}
+                                tags={this.props.project.tags}
+                                editingContext={this.props.context}
+                                lockedTags={this.props.lockedTags}
+                                onGetSelectedRegions={this.getSelectedRegions}
+                                onChange={() => {}}
+                                onLockedTagsChange={() => {}}
+                                onTagClick={this.onTagClicked}
+                                onCtrlTagClick={this.onCtrlTagClicked}
+                                onTagRenamed={this.props.confirmTagRenamed}
+                                onTagDeleted={this.props.confirmTagDeleted}
+                            />
+                            <AttributeInput
+                                ref={this.attributeInput}
+                                attributeKeys={this.props.project.attributeKeys}
+                                onChange={this.onAttributeChanged}
+                                onAttributesUpdated={this.applyAttribute}
+                            />
+                    </SplitPane>
+                    </div>
                 </div>
             </>
         );
