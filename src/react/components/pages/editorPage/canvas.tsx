@@ -172,6 +172,14 @@ export default class Canvas extends React.Component<ICanvasProps> {
             showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale * 100 + " %";
         };
         window.addEventListener("resize", this.onWindowResize);
+
+        // prevent the context menu in canvas area
+        // this is to support polygon editing with pressing the control key
+        if (this.canvasZone.current) {
+            this.canvasZone.current.addEventListener("contextmenu", function (e){
+                e.preventDefault();
+            }, false);
+        }
     }
 
     public componentWillUnmount() {
