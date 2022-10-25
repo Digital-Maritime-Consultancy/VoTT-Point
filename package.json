@@ -16,7 +16,7 @@
     "main": "build/main.js",
     "dependencies": {
         "@azure/storage-blob": "^10.3.0",
-        "@digital-maritime-consultancy/vott-dot-ct": "^0.1.11",
+        "@digital-maritime-consultancy/vott-dot-ct": "^0.1.12",
         "@tensorflow/tfjs": "^1.0.3",
         "@types/snapsvg": "^0.4.35",
         "axios": "^0.18.0",
