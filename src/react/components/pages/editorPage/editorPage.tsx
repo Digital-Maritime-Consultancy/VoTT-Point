@@ -533,6 +533,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (!this.onBeforeAssetSelected()) {
             return;
         } else {
+            await this.storeAssetMetadata(false);
             if (!this.dotToRectService) {
                 toast.error("You need to set an URL for Dot-to-Rect service");
                 return ;
@@ -544,7 +545,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 try {
                     const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
                     if (assetMetadata.regions.length === 0){
-                        alert("You need dots to be converted to rectangles");
+                        alert("You need to make one or more dots to be converted to rectangles");
                         return;
                     }
                     if (this.dotToRectService) {
