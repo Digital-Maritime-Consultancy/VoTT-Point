@@ -105,7 +105,7 @@ describe("Current Project Reducer", () => {
             },
             regions: [],
             version: "",
-            workData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
+            workViewData: {zoomScale: 1, screenPos: {left: 0, top: 0}},
         };
 
         const action = saveAssetMetadataAction(assetMetadata);

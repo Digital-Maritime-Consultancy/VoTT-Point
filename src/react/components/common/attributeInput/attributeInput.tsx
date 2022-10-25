@@ -35,33 +35,27 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
 
     public render() {
         return (
-            <>
-            {
-                this.props.attributeKeys && this.props.attributeKeys.length > 0 ?
-                <div className="condensed-list" onClick={(e) => e.stopPropagation()}>
-                    <div className="condensed-list-header p-2">
-                        <span className="condensed-list-title">
-                            {strings.projectSettings.attributeKeys.title}
-                        </span>
+            <div className="condensed-list" onClick={(e) => e.stopPropagation()}>
+                <div className="condensed-list-header p-2">
+                    <span className="condensed-list-title">
+                        {strings.projectSettings.attributeKeys.title}
+                    </span>
+                </div>
+                <div className="condensed-list-body">
+                    <div className="tag-input-items">
+                    {
+                        this.props.attributeKeys.map(({name, description}) =>
+                            <AttributeInputItem
+                                key={name}
+                                name={name} 
+                                description={description}
+                                onAttributesUpdated={this.props.onAttributesUpdated}
+                            />
+                        )
+                    }
                     </div>
-                    <div className="condensed-list-body">
-                        <div className="tag-input-items">
-                        {
-                            this.props.attributeKeys.map(({name, description}) =>
-                                <AttributeInputItem
-                                    key={name}
-                                    name={name} 
-                                    description={description}
-                                    onAttributesUpdated={this.props.onAttributesUpdated}
-                                />
-                            )
-                        }
-                        </div>
-                    </div>
-                </div> :
-                <div></div>
-            }
-            </>
+                </div>
+            </div>
         );
     }
 }

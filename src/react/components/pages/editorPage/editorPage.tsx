@@ -10,7 +10,7 @@ import { strings } from "../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
-    ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkData, IScreenPos,
+    ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkViewData, IScreenPos,
 } from "../../../../models/applicationState";
 import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
 import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
@@ -77,7 +77,7 @@ export interface IEditorPageState {
     /** Whether the show invalid region warning alert should display */
     showInvalidRegionWarning: boolean;
 
-    canvasWorkData: ICanvasWorkData;
+    canvasWorkData: ICanvasWorkViewData;
 }
 
 function mapStateToProps(state: IApplicationState) {
@@ -371,7 +371,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         return asset.type !== AssetType.Unknown && asset.type !== AssetType.Video;
     }
 
-    private storeAssetMetadata = async (refresh: boolean = true, workData?: ICanvasWorkData) => {
+    private storeAssetMetadata = async (refresh: boolean = true, workData?: ICanvasWorkViewData) => {
         if (this.getContext() === EditingContext.None) {
             return ;
         }
@@ -533,6 +533,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (!this.onBeforeAssetSelected()) {
             return;
         } else {
+            await this.storeAssetMetadata(false);
             if (!this.dotToRectService) {
                 toast.error("You need to set an URL for Dot-to-Rect service");
                 return ;
@@ -544,7 +545,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 try {
                     const assetMetadata = await this.props.actions.loadAssetMetadata(this.props.project, this.state.selectedAsset.asset);
                     if (assetMetadata.regions.length === 0){
-                        alert("You need dots to be converted to rectangles");
+                        alert("You need to make one or more dots to be converted to rectangles");
                         return;
                     }
                     if (this.dotToRectService) {
@@ -662,10 +663,10 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         this.setState({
             selectedAsset: assetMetadata,
             canvasWorkData: {
-                zoomScale: this.getContext() !== EditingContext.None && assetMetadata.workData ?
-                    assetMetadata.workData.zoomScale : 1.0,
-                screenPos: this.getContext() !== EditingContext.None && assetMetadata.workData ?
-                    assetMetadata.workData.screenPos : {left: 0, top: 0},
+                zoomScale: this.getContext() !== EditingContext.None && assetMetadata.workViewData ?
+                    assetMetadata.workViewData.zoomScale : 1.0,
+                screenPos: this.getContext() !== EditingContext.None && assetMetadata.workViewData ?
+                    assetMetadata.workViewData.screenPos : {left: 0, top: 0},
             },
         }, async () => {
             await this.onAssetMetadataChanged(assetMetadata);
