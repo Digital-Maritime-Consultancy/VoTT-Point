@@ -167,7 +167,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         }
 
         const query = new URLSearchParams(this.props.location.search);
-        const lockedTags = query.has('tags') && query.get('tags').length ? query.get('tags').split(',') : [];
+        const lockedTags = query.has("tags") && query.get("tags").length ? query.get("tags").split(",") : [];
+
         if (lockedTags.length &&
             !this.state.lockedTags.every((val, index) => val === lockedTags[index])) {
             // refresh view
@@ -178,6 +179,17 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 lockedTags: lockedTags,
             });
             */
+        }
+
+        // fetch file name from search parameter to select asset
+        const fileName = query.get("fileName");
+        //console.log(fileName);
+        if (!this.state.selectedAsset && fileName) {
+            const assetFromParam = this.state.assets.filter(a => a.name === fileName);
+            console.log(assetFromParam);
+            if (assetFromParam.length) {
+                this.selectAsset(assetFromParam.pop());
+            }
         }
 
         // Navigating directly to the page via URL (ie, http://vott/projects/a1b2c3dEf/edit) sets the default state
