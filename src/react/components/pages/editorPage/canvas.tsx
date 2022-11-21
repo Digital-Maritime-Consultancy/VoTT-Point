@@ -101,14 +101,17 @@ export default class Canvas extends React.Component<ICanvasProps> {
                 />
                 <div id="canvasToolsDiv" ref={this.canvasZone} className="canvas-enabled"
                     onClick={(e) => e.stopPropagation()}>
-                    <div id="toolbarDiv" className="editor-page-content-main-header">
-                        <EditorToolbar
-                            ref={this.toolBar}
-                            project={this.props.project}
-                            items={this.getFilteredToolbarItems()}
-                            actions={this.props.actions}
-                            onToolbarItemSelected={this.props.onToolbarItemSelected} />
-                    </div>
+                        {
+                            this.props.context !== EditingContext.None &&
+                            <div id="toolbarDiv" className="editor-page-content-main-header">
+                                <EditorToolbar
+                                    ref={this.toolBar}
+                                    project={this.props.project}
+                                    items={this.getFilteredToolbarItems()}
+                                    actions={this.props.actions}
+                                    onToolbarItemSelected={this.props.onToolbarItemSelected} />
+                            </div>
+                        }
                     <div id="showZoomFactor"></div>
                     <div id="selectionDiv" onWheel={this.onWheelCapture}
                         onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
@@ -168,9 +171,6 @@ export default class Canvas extends React.Component<ICanvasProps> {
         this.editor.ZM.setMaxZoomScale(10);
 
         const showZoomDiv = document.getElementById("showZoomFactor");
-        this.editor.onZoomEnd = function (zoom) {
-            showZoomDiv.innerText = "Image zoomed at " + zoom.currentZoomScale * 100 + " %";
-        };
         window.addEventListener("resize", this.onWindowResize);
 
         // prevent the context menu in canvas area
@@ -636,7 +636,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
                     this.attributeInput.current.setSelectedAttributes(selectedRegion.attributes);
                 }
             } else {
-                this.attributeInput.current.setSelectedAttributes({});
+                this.attributeInput.current.clear();
             }
         }
 
@@ -760,6 +760,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     private refreshCanvasToolsRegions = () => {
         this.clearAllRegions();
+        this.attributeInput.current.clear();
 
         if (!this.props.selectedAsset.regions || this.props.selectedAsset.regions.length === 0) {
             return;

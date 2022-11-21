@@ -28,9 +28,13 @@ export default class AttributeInput extends React.Component<IAttributeInputProps
 
     public setSelectedAttributes(attributes: { [key: string]: string; }) {
         this.props.attributeKeys.forEach(({name}) => {
-            let input = document.getElementById(`attr-input-${name}`) as HTMLInputElement;
+            const input = document.getElementById(`attr-input-${name}`) as HTMLInputElement;
             input.value = attributes[name] ? attributes[name] : "";
         });
+    }
+
+    public clear() {
+        this.setSelectedAttributes({});
     }
 
     public render() {
