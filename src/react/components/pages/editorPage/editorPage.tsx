@@ -29,6 +29,7 @@ import { DotToRectService } from "../../../../services/dotToRectService";
 import { getEditingContext } from "../../common/taskPicker/taskRouter";
 
 import connectionJson from "../../../../assets/defaultConnection.json";
+import PixelCanvas from "./pixelCanvas/pixelCanvas";
 
 /**
  * Properties for Editor Page
@@ -237,6 +238,29 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     </div>
                     <div className="editor-page-content">
                         {selectedAsset &&
+                            <PixelCanvas
+                                initialWorkData={this.state.canvasWorkData}
+                                selectedAsset={this.state.selectedAsset}
+                                onAssetMetadataChanged={this.onAssetMetadataChanged}
+                                onCanvasRendered={this.onCanvasRendered}
+                                onToolbarItemSelected={this.onToolbarItemSelected}
+                                onSelectedRegionsChanged={this.onSelectedRegionsChanged}
+                                confirmTagDeleted={this.confirmTagDeleted}
+                                confirmTagRenamed={this.confirmTagRenamed}
+                                actions={this.props.actions}
+                                project={this.props.project}
+                                lockedTags={this.state.lockedTags}
+                                context={this.getContext()}>
+                                <AssetPreview
+                                    additionalSettings={this.state.additionalSettings}
+                                    autoPlay={true}
+                                    controlsEnabled={this.state.isValid}
+                                    onBeforeAssetChanged={this.onBeforeAssetSelected}
+                                    onChildAssetSelected={this.onChildAssetSelected}
+                                    asset={this.state.selectedAsset.asset}
+                                    childAssets={this.state.childAssets} />
+                            </PixelCanvas>
+                            /*
                             <Canvas
                                 ref={this.canvas}
                                 initialWorkData={this.state.canvasWorkData}
@@ -260,6 +284,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                     asset={this.state.selectedAsset.asset}
                                     childAssets={this.state.childAssets} />
                             </Canvas>
+                            */
                         }
                         <Confirm title={strings.editorPage.tags.rename.title}
                             ref={this.renameTagConfirm}
@@ -424,7 +449,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
      */
     private onAssetMetadataChanged = async (assetMetadata: IAssetMetadata): Promise<void> => {
         // If the asset contains any regions without tags, don't proceed.
-        //const regionsWithoutTags = assetMetadata.regions.filter((region) => region.tags.length === 0);
         if (!this.canvas.current) {
             return;
         }

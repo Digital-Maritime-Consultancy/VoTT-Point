@@ -176,7 +176,7 @@ export default class Canvas extends React.Component<ICanvasProps> {
         // prevent the context menu in canvas area
         // this is to support polygon editing with pressing the control key
         if (this.canvasZone.current) {
-            this.canvasZone.current.addEventListener("contextmenu", function (e){
+            this.canvasZone.current.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
             }, false);
         }
@@ -187,20 +187,9 @@ export default class Canvas extends React.Component<ICanvasProps> {
     }
 
     public componentDidUpdate = async (prevProps: Readonly<ICanvasProps>) => {
-        // Handle region selection in canvas
-        /*
-        if (this.editor) {
-            if (!_.isEqual(this.props.selectedRegions, prevProps.selectedRegions) ||
-                this.props.selectedRegions.length && this.editor.RM.getSelectedRegions().length === 0) {
-                    this.props.selectedRegions.forEach((r: IRegion) => this.editor.RM.selectRegionById(r.id));
-            }
-        }//*/
 
         if (this.props.context !== prevProps.context) {
             this.refreshCanvasToolsRegions();
-            //this.setContentSource(this.state.contentSource);
-            //this.editor.AS.setSelectionMode({mode: this.props.selectionMode});
-            this.editor.AS.enable();
         }
 
         const assetIdChanged = this.props.selectedAsset.asset.id !== prevProps.selectedAsset.asset.id;
@@ -838,26 +827,26 @@ export default class Canvas extends React.Component<ICanvasProps> {
 
     private getCursorPos = (e: any) => {
         const editorContainer = document.getElementsByClassName("CanvasToolsEditor")[0];
-        let containerPos, x = 0, y = 0;
         e = e || window.event;
         /*get the x and y positions of the container:*/
-        containerPos = editorContainer.getBoundingClientRect();
+        const containerPos = editorContainer.getBoundingClientRect();
 
         /*get the x and y positions of the image:*/
         const editorStyles = window.getComputedStyle(editorContainer);
         const imagePos = {
             left: containerPos.left + parseFloat(editorStyles.paddingLeft),
-            top: containerPos.top + parseFloat(editorStyles.paddingTop)
+            top: containerPos.top + parseFloat(editorStyles.paddingTop),
         };
 
-
+        let x = 0;
+        let y = 0;
         /*calculate the cursor's x and y coordinates, relative to the image:*/
         x = e.pageX - imagePos.left;
         y = e.pageY - imagePos.top;
         /*consider any page scrolling:*/
         x = x - window.pageXOffset;
         y = y - window.pageYOffset;
-        return {x : x, y : y};
+        return {x, y};
     }
 
     private onAttributeChanged = async (key: string, value: string): Promise<void> => {
