@@ -23,6 +23,7 @@ export enum ToolbarItemName {
     Approve = "approve",
     Comment = "comment",
     ResetZoom = "resetZoom",
+    PaintPixel = "paintPixel",
 }
 
 export enum ToolbarItemGroup {
@@ -187,6 +188,16 @@ export default function registerToolbar() {
         context: [EditingContext.EditRect, EditingContext.Revise],
     });
     */
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.PaintPixel,
+        tooltip: strings.editorPage.toolbar.drawPoint,
+        icon: "fa-dot-circle",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["X", "x"],
+        context: [EditingContext.Paint],
+    });
 
     ToolbarItemFactory.register({
         name: ToolbarItemName.SaveProject,

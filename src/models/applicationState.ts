@@ -521,7 +521,26 @@ export enum EditingContext {
     Purify = "purify",
     Revise = "revise",
     None = "none",
+    Paint = "editpixel",
+    PaintSuperpixel = "editsuperpixel",
 }
+
+/*
+export enum Raster2DEditingContext {
+    Paint = "editpixel",
+    PaintSuperpixel = "editsuperpixel",
+}
+
+export enum Vecor2DEditingContext {
+    EditDot = "editdot",
+    EditRect = "editrect",
+    Purify = "purify",
+    Revise = "revise",
+    None = "none",
+}
+
+export type EditingContext = Vecor2DEditingContext | Raster2DEditingContext;
+*/
 
 export enum EditorMode {
     Rectangle = "RECT",

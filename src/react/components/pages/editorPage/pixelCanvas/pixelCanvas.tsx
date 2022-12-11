@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { KeyboardEventHandler, ReactElement } from "react";
 import {
     EditingContext,
     EditorMode,
@@ -17,6 +17,12 @@ import _ from "lodash";
 import { TagInput } from "../../../common/tagInput/tagInput";
 import AttributeInput from "../../../common/attributeInput/attributeInput";
 import ReactPainter from "react-painter";
+import { KeyboardBinding } from "../../../common/keyboardBinding/keyboardBinding";
+import { strings } from "../../../../../common/strings";
+import { EditorToolbar } from "../editorToolbar";
+import SplitPane from "react-split-pane";
+import { KeyEventType } from "../../../common/keyboardManager/keyboardManager";
+import PainterTools from "./painterTools";
 
 export interface IPixelCanvasProps extends React.Props<PixelCanvas> {
     selectedAsset: IAssetMetadata;
@@ -47,28 +53,94 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         context: EditingContext.None,
     };
 
-    public editor: any;
-    private sourceWidth: number;
-    private sourceHeight: number;
-    private isDrawing: boolean = false;
-
-    private canvasZone: React.RefObject<HTMLCanvasElement> = React.createRef();
+    private clearConfirm: React.RefObject<Confirm> = React.createRef();
+    private toolBar: React.RefObject<EditorToolbar> = React.createRef();
+    private tagInput: React.RefObject<TagInput> = React.createRef();
+    private attributeInput: React.RefObject<AttributeInput> = React.createRef();
+    private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
+    private canvasContainer: React.RefObject<HTMLDivElement> = React.createRef();
+    private painter: React.RefObject<PainterTools> = React.createRef();
 
     public render = () => {
         return (
-            <div>
-                <div id="selectionDiv" onWheel={this.onWheelCapture} //onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}
-                        >
-                        <div id="editorDiv">
-                            <canvas id="CanvasToolsEditor" ref={this.canvasZone}
-                                width={this.props.selectedAsset.asset.size.width}
-                                height={this.props.selectedAsset.asset.size.height}
+            <>
+                {[...Array(10).keys()].map((index) => {
+                    return (<KeyboardBinding
+                        displayName={strings.editorPage.tags.hotKey.apply}
+                        key={index}
+                        keyEventType={KeyEventType.KeyUp}
+                        accelerators={[`${index}`]}
+                        icon={"fa-tag"}
+                        handler={this.handleTagHotKey} />);
+                })}
+                {[...Array(10).keys()].map((index) => {
+                    return (<KeyboardBinding
+                        displayName={strings.editorPage.tags.hotKey.lock}
+                        key={index}
+                        keyEventType={KeyEventType.KeyUp}
+                        accelerators={[`CmdOrCtrl+${index}`]}
+                        icon={"fa-lock"}
+                        handler={this.handleCtrlTagHotKey} />);
+                })}
+                <Confirm title={strings.editorPage.canvas.removeAllRegions.title}
+                    ref={this.clearConfirm as any}
+                    message={strings.editorPage.canvas.removeAllRegions.confirmation}
+                    confirmButtonColor="danger"
+                    onConfirm={this.clearCanvas}
+                />
+                <div id="canvasToolsDiv" ref={this.canvasContainer} onClick={(e) => e.stopPropagation()}>
+                    <div id="selectionDiv" onWheel={(e) => e.preventDefault()} //onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}
                             >
-                            </canvas>
+                        {
+                            this.props.context !== EditingContext.None &&
+                            <div id="toolbarDiv" className="editor-page-content-main-header">
+                                <EditorToolbar
+                                    ref={this.toolBar}
+                                    project={this.props.project}
+                                    items={this.getFilteredToolbarItems()}
+                                    actions={this.props.actions}
+                                    onToolbarItemSelected={this.props.onToolbarItemSelected} />
+                            </div>
+                        }
+                        <PainterTools
+                            ref={this.painter}
+                            canvasContainer={this.canvasContainer}
+                        />
                         </div>
+                {this.renderChildren()}
+                </div>
+                <div className="editor-page-right-sidebar">
+                    <div className="canvas-sidebar">
+                    <SplitPane split="horizontal"
+                        defaultSize={"50%"}
+                        minSize={100}
+                        maxSize={1000}
+                        paneStyle={{ display: "flex", overflow: "auto" }}
+                        onChange={()=>{}}
+                        onDragFinished={()=>{}}>
+                            <TagInput
+                                ref={this.tagInput}
+                                tags={this.props.project.tags}
+                                editingContext={this.props.context}
+                                lockedTags={this.props.lockedTags}
+                                onGetSelectedRegions={this.getSelectedRegions}
+                                onChange={() => {}}
+                                onLockedTagsChange={() => {}}
+                                onTagClick={this.onTagClicked}
+                                onCtrlTagClick={this.onCtrlTagClicked}
+                                onTagRenamed={this.props.confirmTagRenamed}
+                                onTagDeleted={this.props.confirmTagDeleted}
+                            />
+                            <AttributeInput
+                                ref={this.attributeInput}
+                                attributeKeys={this.props.project.attributeKeys}
+                                onChange={this.onAttributeChanged}
+                                onAttributesUpdated={this.applyAttribute}
+                            />
+                    </SplitPane>
                     </div>
-            {this.renderChildren()}
-            </div>
+                </div>
+            </>
         );
     }
     /*
@@ -90,67 +162,85 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
     public componentDidMount = () => {
     }
 
-    /**
-     * Updates the content source for the editor.
-     * @param source - Content source.
-     * @returns A new `Promise` resolved when content is drawn and Editor is resized.
-     */
-    public async addContentSource(source: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement): Promise<void> {
-        const context = this.canvasZone.current.getContext("2d");
-
-        if (source instanceof HTMLImageElement || source instanceof HTMLCanvasElement) {
-            this.sourceWidth = source.width;
-            this.sourceHeight = source.height;
-        } else if (source instanceof HTMLVideoElement) {
-            this.sourceWidth = source.videoWidth;
-            this.sourceHeight = source.videoHeight;
-        }
-
-        this.canvasZone.current.width = this.sourceWidth;
-        this.canvasZone.current.height = this.sourceHeight;
-
-        context.drawImage(source, 0, 0, this.canvasZone.current.width, this.canvasZone.current.height);
-        this.canvasZone.current.onmousemove = this.onMouseMove;
-        this.canvasZone.current.onmousedown = this.onMouseDown;
-        this.canvasZone.current.onmouseup = this.onMouseUp;
-    }
-
-    public componentWillUnmount() {
-    }
-
     public componentDidUpdate = async (prevProps: Readonly<IPixelCanvasProps>) => {
     }
 
-    private onMouseDown = (event) => {
-        const context = this.canvasZone.current.getContext("2d");
-        context.beginPath();
-        const boundings = this.canvasZone.current.getBoundingClientRect();
-        context.moveTo(event.clientX - boundings.left, event.clientY - boundings.top);
-        context.lineCap = "round";
-        context.lineJoin = "round";
-        this.isDrawing = true;
+    public getSelectedRegions = (): IRegion[] => {
+        return [];
     }
 
-    private onMouseMove = (event) => {
-        if (this.isDrawing) {
-            const context = this.canvasZone.current.getContext("2d");
-            const boundings = this.canvasZone.current.getBoundingClientRect();
-            context.lineTo(event.clientX - boundings.left, event.clientY - boundings.top);
-            context.stroke();
+    public getAllRegions = () => {
+        
+    }
+
+    public clearCanvas = () => {
+        if (this.props.context === EditingContext.None) {
+            return ;
         }
     }
 
-    private onMouseUp = (event) => {
-        this.isDrawing = false;
+    /**
+     * Set the loaded asset content source into the canvas tools canvas
+     */
+     private setContentSource = async (contentSource: ContentSource) => {
+        try {
+            await this.painter.current.addContentSource(contentSource as any);
+        } catch (e) {
+            console.warn(e);
+        }
     }
+
+    /**
+     * Toggles tag on all selected regions
+     * @param selectedTag Tag name
+     */
+     public applyTag = (tag: string) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
+    }
+
+    /**
+     * Called when a tag from footer is clicked
+     * @param tag Tag clicked
+     */
+     public onTagClicked = (tag: ITag): void => {
+        this.applyTag(tag.name);
+        if (this.tagInput.current) {
+            this.tagInput.current.setSelectedTag(tag.name);
+        }
+    }
+
+    public onCtrlTagClicked = (tag: ITag): void => {
+        this.onTagClicked(tag);
+        /*
+        const locked = this.props.lockedTags;
+        this.setState({
+            selectedTag: tag.name,
+            lockedTags: CanvasHelpers.toggleTag(locked, tag.name),
+        }, () => this.applyTag(tag.name));
+        */
+    }
+
+    public applyAttribute = (key: string, value: string) => {
+        if (this.props.context === EditingContext.None) {
+            return ;
+        }
+    }
+
+    private onAttributeChanged = async (key: string, value: string): Promise<void> => {
+        if (this.getSelectedRegions().length) {
+            this.applyAttribute(key, value);
+        }
+    }
+
     /**
      * Raised when the underlying asset has completed loading
      */
      private onAssetLoaded = (contentSource: ContentSource) => {
         (contentSource as HTMLElement).setAttribute("id", "contentSource");
-        this.addContentSource(contentSource as any);
+        this.painter.current.addContentSource(contentSource as any);
         //const context = this.canvasZone.current.getContext("2d");
-        //context.drawImage(contentSource as HTMLImageElement, 0, 0, contentSource.width, contentSource.height);
         //context.drawImage(contentSource as HTMLImageElement, 0, 0, contentSource.width, contentSource.height);
     }
 
@@ -160,51 +250,49 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         });
     }
 
-    private getCursorPos = (e: any) => {
-        const editorContainer = document.getElementsByClassName("CanvasToolsEditor")[0];
-        e = e || window.event;
-        /*get the x and y positions of the container:*/
-        const containerPos = editorContainer.getBoundingClientRect();
-
-        /*get the x and y positions of the image:*/
-        const editorStyles = window.getComputedStyle(editorContainer);
-        const imagePos = {
-            left: containerPos.left + parseFloat(editorStyles.paddingLeft),
-            top: containerPos.top + parseFloat(editorStyles.paddingTop),
-        };
-
-        let x = 0;
-        let y = 0;
-        /*calculate the cursor's x and y coordinates, relative to the image:*/
-        x = e.pageX - imagePos.left;
-        y = e.pageY - imagePos.top;
-        /*consider any page scrolling:*/
-        x = x - window.pageXOffset;
-        y = y - window.pageYOffset;
-        return {x, y};
+    private getFilteredToolbarItems = () => {
+        return this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0);
     }
 
-    private onWheelCapture = (e: any) => {
-        if (!e.ctrlKey && !e.shiftKey && e.altKey) {
-            if (this.editor) {
-                const cursorPos = this.getCursorPos(e);
-                if (e.deltaY < 0) {
-                    this.editor.ZM.callbacks.onZoomingIn(cursorPos);
-                } else if (e.deltaY > 0) {
-                    this.editor.ZM.callbacks.onZoomingOut(cursorPos);
-                }
-                e.nativeEvent.stopImmediatePropagation();
-                e.stopPropagation();
-            }
-        } else {
-            const context = this.canvasZone.current.getContext("2d");
-            if (e.deltaY > 0) {
-                context.lineWidth = context.lineWidth + 0.5;
-            } else {
-                context.lineWidth = context.lineWidth < 1 ? 1 : context.lineWidth - 0.5;
-            }
-            
-            e.stopPropagation();
+    
+
+    /**
+     * Listens for {number key} and calls `onTagClicked` with tag corresponding to that number
+     * @param event KeyDown event
+     */
+     private handleTagHotKey = (event: KeyboardEvent): void => {
+        const tag = this.getTagFromKeyboardEvent(event);
+        if (tag) {
+            this.onTagClicked(tag);
         }
+    }
+
+    private handleCtrlTagHotKey = (event: KeyboardEvent): void => {
+        const tag = this.getTagFromKeyboardEvent(event);
+        if (tag) {
+            this.onCtrlTagClicked(tag);
+        }
+    }
+
+    private getTagFromKeyboardEvent = (event: KeyboardEvent): ITag => {
+        let key = parseInt(event.key, 10);
+        if (isNaN(key)) {
+            try {
+                key = parseInt(event.key.split("+")[1], 10);
+            } catch (e) {
+                return;
+            }
+        }
+        let index: number;
+        const tags = this.props.project.tags;
+        if (key === 0 && tags.length >= 10) {
+            index = 9;
+        } else if (key < 10) {
+            index = key - 1;
+        }
+        if (index < tags.length) {
+            return tags[index];
+        }
+        return null;
     }
 }
