@@ -48,6 +48,16 @@ export default function registerToolbar() {
     });
 
     ToolbarItemFactory.register({
+        name: ToolbarItemName.PaintPixel,
+        tooltip: strings.editorPage.toolbar.drawPoint,
+        icon: "fa-brush",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.State,
+        accelerators: ["X", "x"],
+        context: [EditingContext.Paint],
+    });
+
+    ToolbarItemFactory.register({
         name: ToolbarItemName.DrawPoint,
         tooltip: strings.editorPage.toolbar.drawPoint,
         icon: "fa-dot-circle",
@@ -134,7 +144,8 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Regions,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+Delete", "CmdOrCtrl+Backspace"],
-        context: [EditingContext.EditDot, EditingContext.EditRect],
+        context: [EditingContext.EditDot, EditingContext.EditRect,
+            EditingContext.Paint],
     });
 
     ToolbarItemFactory.register({
@@ -154,7 +165,9 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Canvas,
         type: ToolbarItemType.Action,
         accelerators: ["`"],
-        context: [EditingContext.None, EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+        context: [EditingContext.None, EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify,
+            EditingContext.Revise,
+            EditingContext.Paint],
     });
 
     ToolbarItemFactory.register({
@@ -164,7 +177,8 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: [","],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise,
+            EditingContext.Paint],
     });
 
     ToolbarItemFactory.register({
@@ -174,7 +188,8 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Navigation,
         type: ToolbarItemType.Action,
         accelerators: ["."],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise,
+            EditingContext.Paint],
     });
 
     /*
@@ -190,22 +205,16 @@ export default function registerToolbar() {
     */
 
     ToolbarItemFactory.register({
-        name: ToolbarItemName.PaintPixel,
-        tooltip: strings.editorPage.toolbar.drawPoint,
-        icon: "fa-dot-circle",
-        group: ToolbarItemGroup.Canvas,
-        type: ToolbarItemType.State,
-        accelerators: ["X", "x"],
-        context: [EditingContext.Paint],
-    });
-
-    ToolbarItemFactory.register({
         name: ToolbarItemName.SaveProject,
         tooltip: strings.editorPage.toolbar.saveProject,
         icon: "fa-check-circle",
         group: ToolbarItemGroup.Project,
         type: ToolbarItemType.Action,
         accelerators: ["S", "s"],
-        context: [EditingContext.EditRect, EditingContext.EditDot, EditingContext.Purify, EditingContext.Revise],
+        context: [EditingContext.EditRect,
+            EditingContext.EditDot,
+            EditingContext.Purify,
+            EditingContext.Revise,
+            EditingContext.Paint],
     }, SaveProject);
 }

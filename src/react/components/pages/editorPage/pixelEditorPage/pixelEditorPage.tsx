@@ -5,80 +5,33 @@ import { RouteComponentProps } from "react-router-dom";
 import SplitPane from "react-split-pane";
 import { bindActionCreators } from "redux";
 import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
-import HtmlFileReader from "../../../../common/htmlFileReader";
-import { strings } from "../../../../common/strings";
+import HtmlFileReader from "../../../../../common/htmlFileReader";
+import { strings } from "../../../../../common/strings";
 import {
     AssetState, AssetType, EditorMode, IApplicationState,
     IAppSettings, IAsset, IAssetMetadata, IProject, IRegion,
     ISize, IAdditionalPageSettings, AppError, ErrorCode, EditingContext, RegionType, TaskStatus, TaskType, ICanvasWorkViewData, IScreenPos,
-} from "../../../../models/applicationState";
-import IApplicationActions, * as applicationActions from "../../../../redux/actions/applicationActions";
-import IProjectActions, * as projectActions from "../../../../redux/actions/projectActions";
-import { ToolbarItemName } from "../../../../registerToolbar";
-import { AssetService } from "../../../../services/assetService";
-import { AssetPreview } from "../../common/assetPreview/assetPreview";
-import { ToolbarItem } from "../../toolbar/toolbarItem";
-import Canvas from "./canvas";
-import "./editorPage.scss";
-import EditorSideBar from "./editorSideBar";
-import Alert from "../../common/alert/alert";
-import Confirm from "../../common/confirm/confirm";
-import { ActiveLearningService } from "../../../../services/activeLearningService";
+} from "../../../../../models/applicationState";
+import IApplicationActions, * as applicationActions from "../../../../../redux/actions/applicationActions";
+import IProjectActions, * as projectActions from "../../../../../redux/actions/projectActions";
+import { ToolbarItemName } from "../../../../../registerToolbar";
+import { AssetService } from "../../../../../services/assetService";
+import { AssetPreview } from "../../../common/assetPreview/assetPreview";
+import { ToolbarItem } from "../../../toolbar/toolbarItem";
+import "../editorPage.scss";
+import Alert from "../../../common/alert/alert";
+import Confirm from "../../../common/confirm/confirm";
+import { ActiveLearningService } from "../../../../../services/activeLearningService";
 import { toast } from "react-toastify";
-import { DotToRectService } from "../../../../services/dotToRectService";
-import { getEditingContext } from "../../common/taskPicker/taskRouter";
+import { DotToRectService } from "../../../../../services/dotToRectService";
+import { getEditingContext } from "../../../common/taskPicker/taskRouter";
 
-import connectionJson from "../../../../assets/defaultConnection.json";
+import connectionJson from "../../../../../assets/defaultConnection.json";
+import EditorPage, { IEditorPageProps, IEditorPageState } from "../editorPage";
+import PixelCanvas from "../pixelCanvas/pixelCanvas";
+import EditorSideBar from "../editorSideBar";
 
-/**
- * Properties for Editor Page
- * @member project - Project being edited
- * @member recentProjects - Array of projects recently viewed/edited
- * @member actions - Project actions
- * @member applicationActions - Application setting actions
- */
-export interface IEditorPageProps extends RouteComponentProps, React.Props<EditorPage> {
-    project: IProject;
-    recentProjects: IProject[];
-    appSettings: IAppSettings;
-    actions: IProjectActions;
-    applicationActions: IApplicationActions;
-}
 
-/**
- * State for Editor Page
- */
-export interface IEditorPageState {
-    /** Context of editing */
-    context: EditingContext;
-    /** Array of assets in project */
-    assets: IAsset[];
-    /** The editor mode to set for canvas tools */
-    editorMode: EditorMode;
-    /** The selected asset for the primary editing experience */
-    selectedAsset?: IAssetMetadata;
-    /** Currently selected region on current asset */
-    selectedRegions?: IRegion[];
-    /** The child assets used for nest asset typs */
-    childAssets?: IAsset[];
-    /** Additional settings for asset previews */
-    additionalSettings?: IAdditionalPageSettings;
-    /** Most recently selected tag */
-    selectedTag: string;
-    /** Tags locked for region labeling */
-    lockedTags: string[];
-    /** Size of the asset thumbnails to display in the side bar */
-    thumbnailSize: ISize;
-    /**
-     * Whether or not the editor is in a valid state
-     * State is invalid when a region has not been tagged
-     */
-    isValid: boolean;
-    /** Whether the show invalid region warning alert should display */
-    showInvalidRegionWarning: boolean;
-
-    canvasWorkData: ICanvasWorkViewData;
-}
 
 function mapStateToProps(state: IApplicationState) {
     return {
@@ -100,9 +53,9 @@ function mapDispatchToProps(dispatch) {
  * @description - Page for adding/editing/removing tags to assets
  */
 @connect(mapStateToProps, mapDispatchToProps)
-export default class EditorPage extends React.Component<IEditorPageProps, IEditorPageState> {
+export default class PixelEditorPage extends EditorPage {
     public state: IEditorPageState = {
-        context: EditingContext.None,
+        context: EditingContext.Paint,
         selectedTag: null,
         lockedTags: [],
         assets: [],
@@ -119,12 +72,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         canvasWorkData: {zoomScale: 1.0, screenPos: {left: 0, top: 0}},
     };
 
-    protected activeLearningService: ActiveLearningService = null;
-    protected dotToRectService: DotToRectService = null;
-    protected loadingProjectAssets: boolean = false;
-    protected canvas: RefObject<Canvas> = React.createRef();
-    protected renameTagConfirm: React.RefObject<Confirm> = React.createRef();
-    protected deleteTagConfirm: React.RefObject<Confirm> = React.createRef();
+    protected pixelCanvas: RefObject<PixelCanvas> = React.createRef();
 
     public async componentDidMount() {
         const projectId = this.props.match.params["projectId"];
@@ -141,15 +89,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.props.actions.loadProjectFromStorage(connection, projectId);
             }
         }
-
-        this.activeLearningService = new ActiveLearningService(this.props.project.activeLearningSettings);
-
-        // dot to rect service check
-        if (this.props.project && this.props.project.dotToRectSettings && this.props.project.dotToRectSettings.url) {
-            this.dotToRectService = new DotToRectService(this.props.project.dotToRectSettings.url ?
-                this.props.project.dotToRectSettings.url : connectionJson.providerOptions.dotToRectUrl ?
-                connectionJson.providerOptions.dotToRectUrl : "");
-        }
         window.addEventListener("beforeunload", this.onUnload);
     }
 
@@ -162,8 +101,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
             await this.loadProjectAssets();
         }
 
-        if (this.canvas.current) {
-            this.canvas.current.applyInitialWorkData();
+        if (this.pixelCanvas.current) {
+            this.pixelCanvas.current.applyInitialWorkData();
         }
 
         const query = new URLSearchParams(this.props.location.search);
@@ -237,8 +176,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                     </div>
                     <div className="editor-page-content">
                         {selectedAsset &&
-                            <Canvas
-                                ref={this.canvas}
+                            <PixelCanvas
+                                ref={this.pixelCanvas}
                                 initialWorkData={this.state.canvasWorkData}
                                 selectedAsset={this.state.selectedAsset}
                                 onAssetMetadataChanged={this.onAssetMetadataChanged}
@@ -259,7 +198,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                                     onChildAssetSelected={this.onChildAssetSelected}
                                     asset={this.state.selectedAsset.asset}
                                     childAssets={this.state.childAssets} />
-                            </Canvas>
+                            </PixelCanvas>
                         }
                         <Confirm title={strings.editorPage.tags.rename.title}
                             ref={this.renameTagConfirm}
@@ -283,24 +222,16 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         );
     }
 
+    protected getContext = (): EditingContext => {
+        return EditingContext.Paint;
+    }
+
     /**
      * Called when the asset side bar is resized
      * @param newWidth The new sidebar width
      */
-    protected onSideBarResize = (newWidth: number) => {
-        //this.canvas.current.forceResize();
-    }
-
-    protected getContext = (): EditingContext => {
-        // Updating toolbar according to editing context
-        // we will check first whether this is view mode or edit mode
-        if (this.props.match.path.endsWith("view")) {
-            return EditingContext.None;
-        } else {
-            return (this.props.match.params["type"] && this.props.match.params["status"]) ?
-            getEditingContext(this.props.match.params["type"], this.props.match.params["status"]) :
-            getEditingContext(this.props.project.taskType, this.props.project.taskStatus);
-        }
+     protected onSideBarResize = (newWidth: number) => {
+        //this.pixelCanvas.current.forceResize();
     }
 
     protected onUnload = async () => {
@@ -387,18 +318,19 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
         if (this.getContext() === EditingContext.None) {
             return ;
         }
-        if (this.canvas.current) {
+        /*
+        if (this.pixelCanvas.current) {
             if (this.isThereSomethingUntagged()) {
                 alert(strings.editorPage.messages.enforceTaggedRegions.description);
                 return;
             }
 
             const updatedAsset = {...this.state.selectedAsset,
-                regions: this.canvas.current.getAllRegions(),
+                regions: this.pixelCanvas.current.getAllRegions(),
                 workData: workData ? workData :
                 {
-                    zoomScale: this.canvas.current.getCurrentScale(),
-                    screenPos: this.canvas.current.getScreenPos()},
+                    zoomScale: this.pixelCanvas.current.getCurrentScale(),
+                    screenPos: this.pixelCanvas.current.getScreenPos()},
             };
             await this.onAssetMetadataChanged(updatedAsset);
             if (refresh) {
@@ -408,14 +340,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                         updatedAsset.workData});
             }
         }
-    }
-
-    protected isThereSomethingUntagged = (): boolean => {
-        if (!this.canvas.current) {
-            return false;
-        }
-        const regionsWithoutTags = this.canvas.current.getAllRegions().filter((region) => region.tags.length === 0);
-        return regionsWithoutTags.length > 0;
+        */
     }
 
     /**
@@ -424,7 +349,7 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
      */
     protected onAssetMetadataChanged = async (assetMetadata: IAssetMetadata): Promise<void> => {
         // If the asset contains any regions without tags, don't proceed.
-        if (!this.canvas.current) {
+        if (!this.pixelCanvas.current) {
             return;
         }
 
@@ -484,19 +409,19 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     protected onToolbarItemSelected = async (toolbarItem: ToolbarItem): Promise<void> => {
         switch (toolbarItem.props.name) {
             case ToolbarItemName.DrawRectangle:
-                this.canvas.current.setSelectionMode(SelectionMode.RECT);
+                this.pixelCanvas.current.setSelectionMode(SelectionMode.RECT);
                 break;
             case ToolbarItemName.SubmitPoints:
                 await this.processPoint2Rect();
                 break;
             case ToolbarItemName.DrawPoint:
-                this.canvas.current.setSelectionMode(SelectionMode.POINT);
+                this.pixelCanvas.current.setSelectionMode(SelectionMode.POINT);
                 break;
             case ToolbarItemName.DrawPolygon:
-                this.canvas.current.setSelectionMode(SelectionMode.POLYGON);
+                this.pixelCanvas.current.setSelectionMode(SelectionMode.POLYGON);
                 break;
             case ToolbarItemName.SelectCanvas:
-                this.canvas.current.setSelectionMode(SelectionMode.NONE);
+                this.pixelCanvas.current.setSelectionMode(SelectionMode.NONE);
                 break;
             case ToolbarItemName.PreviousAsset:
                 await this.goToRootAsset(-1);
@@ -515,17 +440,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
                 await this.updateAssetMetadataState(AssetState.Approved,
                     this.props.project.taskStatus === TaskStatus.Review);
                 break;
-            case ToolbarItemName.CopyRegions:
-                this.canvas.current.copyRegions();
-                break;
-            case ToolbarItemName.CutRegions:
-                this.canvas.current.cutRegions();
-                break;
-            case ToolbarItemName.PasteRegions:
-                this.canvas.current.pasteRegions();
-                break;
             case ToolbarItemName.RemoveAllRegions:
-                this.canvas.current.confirmRemoveAllRegions();
+                this.pixelCanvas.current.confirmRemoveAllRegions();
                 break;
             case ToolbarItemName.SaveProject:
                 await this.storeAssetMetadata();
@@ -537,10 +453,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     protected processPoint2Rect = async () => {
-        if (this.isThereSomethingUntagged()) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
-            return;
-        }
         if (!this.onBeforeAssetSelected()) {
             return;
         } else {
@@ -584,11 +496,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     protected predictRegions = async (canvas?: HTMLCanvasElement) => {
         canvas = canvas || document.querySelector("canvas");
         if (!canvas) {
-            return;
-        }
-
-        if (this.isThereSomethingUntagged()) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
             return;
         }
 
@@ -646,10 +553,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     protected selectAsset = async (asset: IAsset): Promise<void> => {
-        if (this.isThereSomethingUntagged()) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
-            return;
-        }
         // Nothing to do if we are already on the same asset.
         if (this.state.selectedAsset && this.state.selectedAsset.asset.id === asset.id) {
             return;
@@ -750,10 +653,6 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
     }
 
     protected updateAssetMetadataState = async (state: AssetState, completed: boolean = false) => {
-        if (this.isThereSomethingUntagged()) {
-            alert(strings.editorPage.messages.enforceTaggedRegions.description);
-            return;
-        }
         await this.onAssetMetadataChanged(
             {
             ...this.state.selectedAsset,

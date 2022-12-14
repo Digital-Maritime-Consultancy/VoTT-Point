@@ -23,6 +23,7 @@ import { EditorToolbar } from "../editorToolbar";
 import SplitPane from "react-split-pane";
 import { KeyEventType } from "../../../common/keyboardManager/keyboardManager";
 import PainterTools from "./painterTools";
+import { SelectionMode } from "@digital-maritime-consultancy/vott-dot-ct/lib/js/CanvasTools/Interface/ISelectorSettings";
 
 export interface IPixelCanvasProps extends React.Props<PixelCanvas> {
     selectedAsset: IAssetMetadata;
@@ -59,7 +60,7 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
     private attributeInput: React.RefObject<AttributeInput> = React.createRef();
     private toolbarItems: IToolbarItemRegistration[] = ToolbarItemFactory.getToolbarItems();
     private canvasContainer: React.RefObject<HTMLDivElement> = React.createRef();
-    private painter: React.RefObject<PainterTools> = React.createRef();
+    private paintCanvas: React.RefObject<PainterTools> = React.createRef();
 
     public render = () => {
         return (
@@ -89,25 +90,28 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
                     onConfirm={this.clearCanvas}
                 />
                 <div id="canvasToolsDiv" ref={this.canvasContainer} onClick={(e) => e.stopPropagation()}>
-                    <div id="selectionDiv" onWheel={(e) => e.preventDefault()} //onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}
+                    {
+                        this.props.context !== EditingContext.None &&
+                        <div id="toolbarDiv" className="editor-page-content-main-header">
+                            <EditorToolbar
+                                ref={this.toolBar}
+                                project={this.props.project}
+                                items={this.getFilteredToolbarItems()}
+                                actions={this.props.actions}
+                                onToolbarItemSelected={this.props.onToolbarItemSelected} />
+                        </div>
+                    }
+                    <div id="selectionDiv"
+                        onWheel={(e) => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                             >
-                        {
-                            this.props.context !== EditingContext.None &&
-                            <div id="toolbarDiv" className="editor-page-content-main-header">
-                                <EditorToolbar
-                                    ref={this.toolBar}
-                                    project={this.props.project}
-                                    items={this.getFilteredToolbarItems()}
-                                    actions={this.props.actions}
-                                    onToolbarItemSelected={this.props.onToolbarItemSelected} />
-                            </div>
-                        }
                         <PainterTools
-                            ref={this.painter}
+                            ref={this.paintCanvas}
                             canvasContainer={this.canvasContainer}
+                            fullWidth={this.props.selectedAsset.asset.size.width}
+                            fullHeight={this.props.selectedAsset.asset.size.height}
                         />
                         </div>
-                {this.renderChildren()}
                 </div>
                 <div className="editor-page-right-sidebar">
                     <div className="canvas-sidebar">
@@ -173,20 +177,21 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         
     }
 
+    public confirmRemoveAllRegions = () => {
+
+    }
+
+    public applyInitialWorkData = () => {
+
+    }
+
+    public setSelectionMode = (mode: SelectionMode) => {
+        console.log(mode);
+    }
+
     public clearCanvas = () => {
         if (this.props.context === EditingContext.None) {
             return ;
-        }
-    }
-
-    /**
-     * Set the loaded asset content source into the canvas tools canvas
-     */
-     private setContentSource = async (contentSource: ContentSource) => {
-        try {
-            await this.painter.current.addContentSource(contentSource as any);
-        } catch (e) {
-            console.warn(e);
         }
     }
 
@@ -228,6 +233,17 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         }
     }
 
+    /**
+     * Set the loaded asset content source into the canvas tools canvas
+     */
+     private setContentSource = async (contentSource: ContentSource) => {
+        try {
+            await this.paintCanvas.current.addContentSource(contentSource as any);
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
     private onAttributeChanged = async (key: string, value: string): Promise<void> => {
         if (this.getSelectedRegions().length) {
             this.applyAttribute(key, value);
@@ -239,9 +255,8 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
      */
      private onAssetLoaded = (contentSource: ContentSource) => {
         (contentSource as HTMLElement).setAttribute("id", "contentSource");
-        this.painter.current.addContentSource(contentSource as any);
-        //const context = this.canvasZone.current.getContext("2d");
-        //context.drawImage(contentSource as HTMLImageElement, 0, 0, contentSource.width, contentSource.height);
+        this.setContentSource(contentSource);
+        console.log(contentSource);
     }
 
     private renderChildren = () => {
@@ -253,8 +268,6 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
     private getFilteredToolbarItems = () => {
         return this.toolbarItems.filter(e => e.config.context.indexOf(this.props.context) >= 0);
     }
-
-    
 
     /**
      * Listens for {number key} and calls `onTagClicked` with tag corresponding to that number

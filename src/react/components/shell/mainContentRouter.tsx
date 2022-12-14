@@ -10,6 +10,7 @@ import ProjectSettingsPage from "../pages/projectSettings/projectSettingsPage";
 import Dot2RectPage from "../pages/dot2Rect/dot2RectPage";
 import TaskPage from "../pages/task/taskPage";
 import ImportPage from "../pages/import/importPage";
+import PixelEditorPage from "../pages/editorPage/pixelEditorPage/pixelEditorPage";
 
 /**
  * @name - Main Content Router
@@ -25,6 +26,7 @@ export default function MainContentRouter() {
                 <Route path="/connections" exact component={ConnectionPage} />
                 <Route path="/task/:taskId" component={TaskPage} />
                 <Route path="/projects/:projectId/edit/:type/:status" component={EditorPage} />
+                <Route path="/projects/:projectId/paint/:type/:status" component={PixelEditorPage} />
                 <Route path="/projects/:projectId/view" component={EditorPage} />
                 <Route path="/projects/create" component={ProjectSettingsPage} />
                 <Route path="/projects/:projectId/settings" component={ProjectSettingsPage} />
