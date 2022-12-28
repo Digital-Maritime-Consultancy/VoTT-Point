@@ -318,6 +318,10 @@ export default class PixelEditorPage extends EditorPage {
         if (this.getContext() === EditingContext.None) {
             return ;
         }
+        if (this.pixelCanvas.current) {
+            const image = this.pixelCanvas.current.getImage();
+            //window.location.href = image;
+        }
         /*
         if (this.pixelCanvas.current) {
             if (this.isThereSomethingUntagged()) {

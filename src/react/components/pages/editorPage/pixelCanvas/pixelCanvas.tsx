@@ -107,6 +107,7 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
                             >
                         <PainterTools
                             ref={this.paintCanvas}
+                            color={"ff00ff"}
                             canvasContainer={this.canvasContainer}
                             fullWidth={this.props.selectedAsset.asset.size.width}
                             fullHeight={this.props.selectedAsset.asset.size.height}
@@ -173,6 +174,10 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         return [];
     }
 
+    public getImage = () => {
+        return this.paintCanvas.current.getImage();
+    }
+
     public getAllRegions = () => {
         
     }
@@ -203,6 +208,7 @@ export default class PixelCanvas extends React.Component<IPixelCanvasProps> {
         if (this.props.context === EditingContext.None) {
             return ;
         }
+        console.log(tag);
     }
 
     /**

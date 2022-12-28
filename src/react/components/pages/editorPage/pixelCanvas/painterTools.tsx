@@ -1,9 +1,9 @@
 import React from "react";
 
-
-export interface IPainterToolsProps{
+export interface IPainterToolsProps {
     fullWidth: number;
     fullHeight: number;
+    color: string;
     canvasContainer: React.RefObject<HTMLDivElement>;
 }
 
@@ -41,7 +41,6 @@ export default class PainterTools extends React.Component<IPainterToolsProps> {
      public async addContentSource(source: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement): Promise<void> {
         const context = this.canvasForeground.current.getContext("2d", { willReadFrequently: true }) as CanvasRenderingContext2D;
         context.globalCompositeOperation = 'destination-over';
-        context.fillStyle = "blue";
         context.fillRect(0, 0, this.props.fullWidth, this.props.fullHeight);
 
         //this.canvasForeground.current.width = this.sourceWidth;
@@ -59,6 +58,12 @@ export default class PainterTools extends React.Component<IPainterToolsProps> {
     public componentWillUnmount() {
         window.removeEventListener("keydown", this.onKeyDown);
         window.removeEventListener("keyup", this.onKeyUp);
+    }
+
+    public getImage = () => {
+        return this.canvasForeground.current.toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+            // here is the most important part because if you dont replace you will get a DOM 18 exception.
     }
 
     public getPixels = () => {
@@ -251,7 +256,7 @@ export default class PainterTools extends React.Component<IPainterToolsProps> {
             context.lineCap = "round";
             context.lineJoin = "round";
             // set line color
-            context.strokeStyle = '#ff0000';
+            context.strokeStyle = "#" + this.props.color;
             this.isDrawing = true;
         }
     }
